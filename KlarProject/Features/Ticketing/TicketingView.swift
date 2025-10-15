@@ -1,5 +1,5 @@
 //
-//  ChatKlarView.swift
+//  TicketingView.swift
 //  KlarProject
 //
 //  Created by Ahmad Al Wabil on 14/10/25.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct ChatKlarView: View {
+struct TicketingView: View {
     var body: some View {
-        Text("Chat Page")
+        Text("Ticketing Page")
     }
 }
 
 #Preview {
-    ChatKlarView()
+    TicketingView()
 }

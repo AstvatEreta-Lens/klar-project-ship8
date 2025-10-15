@@ -8,15 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+    @StateObject private var sidebarVM = SidebarViewModel()
+       var body: some View {
+           NavigationSplitView {
+               SidebarView(viewModel: sidebarVM)
+           } detail: {
+               switch sidebarVM.selectedItem?.destination {
+               case .dashboard:
+                   DashboardView()
+               case .chat:
+                   ChatKlarView()
+               case .ticketing:
+                   TicketingView()
+               case .settings:
+                   SettingsView()
+               default:
+                   Text("Select a menu from sidebar").foregroundColor(.secondary)
+               }
+           }
+       }
 }
 
 #Preview {
