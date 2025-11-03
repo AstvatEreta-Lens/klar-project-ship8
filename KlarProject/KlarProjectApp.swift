@@ -12,6 +12,7 @@ struct KlarProjectApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .frame(minWidth : 1297, maxHeight: 982)
         }
     }
 }
