@@ -8,40 +8,58 @@
 import SwiftUI
 
 struct ChatKlarView: View {
-    @State private var selectedConversation: Conversation? = nil
+    @StateObject private var viewModel = ConversationListViewModel()
     
     var body: some View {
-        HStack(spacing: 0) {
-            ConversationListView(selectedConversation: $selectedConversation)
-            
-            DummyPage()
-            
-            // Chat Detail
-            if let conversation = selectedConversation {
-                ChatDetailView(conversation: conversation)
-            } else {
-                // Placeholder ketika belum ada yang dipilih
-                VStack {
-                    Text("Silahkan Pilih Chat")
-                        .font(.system(size: 16))
-                        .foregroundColor(.gray)
-                }
-                .frame(width: 290, height: 912)
-                .overlay(
-                    UnevenRoundedRectangle(
-                        topLeadingRadius: 0,
-                        bottomLeadingRadius: 0,
-                        bottomTrailingRadius: 12,
-                        topTrailingRadius: 12
+        GeometryReader { geometry in
+            HStack(spacing: 0) {
+                ConversationListView(viewModel: viewModel)
+                // Adaptive size
+                    .frame(
+                        width: 334
                     )
-                    .stroke(style: StrokeStyle(lineWidth: 1))
-                )
-                .background(Color.white)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                
+                Divider()
+                    .frame(height: geometry.size.height)
+                
+                if viewModel.selectedConversation != nil {
+                    MainChatView()
+                        .padding(.top, 12)
+                        .padding(.bottom, 12)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    // Empty state
+                    VStack(spacing: 363) {
+                        Image("Logo")
+                            .font(.system(size: 64))
+                            .foregroundColor(.gray.opacity(0.3))
+                        
+                        Text("Select a conversation to see message")
+                            .font(.system(size: 18))
+                            .foregroundColor(.gray)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.bakcgroundPrimary)
+                }
+                
+                Divider()
+                    .frame(height: geometry.size.height)
+                
+                if let conversation = viewModel.selectedConversation {
+                    ChatDetailView(conversation: conversation)
+                        .frame(width: 334)
+                        .frame(maxHeight: .infinity) // Align to top
+                        .id(conversation.id)
+                }
             }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+            .background(Color.backgroundPrimary)
         }
     }
 }
 
 #Preview {
     ChatKlarView()
+        .frame(width: 1400, height: 900)
 }
