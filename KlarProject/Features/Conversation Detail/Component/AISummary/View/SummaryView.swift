@@ -21,7 +21,6 @@ struct Summary : View {
                         .stroke(Color.avatarCount, lineWidth: 1)
                 )
             
-            
             VStack{
                 Image(systemName: "hand.raised")
                     .font(.system(size: 40))
@@ -29,10 +28,10 @@ struct Summary : View {
                     .padding(.top, 27)
                 
                 Text("No summary yet.")
-                    .font(.system(size: 11))
+                    .font(.caption)
                     .foregroundColor(Color.grayTextColor)
                 Text("Tap button below to generate AI summary.")
-                    .font(.system(size: 11))
+                    .font(.caption)
                     .foregroundColor(Color.grayTextColor)
                 
                 Button(action : generateAISummary){
@@ -58,4 +57,8 @@ struct Summary : View {
 #Preview {
     Summary(generateAISummary: {})
         .padding()
+}
+
+#Preview("AdaText"){
+    Summary(generateAISummary: {})
 }

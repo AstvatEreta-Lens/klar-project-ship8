@@ -77,7 +77,8 @@ extension Color {
     // Chat Box Button Color
     static let chatboxButtonColor = Color("ChatTextboxButton")
     
-    
+    // Bubble Chat Color
+    static let bubbleChatColor = Color("BubbleChatColor")
     
     
     

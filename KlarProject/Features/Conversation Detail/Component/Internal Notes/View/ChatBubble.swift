@@ -12,39 +12,42 @@ struct InternalNoteChatBubble: View {
     let isCurrentUser: Bool
     
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            // Alignment jika current user maka di sebelah kanan
-            // Jika !current user maka di sebelah kiri
-            VStack(alignment: isCurrentUser ? .trailing : .leading, spacing: 4) {
-                // Author name (only for other users)
-                if !isCurrentUser {
-                    Text(note.author.name)
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.primary)
-                }
+            ZStack{
+                UnevenRoundedRectangle(
+                    topLeadingRadius: 0,
+                    bottomLeadingRadius: 11,
+                    bottomTrailingRadius: 11,
+                    topTrailingRadius: 11
+                )
+                .fill(Color.bubbleChatColor)
                 
-                // Message bubble
-                Text(note.message)
-                    .font(.system(size: 14))
-                    .foregroundColor(isCurrentUser ? .white : .primary)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(isCurrentUser ? Color.blue : Color.gray.opacity(0.15))
-                    )
-                    .frame(maxWidth: 400, alignment: isCurrentUser ? .trailing : .leading)
+                VStack(alignment: .leading, spacing: 3) {
+                    // Author name
+                    Text(note.author.name)
+                        .font(.caption)
+                        .padding(.horizontal, 7)
+                        .padding(.top, 8)
+                        .foregroundColor(.primary)
+                    
+                    // Message bubble
+                    Text(note.message)
+                        .font(.caption)
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 7)
+                        .padding(.bottom, 8)
+                        .frame(maxWidth: 280, alignment: .leading)
+                }
             }
-            
-            if isCurrentUser {
-                Spacer()
-            }
-        }
-        .padding(.horizontal, 12)
-        .frame(maxWidth: .infinity, alignment: isCurrentUser ? .trailing : .leading)
+            .padding(.top, 1)
+            .padding(.trailing, 21)
+            Spacer()  // Push everything to left
+        
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 8)
     }
 }
 
+// MARK: - Previews
 
 #Preview("Other User Message") {
     InternalNoteChatBubble(
@@ -58,6 +61,7 @@ struct InternalNoteChatBubble: View {
     )
     .padding()
     .frame(width: 334)
+    .background(Color.gray.opacity(0.1))
 }
 
 #Preview("Current User Message") {
@@ -72,6 +76,7 @@ struct InternalNoteChatBubble: View {
     )
     .padding()
     .frame(width: 334)
+    .background(Color.gray.opacity(0.1))
 }
 
 #Preview("Long Message") {
@@ -79,17 +84,18 @@ struct InternalNoteChatBubble: View {
         note: InternalNote(
             conversationId: UUID(),
             author: User(name: "Indri", profileImage: ""),
-            message: "Ini adalah contoh pesan yang sangat panjang untuk menguji bagaimana tampilan chat bubble ketika ada banyak teks. Semoga bisa wrap dengan baik dan tidak overflow.",
+            message: "Ini adalah contoh pesan yang sangat panjang untuk menguji bagaimana tampilan chat bubble ketika ada banyak teks. Semoga bisa wrap dengan baik dan tidak overflow.人们你好， 现在我又冰淇淋， 和有速度与一级九，但是我更喜欢冰淇淋，所以如果你们不喜欢冰淇淋， 你们不是我的朋友。如果你们可以写这个故事，拜拜 你妈妈很美",
             timestamp: Date()
         ),
         isCurrentUser: false
     )
     .padding()
     .frame(width: 334)
+    .background(Color.gray.opacity(0.1))
 }
 
 #Preview("Multiple Messages") {
-    VStack(spacing: 12) {
+    VStack{
         InternalNoteChatBubble(
             note: InternalNote(
                 conversationId: UUID(),
@@ -119,7 +125,67 @@ struct InternalNoteChatBubble: View {
             ),
             isCurrentUser: false
         )
+        
+        InternalNoteChatBubble(
+            note: InternalNote(
+                conversationId: UUID(),
+                author: User(name: "Tech Support", profileImage: ""),
+                message: "Siap, sudah saya input diskon 30% untuk customer ini",
+                timestamp: Date().addingTimeInterval(-3300)
+            ),
+            isCurrentUser: true
+        )
     }
     .padding()
     .frame(width: 334)
+    .background(Color.gray.opacity(0.1))
+}
+
+#Preview("Different Users") {
+    ScrollView {
+        VStack(spacing: 12) {
+            InternalNoteChatBubble(
+                note: InternalNote(
+                    conversationId: UUID(),
+                    author: User(name: "Indri", profileImage: ""),
+                    message: "Customer complaint",
+                    timestamp: Date()
+                ),
+                isCurrentUser: false
+            )
+            
+            InternalNoteChatBubble(
+                note: InternalNote(
+                    conversationId: UUID(),
+                    author: User(name: "Current Admin", profileImage: ""),
+                    message: "I'll handle it",
+                    timestamp: Date()
+                ),
+                isCurrentUser: true
+            )
+            
+            InternalNoteChatBubble(
+                note: InternalNote(
+                    conversationId: UUID(),
+                    author: User(name: "Budi", profileImage: ""),
+                    message: "Need technical support",
+                    timestamp: Date()
+                ),
+                isCurrentUser: false
+            )
+            
+            InternalNoteChatBubble(
+                note: InternalNote(
+                    conversationId: UUID(),
+                    author: User(name: "Current Admin", profileImage: ""),
+                    message: "Done! ✅",
+                    timestamp: Date()
+                ),
+                isCurrentUser: true
+            )
+        }
+        .padding()
+    }
+    .frame(width: 334, height: 400)
+    .background(Color.gray.opacity(0.1))
 }

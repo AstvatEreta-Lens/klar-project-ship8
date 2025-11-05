@@ -19,29 +19,28 @@ struct InternalNoteInputView: View {
     var body: some View {
         HStack(spacing: 8) {
             // Text input
-            ZStack(alignment: .topLeading) {
+            ZStack(alignment: .leading){
                 if text.isEmpty {
                     Text("Type your text...")
                         .foregroundColor(.gray.opacity(0.5))
-                        .font(.system(size: 14))
+                        .font(.caption)
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, 11)
                 }
                 
                 TextEditor(text: $text)
-                    .font(.system(size: 14))
-                    .frame(minHeight: minHeight, maxHeight: maxHeight)
+                    .font(.caption)
                     .padding(.horizontal, 8)
-                    .padding(.vertical, 6)
+                    .padding(.vertical, 11)
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
             }
-            .frame(minHeight: minHeight)
+            .frame(height: minHeight)
             .background(Color.white)
             .cornerRadius(11)
             .overlay(
                 RoundedRectangle(cornerRadius: 11)
-                    .stroke(Color.blue.opacity(0.3), lineWidth: 1)
+                    .stroke(Color.avatarCount, lineWidth: 1)
             )
             
             // Send button
@@ -80,7 +79,7 @@ struct InternalNoteInputView: View {
 
 #Preview("Long Text") {
     InternalNoteInputView(
-        text: .constant("This is a very long message that should wrap to multiple lines to test the auto-expanding behavior of the text editor component."),
+        text: .constant("This is a very long message that should wrap to multiple lines to test the auto-expanding behavior of the text editor component.This is a very long message that should wrap to multiple lines to test the auto-expanding behavior of the text editor component.This is a very long message that should wrap to multiple lines to test the auto-expanding behavior of the text editor component."),
         onSend: { print("Send") }
     )
     .padding()

@@ -2,40 +2,96 @@
 //  ConversationListView.swift
 //  KlarProject
 //
-//
-//  ConversationListView.swift
-//  KlarProject
+//  Created by Nicholas Tristandi on 05/11/25.
 //
 
 import SwiftUI
 
 struct ConversationListView: View {
     @ObservedObject var viewModel: ConversationListViewModel
+    @StateObject private var filterViewModel = FilterViewModel()
+    @State private var showingFilter = false
+    
+    // Computed property untuk apply filter dari FilterViewModel
+    var filteredHumanConversations: [Conversation] {
+        filterViewModel.applyFilters(to: viewModel.filterHumanConvo)
+    }
+    
+    var filteredAiConversations: [Conversation] {
+        filterViewModel.applyFilters(to: viewModel.filterAiConvo)
+    }
     
     var body: some View {
         GeometryReader { geometry in
-            VStack(spacing: 0) {
-                headerSection
-                
-                VStack(spacing: 12) {
-                    // Human Agents Section
-                    ConversationSection(title: "HANDLED BY HUMAN AGENTS") {
-                        humanConversationsScrollView(height: geometry.size.height)
-                    }
+            ZStack {
+                // Main Content
+                VStack(spacing: 0) {
+                    headerSection
                     
-                    // AI Section
-                    ConversationSection(title: "HANDLED BY AI") {
-                        aiConversationsScrollView(height: geometry.size.height)
+                    VStack(spacing: 12) {
+                        // Human Agents Section
+                        ConversationSection(title: "HANDLED BY HUMAN AGENTS") {
+                            humanConversationsScrollView(height: geometry.size.height)
+                        }
+                        
+                        // AI Section
+                        ConversationSection(title: "HANDLED BY AI") {
+                            aiConversationsScrollView(height: geometry.size.height)
+                        }
                     }
+                    .padding(.horizontal, 14)
+                    .padding(.top, 8)
+                    .padding(.bottom, 16)
+                    
+                    Spacer()
                 }
-                .padding(.horizontal, 14)
-                .padding(.top, 8)
-                .padding(.bottom, 16)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .background(Color.backgroundPrimary)
                 
-                Spacer()
+                // Filter Overlay
+                if showingFilter {
+                    // Dimmed Background
+                    Color.black.opacity(0.3)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showingFilter = false
+                            }
+                        }
+                    
+                    // Filter Panel
+                    VStack {
+                        HStack {
+                            Spacer()
+                            
+                            FilterView(
+                                viewModel: filterViewModel,
+                                onApplyFilter: {
+                                    
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        showingFilter = false
+                                    }
+                                    
+                                    #if DEBUG
+                                    print("Filter applied!")
+                                    print("Selected statuses: \(filterViewModel.selectedStatuses.map { $0.text })")
+                                    print("Selected labels: \(filterViewModel.selectedLabels.map { $0.text })")
+                                    print("Filtered human conversations: \(filteredHumanConversations.count)")
+                                    print("Filtered AI conversations: \(filteredAiConversations.count)")
+                                    #endif
+                                }
+                            )
+                            .frame(width: 307)
+                            .cornerRadius(12)
+                            .shadow(color: Color.black.opacity(0.2), radius: 10, x: -5, y: 0)
+                            .transition(.move(edge: .trailing))
+                        }
+                        
+                        Spacer()
+                    }
+                    .padding(.top, 150) // Adjust sesuai posisi button filter
+                }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color.backgroundPrimary)
         }
     }
     
@@ -52,13 +108,26 @@ struct ConversationListView: View {
                     viewModel.searchConversations()
                 }
                 
+                // Filter Button - Updated with toggle action
                 Button(action: {
-                    print("Filter Button Clicked")
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showingFilter.toggle()
+                    }
                 }) {
-                    Image(systemName: "slider.horizontal.3")
-                        .foregroundColor(Color.primaryText)
-                        .padding(.trailing, 25)
-                        .padding(.leading, 15)
+                    ZStack {
+                        Image(systemName: "slider.horizontal.3")
+                            .foregroundColor(Color.primaryText)
+                        
+                        // Badge untuk show jumlah active filters
+                        if filterViewModel.hasActiveFilters {
+                            Circle()
+                                .fill(Color.red)
+                                .frame(width: 8, height: 8)
+                                .offset(x: 10, y: -10)
+                        }
+                    }
+                    .padding(.trailing, 25)
+                    .padding(.leading, 15)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
@@ -98,7 +167,8 @@ struct ConversationListView: View {
         
         return ScrollView {
             LazyVStack(spacing: 6) {
-                ForEach(viewModel.filterHumanConvo) { conversation in
+                // Gunakan filtered conversations
+                ForEach(filteredHumanConversations) { conversation in
                     HumanConversationItemView(
                         conversation: conversation,
                         isSelected: viewModel.selectedConversation?.id == conversation.id
@@ -109,6 +179,11 @@ struct ConversationListView: View {
                             viewModel.selectConversation(conversation)
                         }
                     }
+                }
+                
+                // Empty state jika tidak ada hasil
+                if filteredHumanConversations.isEmpty {
+                    emptyFilterState
                 }
             }
             .padding(8)
@@ -122,7 +197,8 @@ struct ConversationListView: View {
         
         return ScrollView {
             LazyVStack(spacing: 6) {
-                ForEach(viewModel.filterAiConvo) { conversation in
+                // Gunakan filtered conversations
+                ForEach(filteredAiConversations) { conversation in
                     AIConversationItemView(
                         conversation: conversation,
                         isSelected: viewModel.selectedConversation?.id == conversation.id
@@ -134,14 +210,45 @@ struct ConversationListView: View {
                         }
                     }
                 }
+                
+                // Empty state jika tidak ada hasil
+                if filteredAiConversations.isEmpty {
+                    emptyFilterState
+                }
             }
             .padding(8)
         }
         .frame(height: scrollHeight)
         .scrollIndicators(.visible)
     }
+    
+    // Empty state view
+    private var emptyFilterState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "tray")
+                .font(.system(size: 40))
+                .foregroundColor(.gray)
+            
+            Text("No conversations found")
+                .font(.headline)
+                .foregroundColor(.gray)
+            
+            if filterViewModel.hasActiveFilters {
+                Button(action: {
+                    filterViewModel.clearAllFilters()
+                }) {
+                    Text("Clear Filters")
+                        .font(.subheadline)
+                        .foregroundColor(.blue)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 40)
+    }
 }
 
 #Preview {
     ConversationListView(viewModel: ConversationListViewModel())
 }
+

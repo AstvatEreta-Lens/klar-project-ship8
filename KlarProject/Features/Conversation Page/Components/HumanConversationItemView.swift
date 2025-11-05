@@ -49,7 +49,7 @@ struct HumanConversationItemView: View {
                 // Time and Unread Count
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(conversation.time)
-                        .font(.system(size: 11))
+                        .font(.caption)
                         .foregroundColor(Color.primaryUsernameText)
                     
                     if conversation.unreadCount > 0 {
@@ -59,7 +59,7 @@ struct HumanConversationItemView: View {
                                 .frame(width: 16, height: 16)
                             
                             Text("\(conversation.unreadCount)")
-                                .font(.system(size: 8))
+                                .font(.caption)
                                 .foregroundColor(.white)
                         }
                     }

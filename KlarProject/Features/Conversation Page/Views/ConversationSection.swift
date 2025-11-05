@@ -2,7 +2,7 @@
 //  ConversationSection.swift
 //  KlarProject
 //
-//
+// Created by Nicholas Tristandi on 05/11/25.
 
 import SwiftUI
 

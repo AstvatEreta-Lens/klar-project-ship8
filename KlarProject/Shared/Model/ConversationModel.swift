@@ -13,11 +13,13 @@ struct User: Identifiable {
     let id: UUID
     let name: String
     let profileImage: String
+    let email: String
     
-    init(id: UUID = UUID(), name: String, profileImage: String) {
+    init(id: UUID = UUID(), name: String, profileImage: String, email: String = "") {
         self.id = id
         self.name = name
         self.profileImage = profileImage
+        self.email = email
     }
 }
 
@@ -57,10 +59,10 @@ struct Conversation: Identifiable {
     
     // Collaboration Info
     var seenBy: [SeenByRecord]
-    var collaborators: [User]
+//    var collaborators: [User]
     
     // Internal Notes
-    var internalNotes : [InternalNote]
+    var internalNotes: [InternalNote]
     
     // MARK: - Computed Properties
     
@@ -103,8 +105,8 @@ struct Conversation: Identifiable {
         handledBy: User,
         handledAt: String,
         seenBy: [SeenByRecord] = [],
-        collaborators: [User] = [],
-        internalNotes : [InternalNote] = []
+//        collaborators: [User] = [],
+        internalNotes: [InternalNote] = []
     ) {
         self.id = id
         self.name = name
@@ -120,7 +122,7 @@ struct Conversation: Identifiable {
         self.handledBy = handledBy
         self.handledAt = handledAt
         self.seenBy = seenBy
-        self.collaborators = collaborators
+//        self.collaborators = collaborators
         self.internalNotes = internalNotes
     }
 }
@@ -147,29 +149,29 @@ extension Conversation {
             handlerType: .human,
             status: nil,
             label: .service,
-            handledBy: User(name: "Ninda", profileImage: "Photo Profile"),
+            handledBy: User(name: "Ninda", profileImage: "Photo Profile", email: "ninda@example.com"),
             handledAt: "14.29",
             seenBy: [
                 SeenByRecord(
-                    user: User(name: "Ninda", profileImage: "Photo Profile"),
+                    user: User(name: "Ninda", profileImage: "Photo Profile", email: "ninda@example.com"),
                     seenAt: "14.29"
                 )
             ],
-            collaborators: [
-                User(name: "Ninda", profileImage: "Photo Profile"),
-                User(name: "John", profileImage: "Photo Profile"),
-                User(name: "Sarah", profileImage: "Photo Profile")
-            ],
+//            collaborators: [
+//                User(name: "Ninda", profileImage: "Photo Profile", email: "ninda@example.com"),
+//                User(name: "John", profileImage: "Photo Profile", email: "john@example.com"),
+//                User(name: "Sarah", profileImage: "Photo Profile", email: "sarah@example.com")
+//            ],
             internalNotes: [
                 InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Ninda Sari", profileImage: ""),
+                    author: User(name: "Ninda Sari", profileImage: "", email: "ninda@example.com"),
                     message: "Customer mengeluh mesin mati mendadak",
                     timestamp: Date().addingTimeInterval(-7200)
                 ),
                 InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Tech Support", profileImage: ""),
+                    author: User(name: "Tech Support", profileImage: "", email: "tech@example.com"),
                     message: "Sudah cek, kayaknya masalah di motherboard",
                     timestamp: Date().addingTimeInterval(-7100)
                 )
@@ -186,34 +188,34 @@ extension Conversation {
             phoneNumber: "+61-1123-1123",
             handlerType: .human,
             status: nil,
-            label: .warranty,
-            handledBy: User(name: "Photo Profile", profileImage: "Photo Profile"),
+            label: nil,
+            handledBy: User(name: "Photo Profile", profileImage: "Photo Profile", email: "admin@example.com"),
             handledAt: "01.50",
             seenBy: [
                 SeenByRecord(
-                    user: User(name: "Photo Profile", profileImage: "Photo Profile"),
+                    user: User(name: "Photo Profile", profileImage: "Photo Profile", email: "admin@example.com"),
                     seenAt: "01.50"
                 )
             ],
-            collaborators: [
-                User(name: "Photo Profile", profileImage: "Photo Profile")
-            ],
+//            collaborators: [
+//                User(name: "Photo Profile", profileImage: "Photo Profile", email: "user@example.com")
+//            ],
             internalNotes: [
                 InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Indri", profileImage: ""),
+                    author: User(name: "Indri", profileImage: "", email: "indri@example.com"),
                     message: "Konsumen tadi minta service mesin karena kerusakan kabel",
                     timestamp: Date().addingTimeInterval(-3600)
                 ),
                 InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Indri", profileImage: ""),
+                    author: User(name: "Indri", profileImage: "", email: "indri@example.com"),
                     message: "tapi karena ini temen deket ko Alek jadi kasih diskon 30% ya",
                     timestamp: Date().addingTimeInterval(-3500)
                 ),
                 InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Ahmad", profileImage: ""),
+                    author: User(name: "Ahmad", profileImage: "", email: "ahmad@example.com"),
                     message: "Oke noted, nanti saya proses dengan diskon 30%",
                     timestamp: Date().addingTimeInterval(-3400)
                 )
@@ -231,10 +233,10 @@ extension Conversation {
             handlerType: .human,
             status: nil,
             label: .spareparts,
-            handledBy: User(name: "Admin", profileImage: "Photo Profile"),
+            handledBy: User(name: "Admin", profileImage: "Photo Profile", email: "admin@example.com"),
             handledAt: "01.50",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -248,10 +250,10 @@ extension Conversation {
             handlerType: .human,
             status: nil,
             label: .payment,
-            handledBy: User(name: "Finance Team", profileImage: "Photo Profile"),
+            handledBy: User(name: "Finance Team", profileImage: "Photo Profile", email: "finance@example.com"),
             handledAt: "21.50",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -265,10 +267,10 @@ extension Conversation {
             handlerType: .human,
             status: nil,
             label: .maintenance,
-            handledBy: User(name: "Tech Support", profileImage: "Photo Profile"),
+            handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -282,10 +284,10 @@ extension Conversation {
             handlerType: .human,
             status: nil,
             label: .maintenance,
-            handledBy: User(name: "Tech Support", profileImage: "Photo Profile"),
+            handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -299,10 +301,10 @@ extension Conversation {
             handlerType: .human,
             status: nil,
             label: .maintenance,
-            handledBy: User(name: "Tech Support", profileImage: "Photo Profile"),
+            handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -316,10 +318,10 @@ extension Conversation {
             handlerType: .human,
             status: nil,
             label: .maintenance,
-            handledBy: User(name: "Tech Support", profileImage: "Photo Profile"),
+            handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         )
     ]
     
@@ -335,15 +337,15 @@ extension Conversation {
             handlerType: .ai,
             status: .pending,
             label: .maintenance,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "15.30",
             seenBy: [
                 SeenByRecord(
-                    user: User(name: "AI Assistant", profileImage: "ai-avatar"),
+                    user: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
                     seenAt: "15.30"
                 )
             ],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -357,10 +359,10 @@ extension Conversation {
             handlerType: .ai,
             status: .pending,
             label: .warranty,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -374,10 +376,10 @@ extension Conversation {
             handlerType: .ai,
             status: .open,
             label: .maintenance,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "12.00",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -391,10 +393,10 @@ extension Conversation {
             handlerType: .ai,
             status: .open,
             label: .spareparts,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "06.15",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -408,10 +410,10 @@ extension Conversation {
             handlerType: .ai,
             status: .resolved,
             label: .maintenance,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "16.45",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -425,10 +427,10 @@ extension Conversation {
             handlerType: .ai,
             status: .resolved,
             label: .payment,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "02.30",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -442,10 +444,10 @@ extension Conversation {
             handlerType: .ai,
             status: .pending,
             label: .warranty,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -459,10 +461,10 @@ extension Conversation {
             handlerType: .ai,
             status: .pending,
             label: .warranty,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         ),
         
         Conversation(
@@ -476,10 +478,10 @@ extension Conversation {
             handlerType: .ai,
             status: .pending,
             label: .warranty,
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar"),
+            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
             seenBy: [],
-            collaborators: []
+//            collaborators: []
         )
     ]
 }

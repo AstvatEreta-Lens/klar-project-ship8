@@ -48,9 +48,9 @@ struct AIConversationItemView: View {
                 // Time and Status Badge
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(conversation.time)
-                        .font(.system(size: 11))
+                        .font(.caption)
                         .foregroundColor(Color.primaryUsernameText)
-                        .padding(.trailing, 13)
+//                        .padding(.trailing, 13)
                     
                     // Pakai komponen Status yang sudah ada
                     if let status = conversation.status {
@@ -58,13 +58,12 @@ struct AIConversationItemView: View {
                     }
                 }
             }
-            .frame(width: 271, height: 40)
+            .frame(width: 271, height: 40, alignment: .leading)
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
             .background(isSelected ? Color.chatChosenColor : Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 7))
         }
-//        .contentShape(RoundedRectangle(cornerRadius:7))  Make entire area tappable
     }
 }
 

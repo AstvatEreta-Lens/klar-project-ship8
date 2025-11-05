@@ -65,7 +65,6 @@ struct Status: View {
                 .padding(.vertical, 5)
 
         }
-        .padding(.trailing, 7)
     }
 }
 

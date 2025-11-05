@@ -3,6 +3,7 @@
 //  KlarProject
 //
 //  Created by Ahmad Al Wabil on 14/10/25.
+//  Updated with TakeOver functionality
 //
 
 import SwiftUI
@@ -13,18 +14,18 @@ struct ChatKlarView: View {
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
+                // MARK: -Conversation List
                 ConversationListView(viewModel: viewModel)
-                // Adaptive size
-                    .frame(
-                        width: 334
-                    )
+                    .frame(width: 334)
                     .frame(maxHeight: .infinity, alignment: .top)
                 
                 Divider()
                     .frame(height: geometry.size.height)
                 
+                // MARK: -Main Chat
                 if viewModel.selectedConversation != nil {
                     MainChatView()
+                        .environmentObject(viewModel)
                         .padding(.top, 12)
                         .padding(.bottom, 12)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -40,16 +41,17 @@ struct ChatKlarView: View {
                             .foregroundColor(.gray)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.bakcgroundPrimary)
+                    .background(Color.backgroundPrimary)
                 }
                 
                 Divider()
                     .frame(height: geometry.size.height)
                 
+                // MARK: -Chat Detail
                 if let conversation = viewModel.selectedConversation {
                     ChatDetailView(conversation: conversation)
                         .frame(width: 334)
-                        .frame(maxHeight: .infinity) // Align to top
+                        .frame(maxHeight: .infinity, alignment: .top)
                         .id(conversation.id)
                 }
             }
@@ -61,5 +63,5 @@ struct ChatKlarView: View {
 
 #Preview {
     ChatKlarView()
-        .frame(width: 1400, height: 900)
+        .frame(width: 1400, height: 982)
 }

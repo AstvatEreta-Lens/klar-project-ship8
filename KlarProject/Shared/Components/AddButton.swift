@@ -10,6 +10,7 @@ import SwiftUI
 struct AddButton: View {
     let addLabelImage: String
     let action: () -> Void
+    let isSelected: Bool = true
     
     var body: some View {
         Button(action: action) {
