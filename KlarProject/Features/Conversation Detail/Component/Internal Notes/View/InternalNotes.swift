@@ -119,7 +119,6 @@ struct InternalNotesView: View {
         )
     }
 
-    
     private func sendMessage() {
         viewModel.sendNote(message: messageText)
         messageText = ""

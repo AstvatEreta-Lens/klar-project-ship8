@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 enum statusType{
     case pending
@@ -66,6 +67,10 @@ struct Status: View {
 
         }
     }
+}
+
+extension statusType: CaseIterable {
+    static var allCases: [statusType] = [.pending, .open, .resolved]
 }
 
 #Preview {

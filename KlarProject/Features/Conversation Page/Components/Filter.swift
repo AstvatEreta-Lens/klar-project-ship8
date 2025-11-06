@@ -3,7 +3,6 @@
 //  KlarProject
 //
 //  Created by Nicholas Tristandi on 02/11/25.
-//  Updated: 04/11/25 - Manual layout (most reliable)
 //
 
 import SwiftUI
@@ -134,10 +133,7 @@ struct FilterView: View {
             // Apply Filter Button
             ApplyFilterButton(
                 isEnabled: viewModel.hasActiveFilters,
-                action: {
-                    onApplyFilter()
-                    dismiss()
-                }
+                action: onApplyFilter
             )
             .padding(.bottom, 20)
         }
@@ -220,7 +216,6 @@ struct ActiveFilterChip: View {
     }
 }
 
-// MARK: - Status Filter Button
 
 struct StatusFilterButton: View {
     let status: statusType
@@ -249,7 +244,6 @@ struct StatusFilterButton: View {
     }
 }
 
-// MARK: - Label Filter Button
 
 struct LabelFilterButton: View {
     let label: LabelType
@@ -273,7 +267,6 @@ struct LabelFilterButton: View {
     }
 }
 
-// MARK: - Apply Filter Button
 
 struct ApplyFilterButton: View {
     let isEnabled: Bool

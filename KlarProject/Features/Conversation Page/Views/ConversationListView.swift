@@ -11,6 +11,7 @@ struct ConversationListView: View {
     @ObservedObject var viewModel: ConversationListViewModel
     @StateObject private var filterViewModel = FilterViewModel()
     @State private var showingFilter = false
+    @Environment(\.dismiss) var dismiss
     
     // Computed property untuk apply filter dari FilterViewModel
     var filteredHumanConversations: [Conversation] {
@@ -67,7 +68,6 @@ struct ConversationListView: View {
                             FilterView(
                                 viewModel: filterViewModel,
                                 onApplyFilter: {
-                                    
                                     withAnimation(.easeInOut(duration: 0.2)) {
                                         showingFilter = false
                                     }
@@ -249,6 +249,7 @@ struct ConversationListView: View {
 }
 
 #Preview {
-    ConversationListView(viewModel: ConversationListViewModel())
+        ConversationListView(viewModel: ConversationListViewModel())
+        .frame(width : 335, height : 900)
 }
 

@@ -128,8 +128,8 @@ class FilterViewModel: ObservableObject {
         // Filter by label
         if !selectedLabels.isEmpty {
             filtered = filtered.filter { conversation in
-                guard let label = conversation.label else { return false }
-                return selectedLabels.contains(label)
+                // Check if conversation has any label from selected labels
+                conversation.label.contains { selectedLabels.contains($0) }
             }
         }
         
@@ -149,22 +149,4 @@ extension statusType: Hashable {
     }
 }
 
-extension LabelType: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(text)
-    }
-    
-    static func == (lhs: LabelType, rhs: LabelType) -> Bool {
-        lhs.text == rhs.text
-    }
-}
 
-// MARK: - Extensions for CaseIterable
-
-extension statusType: CaseIterable {
-    static var allCases: [statusType] = [.pending, .open, .resolved]
-}
-
-extension LabelType: CaseIterable {
-    static var allCases: [LabelType] = [.warranty, .service, .payment, .maintenance, .spareparts]
-}

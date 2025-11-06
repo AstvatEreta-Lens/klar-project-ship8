@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum LabelType {
+enum LabelType : String, Codable, CaseIterable,Hashable {
     case warranty
     case service
     case payment

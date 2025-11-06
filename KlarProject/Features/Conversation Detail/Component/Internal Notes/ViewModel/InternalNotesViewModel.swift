@@ -18,14 +18,6 @@ class InternalNotesViewModel: ObservableObject {
     private let currentUser: User
     private let service: InternalNotesServiceProtocol
     
-    // Phase 1: Now (Development)
-//    let service = MockInternalNotesService()
-
-    // Phase 2: When API is ready
-//    let service = APIInternalNotesService()
-
-    // Just swap the service - no other code changes needed!
-    
     init(
         conversationId: UUID,
         currentUser: User,
@@ -60,7 +52,7 @@ class InternalNotesViewModel: ObservableObject {
         Task {
             do {
                 try await service.saveNote(newNote)
-                print("✅ Note sent successfully")
+                print("Note sent successfully")
             } catch {
                 // Rollback on error
                 notes.removeAll { $0.id == newNote.id }
