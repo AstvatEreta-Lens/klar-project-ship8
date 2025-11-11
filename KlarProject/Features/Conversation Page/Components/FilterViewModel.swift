@@ -137,16 +137,3 @@ class FilterViewModel: ObservableObject {
     }
 }
 
-// MARK: - Extensions for Hashable
-
-extension statusType: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(text)
-    }
-    
-    static func == (lhs: statusType, rhs: statusType) -> Bool {
-        lhs.text == rhs.text
-    }
-}
-
-

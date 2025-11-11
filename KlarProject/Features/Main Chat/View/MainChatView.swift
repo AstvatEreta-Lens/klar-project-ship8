@@ -11,18 +11,13 @@ import SwiftUI
 struct MainChatView: View {
     @EnvironmentObject var viewModel: ConversationListViewModel
     
+    
+    
     var body: some View {
         VStack(spacing: 0) {
             // Top Section
             HStack {
-                if let conversation = viewModel.selectedConversation {
-                    if shouldShowMarkResolvedButton(for: conversation) {
-                        ResolveButton(resolveAction: handleResolve)
-                    }
-                    else {
-                        Text("hohoho")
-                    }
-                }
+               Text("")
                 Spacer()
                 SearchBar(text: .constant(""))
                     .frame(width: 206, height: 27)
@@ -31,7 +26,8 @@ struct MainChatView: View {
             .padding(.trailing, 20)
             .padding(.bottom)
             
-            Divider()
+           Divider()
+                .background(Color.borderColor)
             
             // Main Chat Area
             if let conversation = viewModel.selectedConversation {
@@ -72,8 +68,9 @@ struct MainChatView: View {
                         ChatInputView(
                             onSend: handleSendMessage,
                             onAttachment: handleAttachment,
-                            onAI: handleAI
+                            onAI: handleAI,
                         )
+//                        .ignoresSafeArea()
                     }
                 }
             } else {
@@ -96,17 +93,10 @@ struct MainChatView: View {
                (conversation.status == .pending || conversation.status == .open)
     }
     
-    private func shouldShowMarkResolvedButton(for conversation: Conversation) -> Bool {
-        return conversation.handlerType == .human
-    }
-    
     private func handleTakeOver() {
         viewModel.takeOverConversation()
     }
-    
-    private func handleResolve() {
-        viewModel.resolveConversation()
-    }
+
     
     private func handleSendMessage(_ message: String) {
         print("Pesan terkirim: \(message)")

@@ -25,10 +25,10 @@ struct FilterButton: View {
                         .fontWeight(.bold)
                 }
             }
-            .foregroundColor(isSelected ? Color.filterChosen : Color.secondaryTextColor)
+            .foregroundColor(isSelected ? Color.bubbleChat : Color.secondaryTextColor)
             .padding(.horizontal, 16)
             .padding(.vertical, 5)
-            .background(isSelected ? Color.chosenColor : Color.white)
+            .background(isSelected ? Color.icon : Color.white)
             .cornerRadius(36)
             .overlay(
                 RoundedRectangle(cornerRadius: 36)

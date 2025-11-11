@@ -38,7 +38,7 @@ class ConversationListViewModel: ObservableObject {
         return filtered
     }
     
-    /// Filtered AI conversations (by search text and sorted by priority)
+    // Filtered AI conversations (by search text and sorted by priority)
     var filterAiConvo: [Conversation] {
         var filtered = aiConversations
         
@@ -57,18 +57,21 @@ class ConversationListViewModel: ObservableObject {
         return filtered.sorted { $0.sortPriority < $1.sortPriority }
     }
     
-    /// Count of unread conversations
+    // Count of unread conversations
     var unreadCount: Int {
         let humanUnread = humanConversations.filter { $0.unreadCount > 0 }.count
-        let aiUnread = aiConversations.filter { $0.unreadCount > 0 }.count
-        return humanUnread + aiUnread
+//        let aiUnread = aiConversations.filter { $0.unreadCount > 0 }.count
+        return humanUnread
     }
     
     // Count of unresolved conversations
     var unresolvedCount: Int {
         let aiUnresolved = aiConversations.filter { $0.status != .resolved }.count
-        let humanUnresolved = humanConversations.filter { $0.status != .resolved }.count
-        return aiUnresolved + humanUnresolved
+//        let humanUnresolved = humanConversations.filter {
+//            $0.status != .resolved
+//        }.count
+//        let humanUnresolved1 = unreadCount
+        return aiUnresolved + unreadCount
     }
     
     
@@ -267,6 +270,13 @@ class ConversationListViewModel: ObservableObject {
             }
         }
     }
+    
+    // MARK: Evaluate Functionality
+    func evaluateMessage(){
+        // add ke evaluation
+        // evaluate pakai AI (panggil AI SUmmary service lagi)
+    }
+    
     
     // MARK: - Internal Notes
     

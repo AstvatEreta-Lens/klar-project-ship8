@@ -17,8 +17,9 @@ struct TakeOverButton : View{
                     .foregroundColor(Color.white)
                     .font(.body)
                     .fontWeight(.light)
+                    .padding(.top, 8.5)
             }
-            .frame(width: 595, height: 36)
+            .frame(minWidth: 595, maxWidth: .infinity, maxHeight: 36, alignment: .top)
             .background(
                 LinearGradient(
                     gradient: Gradient(stops: [
@@ -32,6 +33,7 @@ struct TakeOverButton : View{
             .cornerRadius(11)
             .shadow(color: .black.opacity(0.5), radius: 1, x: 0, y: 2)
         }
+        .padding(.bottom)
         .buttonStyle(PlainButtonStyle())
     }
 }

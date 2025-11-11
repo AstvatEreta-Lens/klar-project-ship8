@@ -49,7 +49,7 @@ struct AIConversationItemView: View {
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(conversation.time)
                         .font(.caption)
-                        .foregroundColor(Color.primaryUsernameText)
+                        .foregroundColor(Color.avatarCountColor)
 //                        .padding(.trailing, 13)
                     
                     // Pakai komponen Status yang sudah ada

@@ -22,7 +22,7 @@ struct ResolveButton: View {
                     .font(.body)
                     .fontWeight(.medium)
             }
-            .frame(width: 156, height: 36)
+            .frame(minWidth: 307, maxWidth: .infinity,minHeight: 36, maxHeight: .infinity, alignment: .center)
             .background(
                 LinearGradient(
                     gradient: Gradient(colors: [
@@ -44,6 +44,7 @@ struct ResolveButton: View {
     ResolveButton(resolveAction: {
         print("Resolved tapped")
     })
+    .frame(width: 307, height: 36)
     .padding()
     .background(Color.white)
 }

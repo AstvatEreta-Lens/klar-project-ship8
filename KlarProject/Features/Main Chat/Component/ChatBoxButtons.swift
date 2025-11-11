@@ -16,7 +16,7 @@ struct ChatBoxButton: View {
     
     init(
         icon: String,
-        backgroundColor: Color = Color.chatTextboxButton,
+        backgroundColor: Color = Color.sectionHeader,
         iconColor: Color = Color.borderColor,
         rotation: Double = 0,
         action: @escaping () -> Void
@@ -32,16 +32,16 @@ struct ChatBoxButton: View {
         Button(action: action) {
             ZStack {
                 RoundedRectangle(cornerRadius: 11)
-                    .fill(backgroundColor)
+                    .fill(Color.backgroundPrimary)
                     .frame(width: 36, height: 36)
                     .overlay(
                         RoundedRectangle(cornerRadius: 11)
-                            .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                            .stroke(Color.sectionHeader, lineWidth: 1)
                     )
                 
                 Image(systemName: icon)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundColor(iconColor)
+                    .font(.body)
+                    .foregroundColor(Color.sectionHeader)
                     .rotationEffect(.degrees(rotation))
             }
         }
@@ -50,6 +50,9 @@ struct ChatBoxButton: View {
 }
 
 struct PaperclipButton: View {
+    @StateObject private var vm = ChatViewModel()
+    @State private var showFilePicker = false
+    
     let action: () -> Void
     
     var body: some View {
@@ -93,12 +96,19 @@ struct SendMessageButton: View {
     }
     
     var body: some View {
-        ChatBoxButton(
-            icon: "paperplane.fill",
-            backgroundColor : Color.secondaryTextColor,
-            iconColor : Color.tertiaryTextColor,
-            action: action
-        )
+        Button(action: action) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 11)
+                    .fill(isEnabled ? Color.sectionHeader : Color.sectionHeader.opacity(0.5))
+                    .frame(width: 36, height: 36)
+                
+                Image(systemName: "paperplane.fill")
+                    .font(.body)
+                    .foregroundColor(.white)
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!isEnabled)
     }
 }
 

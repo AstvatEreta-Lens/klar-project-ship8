@@ -80,7 +80,9 @@ extension Color {
     // Bubble Chat Color
     static let bubbleChatColor = Color("BubbleChatColor")
     
+    static let textRegularColor = Color("TextRegular")
     
+    static let chatInputBackgroundColor = Color("ChatInputBackground")
     
     
     

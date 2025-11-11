@@ -12,37 +12,39 @@ struct InternalNoteChatBubble: View {
     let isCurrentUser: Bool
     
     var body: some View {
-            ZStack{
+        HStack(spacing: 0) {
+            ZStack {
                 UnevenRoundedRectangle(
-                    topLeadingRadius: 0,
-                    bottomLeadingRadius: 11,
-                    bottomTrailingRadius: 11,
+                    topLeadingRadius: 11,
+                    bottomLeadingRadius: isCurrentUser ? 11 : 0,
+                    bottomTrailingRadius: isCurrentUser ? 0 : 11,
                     topTrailingRadius: 11
                 )
-                .fill(Color.bubbleChatColor)
+                .fill(isCurrentUser ? Color.icon : Color.borderColor)
                 
                 VStack(alignment: .leading, spacing: 3) {
                     // Author name
                     Text(note.author.name)
                         .font(.caption)
+                        .fontWeight(.bold)
                         .padding(.horizontal, 7)
                         .padding(.top, 8)
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.textRegular)
                     
                     // Message bubble
                     Text(note.message)
                         .font(.caption)
-                        .foregroundColor(.primary)
+                        .foregroundColor(Color.textRegular)
                         .padding(.horizontal, 7)
                         .padding(.bottom, 8)
-                        .frame(maxWidth: 280, alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+            .frame(maxWidth: .infinity) // Membuat bubble memenuhi lebar container
             .padding(.top, 1)
             .padding(.trailing, 21)
-            Spacer()  // Push everything to left
-        
-        .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(maxWidth: .infinity)
         .padding(.top, 8)
     }
 }
@@ -84,7 +86,7 @@ struct InternalNoteChatBubble: View {
         note: InternalNote(
             conversationId: UUID(),
             author: User(name: "Indri", profileImage: ""),
-            message: "Ini adalah contoh pesan yang sangat panjang untuk menguji bagaimana tampilan chat bubble ketika ada banyak teks. Semoga bisa wrap dengan baik dan tidak overflow.人们你好， 现在我又冰淇淋， 和有速度与一级九，但是我更喜欢冰淇淋，所以如果你们不喜欢冰淇淋， 你们不是我的朋友。如果你们可以写这个故事，拜拜 你妈妈很美",
+            message: "Ini adalah contoh pesan yang sangat panjang untuk menguji bagaimana tampilan chat bubble ketika ada banyak teks. Semoga bisa wrap dengan baik dan tidak overflow.",
             timestamp: Date()
         ),
         isCurrentUser: false
@@ -95,7 +97,7 @@ struct InternalNoteChatBubble: View {
 }
 
 #Preview("Multiple Messages") {
-    VStack{
+    VStack {
         InternalNoteChatBubble(
             note: InternalNote(
                 conversationId: UUID(),
@@ -120,7 +122,7 @@ struct InternalNoteChatBubble: View {
             note: InternalNote(
                 conversationId: UUID(),
                 author: User(name: "Indri", profileImage: ""),
-                message: "Kasih diskon 30% ya karena temen deket",
+                message: "Kasih diskon 30% ya karena teman dekat",
                 timestamp: Date().addingTimeInterval(-3400)
             ),
             isCurrentUser: false
@@ -178,7 +180,7 @@ struct InternalNoteChatBubble: View {
                 note: InternalNote(
                     conversationId: UUID(),
                     author: User(name: "Current Admin", profileImage: ""),
-                    message: "Done! ✅",
+                    message: "Done! ",
                     timestamp: Date()
                 ),
                 isCurrentUser: true

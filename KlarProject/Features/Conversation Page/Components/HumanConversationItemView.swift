@@ -50,12 +50,12 @@ struct HumanConversationItemView: View {
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(conversation.time)
                         .font(.caption)
-                        .foregroundColor(Color.primaryUsernameText)
+                        .foregroundColor(Color.avatarCountColor)
                     
                     if conversation.unreadCount > 0 {
                         ZStack {
                             Circle()
-                                .fill(Color.blue)
+                                .fill(Color.sectionHeader)
                                 .frame(width: 16, height: 16)
                             
                             Text("\(conversation.unreadCount)")

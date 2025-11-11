@@ -19,6 +19,7 @@ struct FilterView: View {
             HStack {
                 Text("Filter Applied")
                     .font(.caption)
+                    .foregroundColor(Color.primaryTextColor)
             }
             .padding(.top, 26)
             
@@ -55,7 +56,7 @@ struct FilterView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Status")
                     .font(.caption)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.primaryTextColor)
                 
                 HStack(spacing: 12) {
                     ForEach(statusType.allCases, id: \.text) { status in
@@ -74,7 +75,7 @@ struct FilterView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Label")
                     .font(.caption)
-                    .foregroundColor(.primary)
+                    .foregroundColor(Color.primaryTextColor)
                 
                 VStack(spacing: 11) {
                     // Row 1: Service, Warranty, Payment

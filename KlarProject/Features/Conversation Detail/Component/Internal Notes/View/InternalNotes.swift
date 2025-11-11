@@ -31,7 +31,9 @@ struct InternalNotesView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.isLoading {
+            if viewModel.notes.isEmpty{
+                noInternalNotesView()
+            } else if viewModel.isLoading {
                 ProgressView()
                     .frame(maxHeight: .infinity)
             } else {
@@ -43,12 +45,14 @@ struct InternalNotesView: View {
                                     note: note,
                                     isCurrentUser: note.author.id == currentUser.id
                                 )
-                                .padding(.horizontal, 5)
+                                .padding(.horizontal, 15)
                                 .id(note.id)
                             }
                         }
                         .padding(.top, 8)
                     }
+                    .cornerRadius(11)
+                    .background(Color.labelTextColor)
                     .onAppear {
                         scrollProxy = proxy
                         scrollToBottom()
@@ -79,17 +83,21 @@ struct InternalNotesView: View {
                         minHeight: minHeight,
                         maxHeight: maxHeight
                     )
+                    .foregroundColor(Color.black)
                     .frame(height: textHeight)
                     .background(Color.white)
                     .cornerRadius(11)
                     .overlay(
                         ZStack(alignment: .leading){
                             RoundedRectangle(cornerRadius: 11)
-                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                                .stroke(Color.sectionHeader, lineWidth: 1)
                             
-                            Text(!messageText.isEmpty ? "" : "Type your text...")
-                                .foregroundStyle(Color.black.opacity(0.3))
-                                .padding(.leading, 9)
+                            if messageText.isEmpty {
+                               Text("Type your text")
+                                   .foregroundColor(Color.secondaryUsernameText)
+                                   .font(.body)
+                                   .padding(.leading, 12)
+                           }
                         }
                     )
                 }
@@ -105,18 +113,18 @@ struct InternalNotesView: View {
                     .transition(.scale.combined(with: .opacity))
                 }
             }
+//            .background(Color.labelTextColor)
             .padding(.horizontal, 10)
             .padding(.bottom, 7)
             .animation(.spring(response: 0.3, dampingFraction: 0.7), value: messageText.isEmpty)
         }
-        .frame(
-            width: 307,
-            height: 252)
-        .cornerRadius(11)
+        .frame(minWidth: 307, maxWidth: .infinity,minHeight: 252, maxHeight: .infinity, alignment: .top)
+        .background(Color.labelTextColor)
         .overlay(
             RoundedRectangle(cornerRadius: 11)
                 .stroke(Color.avatarCount, lineWidth: 1)
         )
+        .cornerRadius(11)
     }
 
     private func sendMessage() {
@@ -138,6 +146,22 @@ struct InternalNotesView: View {
     
 }
 
+struct noInternalNotesView : View {
+    var body: some View {
+        VStack{
+            Spacer()
+            Image(systemName: "checkmark.circle")
+                .font(.system(size: 64))
+                .foregroundColor(Color.border)
+            Text("There are no internal notes yet")
+                .foregroundColor(Color.border)
+            Spacer()
+        }
+        .padding(.vertical, 25)
+        .padding(.horizontal)
+    }
+}
+
 // MARK: - Previews
 
 #Preview("Empty State") {
@@ -147,4 +171,9 @@ struct InternalNotesView: View {
     )
     .frame(width: 334)
     .padding()
+}
+
+
+#Preview("No Notes View"){
+    noInternalNotesView()
 }

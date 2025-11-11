@@ -12,7 +12,7 @@ protocol InternalNotesServiceProtocol {
     func deleteNote(id: UUID) async throws
 }
 
-//// MARK: - Mock Service (for development without API)
+// MARK: - Mock Service (for development without API)
 //class MockInternalNotesService: InternalNotesServiceProtocol {
 //    // In-memory storage (simulates backend)
 //    private var storage: [UUID: [InternalNote]] = [:]

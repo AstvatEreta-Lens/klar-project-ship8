@@ -56,6 +56,7 @@ struct Conversation: Identifiable {
     // Handler Info
     let handledBy: User
     let handledAt: String
+    let handledDate: Date
     
     // Collaboration Info
     var seenBy: [SeenByRecord]
@@ -104,6 +105,7 @@ struct Conversation: Identifiable {
         label: [LabelType] = [],
         handledBy: User,
         handledAt: String,
+        handledDate : Date = Date(),
         seenBy: [SeenByRecord] = [],
 //        collaborators: [User] = [],
         internalNotes: [InternalNote] = []
@@ -121,6 +123,7 @@ struct Conversation: Identifiable {
         self.label = label
         self.handledBy = handledBy
         self.handledAt = handledAt
+        self.handledDate = handledDate
         self.seenBy = seenBy
 //        self.collaborators = collaborators
         self.internalNotes = internalNotes
@@ -139,7 +142,7 @@ enum HandlerType: String, Codable {
 extension Conversation {
     static let humanDummyData: [Conversation] = [
         Conversation(
-            name: "Lil Bahlil",
+            name: "Imron Mariadi",
             message: "Woy min, alat gw rusak nih!",
             time: "14.29",
             profileImage: "Photo Profile",
@@ -151,6 +154,7 @@ extension Conversation {
             label: [.service, .warranty],
             handledBy: User(name: "Ninda", profileImage: "Photo Profile", email: "ninda@example.com"),
             handledAt: "14.29",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [
                 SeenByRecord(
                     user: User(name: "Ninda", profileImage: "Photo Profile", email: "ninda@example.com"),
@@ -179,7 +183,7 @@ extension Conversation {
         ),
         
         Conversation(
-            name: "Roro Prabroro",
+            name: "Heru",
             message: "Tolong MBG di tangsel ditambah itu...",
             time: "01.50",
             profileImage: "Photo Profile",
@@ -191,6 +195,7 @@ extension Conversation {
             label: [],
             handledBy: User(name: "Photo Profile", profileImage: "Photo Profile", email: "admin@example.com"),
             handledAt: "01.50",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [
                 SeenByRecord(
                     user: User(name: "Photo Profile", profileImage: "Photo Profile", email: "admin@example.com"),
@@ -223,7 +228,7 @@ extension Conversation {
         ),
         
         Conversation(
-            name: "Roro Prabroro",
+            name: "Yohanes",
             message: "Tolong MBG di tangsel ditambah itu...",
             time: "01.50",
             profileImage: "Photo Profile",
@@ -235,12 +240,13 @@ extension Conversation {
             label: [.spareparts, .service],
             handledBy: User(name: "Admin", profileImage: "Photo Profile", email: "admin@example.com"),
             handledAt: "01.50",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
         
         Conversation(
-            name: "Roro Prabroro",
+            name: "Bambang Sudirman",
             message: "Tolong MBG di tangsel ditambah itu...",
             time: "21.50",
             profileImage: "Photo Profile",
@@ -252,12 +258,13 @@ extension Conversation {
             label: [.payment],
             handledBy: User(name: "Finance Team", profileImage: "Photo Profile", email: "finance@example.com"),
             handledAt: "21.50",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
         
         Conversation(
-            name: "Roro Prabroro",
+            name: "Joko Sutanto",
             message: "Tolong MBG di tangsel ditambah itu...",
             time: "11.50",
             profileImage: "Photo Profile",
@@ -269,12 +276,13 @@ extension Conversation {
             label: [.maintenance],
             handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
         
         Conversation(
-            name: "Roro Prabroro",
+            name: "Bambang Junaedi",
             message: "Tolong MBG di tangsel ditambah itu...",
             time: "11.50",
             profileImage: "Photo Profile",
@@ -286,12 +294,13 @@ extension Conversation {
             label: [],
             handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
         
         Conversation(
-            name: "Roro Prabroro",
+            name: "Abdul Subroto",
             message: "Tolong MBG di tangsel ditambah itu...",
             time: "11.50",
             profileImage: "Photo Profile",
@@ -303,12 +312,13 @@ extension Conversation {
             label: [],
             handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
         
         Conversation(
-            name: "Roro Prabroro",
+            name: "Slamet Supriyadi",
             message: "Tolong MBG di tangsel ditambah itu...",
             time: "11.50",
             profileImage: "Photo Profile",
@@ -320,6 +330,7 @@ extension Conversation {
             label: [.maintenance],
             handledBy: User(name: "Tech Support", profileImage: "Photo Profile", email: "tech@example.com"),
             handledAt: "11.50",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         )
@@ -339,6 +350,7 @@ extension Conversation {
             label: [],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "15.30",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [
                 SeenByRecord(
                     user: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
@@ -361,6 +373,7 @@ extension Conversation {
             label: [],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
@@ -378,6 +391,7 @@ extension Conversation {
             label: [],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "12.00",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
@@ -395,6 +409,7 @@ extension Conversation {
             label: [.spareparts],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "06.15",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
@@ -412,6 +427,7 @@ extension Conversation {
             label: [.maintenance],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "16.45",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
@@ -429,6 +445,7 @@ extension Conversation {
             label: [],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "02.30",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
 //            collaborators: []
         ),
@@ -446,8 +463,8 @@ extension Conversation {
             label: [.warranty],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -463,8 +480,8 @@ extension Conversation {
             label: [.warranty],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -480,8 +497,8 @@ extension Conversation {
             label: [.warranty],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
+            handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         )
     ]
 }

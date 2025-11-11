@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-enum statusType{
+enum statusType : Hashable{
     case pending
     case open
     case resolved
@@ -55,7 +55,7 @@ struct Status: View {
         ZStack {
             Rectangle()
                 .fill(type.color)
-                .frame(width: 53, height: 17)
+                .frame(width: 62, height: 24)
                 .cornerRadius(11)
             
             Text(type.text)

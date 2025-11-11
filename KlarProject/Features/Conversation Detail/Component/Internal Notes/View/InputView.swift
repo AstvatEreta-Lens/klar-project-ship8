@@ -29,6 +29,7 @@ struct InternalNoteInputView: View {
                 }
                 
                 TextEditor(text: $text)
+                    .foregroundColor(Color.primaryTextColor)
                     .font(.caption)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 11)
@@ -40,7 +41,7 @@ struct InternalNoteInputView: View {
             .cornerRadius(11)
             .overlay(
                 RoundedRectangle(cornerRadius: 11)
-                    .stroke(Color.avatarCount, lineWidth: 1)
+                    .stroke(Color.sectionHeader, lineWidth: 1)
             )
             
             // Send button

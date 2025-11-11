@@ -13,6 +13,7 @@ struct ConversationListView: View {
     @State private var showingFilter = false
     @Environment(\.dismiss) var dismiss
     
+    
     // Computed property untuk apply filter dari FilterViewModel
     var filteredHumanConversations: [Conversation] {
         filterViewModel.applyFilters(to: viewModel.filterHumanConvo)
@@ -71,14 +72,6 @@ struct ConversationListView: View {
                                     withAnimation(.easeInOut(duration: 0.2)) {
                                         showingFilter = false
                                     }
-                                    
-                                    #if DEBUG
-                                    print("Filter applied!")
-                                    print("Selected statuses: \(filterViewModel.selectedStatuses.map { $0.text })")
-                                    print("Selected labels: \(filterViewModel.selectedLabels.map { $0.text })")
-                                    print("Filtered human conversations: \(filteredHumanConversations.count)")
-                                    print("Filtered AI conversations: \(filteredAiConversations.count)")
-                                    #endif
                                 }
                             )
                             .frame(width: 307)
@@ -86,7 +79,6 @@ struct ConversationListView: View {
                             .shadow(color: Color.black.opacity(0.2), radius: 10, x: -5, y: 0)
                             .transition(.move(edge: .trailing))
                         }
-                        
                         Spacer()
                     }
                     .padding(.top, 150) // Adjust sesuai posisi button filter
@@ -104,9 +96,13 @@ struct ConversationListView: View {
                 .foregroundColor(Color.primaryText)
             
             HStack {
-                SearchBar(text: $viewModel.searchText) {
-                    viewModel.searchConversations()
-                }
+                SearchBar(
+                    text: $viewModel.searchText,
+                    
+                    onSearch: {
+                        viewModel.searchConversations()
+                    }
+                )
                 
                 // Filter Button - Updated with toggle action
                 Button(action: {
@@ -239,8 +235,17 @@ struct ConversationListView: View {
                 }) {
                     Text("Clear Filters")
                         .font(.subheadline)
-                        .foregroundColor(.blue)
+                        .foregroundColor(.white)
+                        .padding(.vertical, 2)
+                        .padding(.horizontal, 2)
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: 11)
+//                                .stroke(style: StrokeStyle(lineWidth: 1))
+//                        )
+                        .background(Color.sectionHeader)
                 }
+                .cornerRadius(5)
+                .buttonStyle(PlainButtonStyle())
             }
         }
         .frame(maxWidth: .infinity)

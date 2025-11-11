@@ -21,13 +21,14 @@ struct ChatKlarView: View {
                 
                 Divider()
                     .frame(height: geometry.size.height)
+                    .background(Color.borderColor)
                 
                 // MARK: -Main Chat
                 if viewModel.selectedConversation != nil {
                     MainChatView()
                         .environmentObject(viewModel)
                         .padding(.top, 12)
-                        .padding(.bottom, 12)
+//                        .padding(.bottom, 12)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     // Empty state
@@ -46,6 +47,7 @@ struct ChatKlarView: View {
                 
                 Divider()
                     .frame(height: geometry.size.height)
+                    .background(Color.borderColor)
                 
                 // MARK: -Chat Detail
                 if let conversation = viewModel.selectedConversation {
@@ -58,6 +60,7 @@ struct ChatKlarView: View {
             .frame(width: geometry.size.width, height: geometry.size.height)
             .background(Color.backgroundPrimary)
         }
+        .environmentObject(viewModel)
     }
 }
 
