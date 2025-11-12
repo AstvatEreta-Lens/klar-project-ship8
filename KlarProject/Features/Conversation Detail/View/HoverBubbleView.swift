@@ -46,12 +46,12 @@ struct BubbleTooltip: View {
                 .padding(.horizontal, 10)
                 .background(
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Color.black.opacity(0.85))
+                        .fill(Color.gray.opacity(0.5))
                         .shadow(radius: 4)
                 )
 
             TrianglePointer()
-                .fill(Color.black.opacity(0.85))
+                .fill(Color.gray.opacity(0.5))
                 .frame(width: 12, height: 7)
                 .offset(y: -1)
         }

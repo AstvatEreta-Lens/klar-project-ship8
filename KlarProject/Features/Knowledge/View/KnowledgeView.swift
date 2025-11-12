@@ -8,98 +8,77 @@
 import SwiftUI
 
 struct KnowledgeView: View {
-    @State private var title: String = "Knowledge"
-    @State private var selectedTab: Int = 0
     @ObservedObject var viewModel : KnowledgeViewModel
     let action: () -> Void
     
     var body: some View {
         GeometryReader { geometry in
-            VStack(alignment: .leading){
-                HStack{
-                    // Title
-                    Text(title)
+            HStack{
+                VStack(alignment: .leading){
+                    // Divider
+                    Divider()
                         .foregroundColor(Color.primaryText)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.leading, 14)
-                        .padding(.top)
-                    Spacer()
                     
-                    // Picker
-                    Picker("", selection: $selectedTab) {
-                        Label("Files", systemImage: "doc")
-                            .tag(0)
-                        Label("Evaluation", systemImage: "doc.text.magnifyingglass")
-                            .tag(1)
-                    }
-                    .pickerStyle(.segmented)
-                    .padding(.top)
-                    .padding(.trailing)
-                }
-                
-                // Divider
-                Divider()
-                    .foregroundColor(Color.primaryText)
-                
-                // Add Files Button
-                HStack{
-                    Button(action : action){
-                        ZStack{
-                            HStack{
-                                Image(systemName: "plus")
-                                    .foregroundColor(Color.border)
-                                    .font(.body)
-                                Text("Add Files")
-                                    .foregroundColor(Color.border)
-                                    .font(.body)
+                    // Add Files Button
+                    HStack{
+                        Button(action : viewModel.uploadPDF){
+                            ZStack{
+                                HStack{
+                                    Image(systemName: "plus")
+                                        .foregroundColor(Color.border)
+                                        .font(.body)
+                                    Text("Add Files")
+                                        .foregroundColor(Color.border)
+                                        .font(.body)
+                                }
                             }
+                            .frame(width: 106, height: 36)
                         }
-                        .frame(width: 106, height: 36)
-                    }
-                    .background(LinearGradient(
-                        gradient: Gradient(colors: [
-                            Color(red: 0.42, green: 0.68, blue: 0.74),
-                            Color(red: 0.25, green: 0.48, blue: 0.55)
-                        ]),
-                        startPoint: .leading,
-                        endPoint: .trailing
-                    ))
-                    .cornerRadius(11)
-                    .padding(.leading, 14)
-                    
-                    // Search Bar
-                    SearchBar(
-                        text: $viewModel.searchText,
-                        onSearch: {
-                            viewModel.searchFile()
-                        }
-                    )
-                    .padding(.trailing)
-                }
-                
-                HStack{
-                    Text("Uploaded Files")
+                        .background(LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color(red: 0.42, green: 0.68, blue: 0.74),
+                                Color(red: 0.25, green: 0.48, blue: 0.55)
+                            ]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        ))
+                        .cornerRadius(11)
                         .padding(.leading, 14)
-                        .foregroundColor(Color.textRegular)
-                    
-                    ZStack {
-                        Circle()
-                            .fill(Color.sectionHeader)
-                            .frame(width: 16, height: 16)
                         
-                        Text("\(viewModel.uploadedFiles)")
-                            .font(.caption)
-                            .foregroundColor(.white)
+                        // Search Bar
+                        SearchBar(
+                            text: $viewModel.searchText,
+                            onSearch: {
+                                viewModel.searchFile()
+                            }
+                        )
+                        .padding(.trailing)
                     }
+                    
+                    HStack{
+                        Text("Uploaded Files")
+                            .padding(.leading, 14)
+                            .foregroundColor(Color.textRegular)
+                        
+                        ZStack {
+                            Circle()
+                                .fill(Color.sectionHeader)
+                                .frame(width: 16, height: 16)
+                            
+                            Text("\(viewModel.uploadedFiles)")
+                                .font(.caption)
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.top)
+                    
+                    // PDF ScrollView dengan adaptive height
+                    pdfScrollView(height: geometry.size.height)
                 }
-                .padding(.top)
+                .background(Color.backgroundPrimary)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 
-                // PDF ScrollView dengan adaptive height
-                pdfScrollView(height: geometry.size.height)
             }
-            .background(Color.backgroundPrimary)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
     }
     
@@ -108,7 +87,7 @@ struct KnowledgeView: View {
         
         return ScrollView {
             LazyVStack(spacing: 6) {
-                ForEach(PDFDocument.dummyPDFs) { pdf in
+                ForEach(viewModel.files) { pdf in
                     PDFCardView(
                         pdfDocument: pdf,
                         action: {
@@ -125,7 +104,7 @@ struct KnowledgeView: View {
                 }
                 
                 // Empty state jika tidak ada hasil
-                if PDFDocument.dummyPDFs.isEmpty {
+                if viewModel.files.isEmpty {
                     emptyPDFState
                 }
             }
@@ -156,8 +135,10 @@ struct KnowledgeView: View {
     }
 }
 
+
+
 #Preview {
     KnowledgeView(viewModel: KnowledgeViewModel(), action: {})
-        .frame(width: 399, height: 982)
+//        .frame(width: 1908, height: 982)
         .padding()
 }
