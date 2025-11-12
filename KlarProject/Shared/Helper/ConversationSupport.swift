@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - User Extension for Codable
-//
+
 //extension User: Codable {
 //    enum CodingKeys: String, CodingKey {
 //        case id, name, profileImage, email

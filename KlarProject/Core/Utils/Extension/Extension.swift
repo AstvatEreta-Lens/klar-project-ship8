@@ -12,7 +12,7 @@ import Combine
 // MARK: - Dummy Data
 extension Conversation {
     static var humanDummyData: [Conversation] {
-        let user1 = User(name: "Admin 1", profileImage: "person.circle", email: "admin1@example.com")
+        let user1 = User(name: "Admin 1", profileImage: "Photo Profile", email: "admin1@example.com")
         
         return [
             Conversation(

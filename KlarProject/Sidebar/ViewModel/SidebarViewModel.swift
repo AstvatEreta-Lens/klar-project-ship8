@@ -11,10 +11,21 @@ import SwiftUI
 
 final class SidebarViewModel: ObservableObject {
     @Published var selectedItem: SidebarItem?
-    let items: [SidebarItem] = [
-        SidebarItem(title: "Dashboard", icon: "rectangle.grid.2x2", destination: .dashboard),
-        SidebarItem(title: "Chat", icon: "bubble", destination: .chat),
-        SidebarItem(title: "Contact", icon: "ticket", destination: .ticketing),
-        SidebarItem(title: "Settings", icon: "gearshape", destination: .settings)
+    
+    // Top three items
+    let mainItems: [SidebarItem] = [
+        SidebarItem(title: "Dashboard", icon: "house.fill", destination: .dashboard),
+        SidebarItem(title: "Conversation", icon: "bubble.fill", destination: .conversation),
+        SidebarItem(title: "Knowledge", icon: "book.closed", destination: .knowledge)
     ]
+    
+    // Settings
+    let bottomItems: [SidebarItem] = [
+        SidebarItem(title: "Settings", icon: "gear", destination: .settings)
+    ]
+    
+    // helper
+    var items: [SidebarItem] {
+        mainItems + bottomItems
+    }
 }
