@@ -5,11 +5,14 @@
 //  Created by Nicholas Tristandi on 02/11/25.
 //
 //
-
+// MainChatView.swift
+// MainChatView.swift
+// MainChatView.swift
 import SwiftUI
 
 struct MainChatView: View {
     @EnvironmentObject var viewModel: ConversationListViewModel
+    @State private var messageText: String = ""
     
     var body: some View {
         VStack(spacing: 0) {
@@ -19,13 +22,23 @@ struct MainChatView: View {
                     if shouldShowMarkResolvedButton(for: conversation) {
                         ResolveButton(resolveAction: handleResolve)
                     }
-                    else {
-                        Text("hohoho")
+                    
+                    Spacer()
+                    
+                    HStack(spacing: 4) {
+                        Circle()
+                            .fill(viewModel.isConnected ? Color.green : Color.red)
+                            .frame(width: 8, height: 8)
+                        
+                        Text(viewModel.isConnected ? "Connected" : "Disconnected")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
+                    .padding(.trailing, 8)
+                    
+                    SearchBar(text: .constant(""))
+                        .frame(width: 206, height: 27)
                 }
-                Spacer()
-                SearchBar(text: .constant(""))
-                    .frame(width: 206, height: 27)
             }
             .padding(.leading, 22)
             .padding(.trailing, 20)
@@ -36,11 +49,23 @@ struct MainChatView: View {
             // Main Chat Area
             if let conversation = viewModel.selectedConversation {
                 if shouldShowTakeOverButton(for: conversation) {
-                    // Show TakeOver Button for AI conversations
                     VStack {
                         Spacer()
+                        
+                        if !conversation.messages.isEmpty {
+                            ScrollView {
+                                VStack(spacing: 16) {
+                                    ForEach(conversation.messages) { message in
+                                        MessageBubbleView(message: message)
+                                    }
+                                }
+                                .padding()
+                            }
+                            .opacity(0.6)
+                        }
+                        
                         Divider()
-                        // AI Chat message history
+                        
                         Text("Currently handled by AI")
                             .font(.caption)
                             .foregroundColor(.secondary)
@@ -48,28 +73,44 @@ struct MainChatView: View {
                         
                         TakeOverButton(takeoverAction: handleTakeOver)
                             .padding(.horizontal, 22)
-                        
-//                        Spacer()
                     }
                 } else {
                     VStack(spacing: 0) {
-                        ScrollView {
-                            VStack(spacing: 16) {
-                                // Sample message
-                                ForEach(0..<5, id: \.self) { index in
-                                    MessageBubble(
-                                        message: "Sample message \(index)",
-                                        isFromUser: index % 2 == 0
-                                    )
+                        ScrollViewReader { proxy in
+                            ScrollView {
+                                VStack(spacing: 16) {
+                                    if conversation.messages.isEmpty {
+                                        Text("No messages yet")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                            .padding(.top, 40)
+                                    } else {
+                                        ForEach(conversation.messages) { message in
+                                            MessageBubbleView(message: message)
+                                                .id(message.id)
+                                        }
+                                    }
+                                }
+                                .padding()
+                            }
+                            .onChange(of: conversation.messages.count) {oldVal ,_ in
+                                if let lastMessage = conversation.messages.last {
+                                    withAnimation {
+                                        proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                                    }
                                 }
                             }
-                            .padding()
+                            .onAppear {
+                                if let lastMessage = conversation.messages.last {
+                                    proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                                }
+                            }
                         }
                         
                         Divider()
                         
-                        // Chat Input
                         ChatInputView(
+                            messageText: $messageText,
                             onSend: handleSendMessage,
                             onAttachment: handleAttachment,
                             onAI: handleAI
@@ -77,18 +118,40 @@ struct MainChatView: View {
                     }
                 }
             } else {
-                // No conversation selected
                 VStack {
                     Spacer()
+                    Image(systemName: "message")
+                        .font(.system(size: 64))
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, 8)
+                    
                     Text("Select a conversation to start")
                         .font(.system(size: 16))
                         .foregroundColor(.secondary)
                     Spacer()
                 }
             }
+            
+            if let error = viewModel.errorMessage {
+                HStack {
+                    Image(systemName: "exclamationmark.triangle")
+                        .foregroundColor(.red)
+                    Text(error)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                    Spacer()
+                    Button("Dismiss") {
+                        viewModel.errorMessage = nil
+                    }
+                    .font(.caption)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(Color.red.opacity(0.1))
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.backgroundPrimary)
+        .background(Color(NSColor.controlBackgroundColor))
     }
     
     private func shouldShowTakeOverButton(for conversation: Conversation) -> Bool {
@@ -108,44 +171,151 @@ struct MainChatView: View {
         viewModel.resolveConversation()
     }
     
-    private func handleSendMessage(_ message: String) {
-        print("Pesan terkirim: \(message)")
+    private func handleSendMessage() {
+        guard !messageText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+              let conversation = viewModel.selectedConversation else {
+            return
+        }
+        
+        let text = messageText
+        messageText = ""
+        
+        Task {
+            await viewModel.sendMessage(text, to: conversation)
+        }
     }
     
     private func handleAttachment() {
-        // Attachment logic
         print("Attachment tapped")
     }
     
     private func handleAI() {
-        // AI suggesiton logic
         print("AI assistant tapped")
     }
 }
 
-
-struct MessageBubble: View {
-    let message: String
-    let isFromUser: Bool
+struct MessageBubbleView: View {
+    let message: Message
     
     var body: some View {
-        HStack {
-            if isFromUser { Spacer() }
+        HStack(alignment: .bottom, spacing: 8) {
+            // Customer messages (isFromUser: true) → Right side
+            // Our messages (isFromUser: false) → Left side
+            if !message.isFromUser {
+                Spacer()
+            }
             
-            Text(message)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(isFromUser ? Color.blue.opacity(0.2) : Color.gray.opacity(0.1))
-                .cornerRadius(5)
-                .frame(maxWidth: 300, alignment: isFromUser ? .trailing : .leading)
+            VStack(alignment: message.isFromUser ? .leading : .trailing, spacing: 4) {
+                Text(message.content)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(bubbleBackground)
+                    .foregroundColor(.primary)
+                    .cornerRadius(16)
+                    .frame(maxWidth: 300, alignment: message.isFromUser ? .leading : .trailing)
+                
+                HStack(spacing: 4) {
+                    Text(message.timeString)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    
+                    // Show status only for our messages (outgoing)
+                    if !message.isFromUser {
+                        statusIcon
+                    }
+                }
+            }
             
-            if !isFromUser { Spacer() }
+            if message.isFromUser {
+                Spacer()
+            }
         }
+    }
+    
+    // WhatsApp-like colors
+    private var bubbleBackground: Color {
+        if message.isFromUser {
+            // Customer message - light green/blue (WhatsApp style)
+            return Color(red: 0.85, green: 0.93, blue: 0.82)
+        } else {
+            // Our message - gray
+            return Color.gray.opacity(0.1)
+        }
+    }
+    
+    @ViewBuilder
+    private var statusIcon: some View {
+        switch message.status {
+        case .sending:
+            Image(systemName: "clock")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        case .sent:
+            Image(systemName: "checkmark")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        case .delivered:
+            Image(systemName: "checkmark.circle")
+                .font(.caption2)
+                .foregroundColor(.blue)
+        case .read:
+            Image(systemName: "checkmark.circle.fill")
+                .font(.caption2)
+                .foregroundColor(.blue)
+        case .failed:
+            Image(systemName: "exclamationmark.circle")
+                .font(.caption2)
+                .foregroundColor(.red)
+        }
+    }
+}
+
+struct ChatInputView: View {
+    @Binding var messageText: String
+    let onSend: () -> Void
+    let onAttachment: () -> Void
+    let onAI: () -> Void
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Button(action: onAttachment) {
+                Image(systemName: "paperclip")
+                    .foregroundColor(.secondary)
+                    .frame(width: 24, height: 24)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            TextField("Type a message...", text: $messageText)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .onSubmit {
+                    onSend()
+                }
+            
+            Button(action: onAI) {
+                Image(systemName: "sparkles")
+                    .foregroundColor(.secondary)
+                    .frame(width: 24, height: 24)
+            }
+            .buttonStyle(PlainButtonStyle())
+            
+            Button(action: onSend) {
+                Image(systemName: "paperplane.fill")
+                    .foregroundColor(.white)
+                    .frame(width: 32, height: 32)
+                    .background(messageText.isEmpty ? Color.gray : Color.blue)
+                    .cornerRadius(16)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .disabled(messageText.isEmpty)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color(NSColor.controlBackgroundColor))
     }
 }
 
 #Preview {
     MainChatView()
         .environmentObject(ConversationListViewModel())
-        .padding()
+        .frame(width: 800, height: 600)
 }

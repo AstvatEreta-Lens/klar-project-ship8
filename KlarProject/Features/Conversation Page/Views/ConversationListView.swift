@@ -34,7 +34,6 @@ struct ConversationListView: View {
                         ConversationSection(title: "HANDLED BY HUMAN AGENTS") {
                             humanConversationsScrollView(height: geometry.size.height)
                         }
-                        
                         // AI Section
                         ConversationSection(title: "HANDLED BY AI") {
                             aiConversationsScrollView(height: geometry.size.height)

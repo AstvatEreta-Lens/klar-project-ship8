@@ -14,6 +14,7 @@ enum LabelType : String, Codable, CaseIterable,Hashable {
     case maintenance
     case spareparts
     
+
     var text: String {
         switch self {
         case .warranty: return "Warranty"

@@ -66,12 +66,15 @@ struct ChatDetailView: View {
                             .font(.caption)
                             .foregroundColor(Color.primaryUsernameText)
                         
-                        HandledBySection(
-                            user: conversation.handledBy,
-                            time: conversation.handledAt,
-                            handlerType: conversation.handlerType,
-                            status: conversation.status
-                        )
+                        if let handledBy = conversation.handledBy,
+                           let handledAt = conversation.handledAt {
+                            HandledBySection(
+                                user: handledBy,
+                                time: handledAt,
+                                handlerType: conversation.handlerType,
+                                status: conversation.status
+                            )
+                        }
                     }
                     .padding(.leading, 13)
                     Spacer()

@@ -11,100 +11,402 @@ import Combine
 @MainActor
 class ConversationListViewModel: ObservableObject {
     // MARK: - Published Properties
-    
     @Published var selectedConversation: Conversation?
     @Published var humanConversations: [Conversation] = []
     @Published var aiConversations: [Conversation] = []
     @Published var searchText: String = ""
-    @Published var selectedFilter: String = "All" // Added for filter buttons
+    @Published var selectedFilter: String = "All"
+    @Published var isConnected: Bool = false
+    @Published var errorMessage: String?
     
-    // MARK: - Computed Properties for Filtering
+    // MARK: - Private Properties
+    private let apiService = WhatsAppAPIService.shared
+    private let webhookService = WebhookService()
+    private var clientId: String
+    private var cancellables = Set<AnyCancellable>()
     
-    // Filtered human conversations (by search text)
-    var filterHumanConvo: [Conversation] {
-        var filtered = humanConversations
-        
-        // Apply search filter
-        if !searchText.isEmpty {
-            filtered = filtered.filter { conversation in
-                conversation.name.localizedCaseInsensitiveContains(searchText) ||
-                conversation.message.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-        
-        // Apply button filter (All, Unread, Unresolved)
-        filtered = applyButtonFilter(to: filtered)
-        
-        return filtered
-    }
-    
-    /// Filtered AI conversations (by search text and sorted by priority)
-    var filterAiConvo: [Conversation] {
-        var filtered = aiConversations
-        
-        // Apply search filter
-        if !searchText.isEmpty {
-            filtered = filtered.filter { conversation in
-                conversation.name.localizedCaseInsensitiveContains(searchText) ||
-                conversation.message.localizedCaseInsensitiveContains(searchText)
-            }
-        }
-        
-        // Apply button filter
-        filtered = applyButtonFilter(to: filtered)
-        
-        // Sort by priority
-        return filtered.sorted { $0.sortPriority < $1.sortPriority }
-    }
-    
-    /// Count of unread conversations
-    var unreadCount: Int {
-        let humanUnread = humanConversations.filter { $0.unreadCount > 0 }.count
-        let aiUnread = aiConversations.filter { $0.unreadCount > 0 }.count
-        return humanUnread + aiUnread
-    }
-    
-    // Count of unresolved conversations
-    var unresolvedCount: Int {
-        let aiUnresolved = aiConversations.filter { $0.status != .resolved }.count
-        let humanUnresolved = humanConversations.filter { $0.status != .resolved }.count
-        return aiUnresolved + humanUnresolved
-    }
-    
-    
-    // Current user buat satu
     private var currentUser: User = User(
         name: "Current User",
         profileImage: "user-avatar",
         email: "user@example.com"
     )
     
+    // MARK: - Computed Properties
+    var filterHumanConvo: [Conversation] {
+        var filtered = humanConversations
+        
+        if !searchText.isEmpty {
+            filtered = filtered.filter { conversation in
+                conversation.name.localizedCaseInsensitiveContains(searchText) ||
+                conversation.message.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+        
+        filtered = applyButtonFilter(to: filtered)
+        return filtered
+    }
     
-    init() {
+    var filterAiConvo: [Conversation] {
+        var filtered = aiConversations
+        
+        if !searchText.isEmpty {
+            filtered = filtered.filter { conversation in
+                conversation.name.localizedCaseInsensitiveContains(searchText) ||
+                conversation.message.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+        
+        filtered = applyButtonFilter(to: filtered)
+        return filtered.sorted { $0.sortPriority < $1.sortPriority }
+    }
+    
+    var unreadCount: Int {
+        let humanUnread = humanConversations.filter { $0.unreadCount > 0 }.count
+        let aiUnread = aiConversations.filter { $0.unreadCount > 0 }.count
+        return humanUnread + aiUnread
+    }
+    
+    var unresolvedCount: Int {
+        let aiUnresolved = aiConversations.filter { $0.status != .resolved }.count
+        let humanUnresolved = humanConversations.filter { $0.status != .resolved }.count
+        return aiUnresolved + humanUnresolved
+    }
+    
+    // MARK: - Initialization
+    init(config: WhatsAppConfig? = nil) {
+        self.clientId = UUID().uuidString
+        
+        setupWebhookHandlers()
         loadConversations()
+        
+        if let config = config, config.isValid {
+            Task {
+                await connect(with: config)
+            }
+        }
+    }
+    
+    // MARK: - Connection Management
+    func connect(with config: WhatsAppConfig) async {
+        do {
+            apiService.configure(baseURL: config.webhookServerURL)
+            try webhookService.start()
+            
+            let callbackUrl = "http://localhost:\(config.localWebhookPort)/webhook"
+            let success = try await apiService.registerClient(
+                clientId: clientId,
+                callbackUrl: callbackUrl
+            )
+            
+            if success {
+                isConnected = true
+                print("✅ Successfully connected to WhatsApp API")
+                await fetchConversations()
+            }
+        } catch {
+            errorMessage = "Failed to connect: \(error.localizedDescription)"
+            print("❌ Connection error: \(error)")
+        }
+    }
+    
+    func disconnect() async {
+        do {
+            try await apiService.unregisterClient(clientId: clientId)
+            webhookService.stop()
+            isConnected = false
+            print("✅ Disconnected from WhatsApp API")
+        } catch {
+            print("❌ Disconnect error: \(error)")
+        }
+    }
+    
+    // MARK: - Webhook Setup
+    private func setupWebhookHandlers() {
+        webhookService.onMessageReceived = { [weak self] messageData in
+            Task { @MainActor in
+                await self?.handleIncomingMessage(messageData)
+            }
+        }
+        
+        webhookService.onStatusUpdate = { [weak self] statusData in
+            Task { @MainActor in
+                await self?.handleStatusUpdate(statusData)
+            }
+        }
+    }
+    
+    // MARK: - Message Handling
+    private func handleIncomingMessage(_ messageData: WebhookMessageData) async {
+        print("📨 Incoming message from: \(messageData.from)")
+        
+        guard let textBody = messageData.text?.body else {
+            print("⚠️ No text body in message")
+            return
+        }
+        
+        let phoneNumber = messageData.from
+        var conversation = findConversation(by: phoneNumber)
+        
+        if conversation == nil {
+            conversation = Conversation(
+                name: phoneNumber,
+                phoneNumber: phoneNumber,
+                handlerType: .ai,
+                status: .pending
+            )
+        }
+        
+        guard var conv = conversation else { return }
+        
+        let message = Message(
+            whatsappMessageId: messageData.messageId,
+            conversationId: conv.id,
+            phoneNumber: phoneNumber,
+            content: textBody,
+            timestamp: Date(),
+            isFromUser: true,
+            status: .delivered
+        )
+        
+        conv.addMessage(message)
+        updateConversation(conv)
+        
+        if selectedConversation?.id == conv.id {
+            selectedConversation = conv
+        }
+    }
+    
+    private func handleStatusUpdate(_ statusData: StatusUpdateData) async {
+        print("📊 Status update for message: \(statusData.messageId) - \(statusData.status)")
+        
+        for i in 0..<humanConversations.count {
+            for j in 0..<humanConversations[i].messages.count {
+                if humanConversations[i].messages[j].whatsappMessageId == statusData.messageId {
+                    let oldMessage = humanConversations[i].messages[j]
+                    let newStatus = MessageStatus(rawValue: statusData.status) ?? .sent
+                    
+                    let updatedMessage = Message(
+                        id: oldMessage.id,
+                        whatsappMessageId: oldMessage.whatsappMessageId,
+                        conversationId: oldMessage.conversationId,
+                        phoneNumber: oldMessage.phoneNumber,
+                        content: oldMessage.content,
+                        timestamp: oldMessage.timestamp,
+                        isFromUser: oldMessage.isFromUser,
+                        status: newStatus,
+                        type: oldMessage.type
+                    )
+                    
+                    humanConversations[i].messages[j] = updatedMessage
+                    
+                    if selectedConversation?.id == humanConversations[i].id {
+                        selectedConversation = humanConversations[i]
+                    }
+                    return
+                }
+            }
+        }
+        
+        for i in 0..<aiConversations.count {
+            for j in 0..<aiConversations[i].messages.count {
+                if aiConversations[i].messages[j].whatsappMessageId == statusData.messageId {
+                    let oldMessage = aiConversations[i].messages[j]
+                    let newStatus = MessageStatus(rawValue: statusData.status) ?? .sent
+                    
+                    let updatedMessage = Message(
+                        id: oldMessage.id,
+                        whatsappMessageId: oldMessage.whatsappMessageId,
+                        conversationId: oldMessage.conversationId,
+                        phoneNumber: oldMessage.phoneNumber,
+                        content: oldMessage.content,
+                        timestamp: oldMessage.timestamp,
+                        isFromUser: oldMessage.isFromUser,
+                        status: newStatus,
+                        type: oldMessage.type
+                    )
+                    
+                    aiConversations[i].messages[j] = updatedMessage
+                    
+                    if selectedConversation?.id == aiConversations[i].id {
+                        selectedConversation = aiConversations[i]
+                    }
+                    return
+                }
+            }
+        }
+    }
+    
+    // MARK: - Send Message
+    func sendMessage(_ text: String, to conversation: Conversation) async {
+        guard !text.isEmpty else { return }
+        
+        // Normalize phone number untuk WhatsApp API
+        let normalizedPhone = PhoneNumberUtility.normalize(conversation.phoneNumber)
+        
+        print("=== SEND MESSAGE DEBUG ===")
+        print("📤 Sending message to: \(conversation.phoneNumber)")
+        print("📱 Normalized to: \(normalizedPhone)")
+        print("💬 Message: \(text)")
+        print("🔑 ClientID: \(clientId)")
+        /*rint("🌐 API URL: \(apiService.baseURL)")*/
+        print("========================")
+        
+        // Create optimistic message
+        let message = Message(
+            conversationId: conversation.id,
+            phoneNumber: normalizedPhone,
+            content: text,
+            timestamp: Date(),
+            isFromUser: false,
+            status: .sending
+        )
+        
+        // Update UI immediately
+        var updatedConv = conversation
+        updatedConv.addMessage(message)
+        updateConversation(updatedConv)
+        
+        if selectedConversation?.id == conversation.id {
+            selectedConversation = updatedConv
+        }
+        
+        // Send to API
+        do {
+            let response = try await apiService.sendMessage(
+                to: normalizedPhone,  // Use normalized phone
+                text: text,
+                clientId: clientId
+            )
+            
+            if response.success, let messageId = response.messageId {
+                print("✅ Message sent successfully: \(messageId)")
+                
+                // Update message dengan WhatsApp message ID
+                if let index = updatedConv.messages.firstIndex(where: { $0.id == message.id }) {
+                    let sentMessage = Message(
+                        id: message.id,
+                        whatsappMessageId: messageId,
+                        conversationId: message.conversationId,
+                        phoneNumber: normalizedPhone,
+                        content: message.content,
+                        timestamp: message.timestamp,
+                        isFromUser: false,
+                        status: .sent
+                    )
+                    updatedConv.messages[index] = sentMessage
+                    updateConversation(updatedConv)
+                    
+                    if selectedConversation?.id == conversation.id {
+                        selectedConversation = updatedConv
+                    }
+                }
+            }
+        } catch {
+            print("❌ Failed to send message: \(error)")
+            print("📝 Error details: \(error.localizedDescription)")
+            errorMessage = "Failed to send message: \(error.localizedDescription)"
+            
+            // Update message status to failed
+            if let index = updatedConv.messages.firstIndex(where: { $0.id == message.id }) {
+                let failedMessage = Message(
+                    id: message.id,
+                    whatsappMessageId: message.whatsappMessageId,
+                    conversationId: message.conversationId,
+                    phoneNumber: normalizedPhone,
+                    content: message.content,
+                    timestamp: message.timestamp,
+                    isFromUser: false,
+                    status: .failed
+                )
+                updatedConv.messages[index] = failedMessage
+                updateConversation(updatedConv)
+                
+                if selectedConversation?.id == conversation.id {
+                    selectedConversation = updatedConv
+                }
+            }
+        }
     }
     
     // MARK: - Data Loading
-    
     func loadConversations() {
-        // Load from dummy data or API
-        // Ntar di update
         humanConversations = Conversation.humanDummyData
         aiConversations = Conversation.aiDummyData
     }
     
-    
-    func selectConversation(_ conversation: Conversation) {
-        selectedConversation = conversation
+    func fetchConversations() async {
+        do {
+            let conversationsData = try await apiService.getConversations()
+            
+            var newConversations: [Conversation] = []
+            
+            for convData in conversationsData {
+                let conversation = Conversation(
+                    name: convData.name ?? convData.phoneNumber,
+                    message: convData.lastMessage ?? "",
+                    time: convData.timestamp ?? "",
+                    phoneNumber: convData.phoneNumber,
+                    handlerType: .ai,
+                    status: .pending
+                )
+                newConversations.append(conversation)
+            }
+            
+            aiConversations = newConversations
+            
+            print("✅ Loaded \(newConversations.count) conversations")
+        } catch {
+            print("❌ Failed to fetch conversations: \(error)")
+        }
     }
     
+    func fetchMessages(for conversation: Conversation) async {
+        do {
+            let messagesData = try await apiService.getMessages(for: conversation.phoneNumber)
+            
+            var updatedConv = conversation
+            updatedConv.messages = messagesData.map { msgData in
+                Message(
+                    whatsappMessageId: msgData.id,
+                    conversationId: conversation.id,
+                    phoneNumber: msgData.from,
+                    content: msgData.text,
+                    timestamp: Date(),
+                    isFromUser: msgData.from == conversation.phoneNumber
+                )
+            }
+            
+            updateConversation(updatedConv)
+            
+            if selectedConversation?.id == conversation.id {
+                selectedConversation = updatedConv
+            }
+            
+            print("✅ Loaded \(messagesData.count) messages for \(conversation.name)")
+        } catch {
+            print("❌ Failed to fetch messages: \(error)")
+        }
+    }
     
-    // Apply filter from button (All, Unread, Unresolved)
+    // MARK: - Conversation Management
+    func selectConversation(_ conversation: Conversation) {
+        selectedConversation = conversation
+        
+        var updatedConv = conversation
+        updatedConv.markAsRead()
+        updateConversation(updatedConv)
+        
+        if conversation.messages.isEmpty {
+            Task {
+                await fetchMessages(for: conversation)
+            }
+        }
+    }
+    
     func applyFilter(_ filter: String) {
         selectedFilter = filter
     }
     
-    // Method version of searchConversations
     func searchConversations() -> [Conversation] {
         let allConversations = humanConversations + aiConversations
         if searchText.isEmpty {
@@ -116,7 +418,6 @@ class ConversationListViewModel: ObservableObject {
         }
     }
     
-    // Helper to apply button filter
     private func applyButtonFilter(to conversations: [Conversation]) -> [Conversation] {
         switch selectedFilter {
         case "Unread":
@@ -133,144 +434,92 @@ class ConversationListViewModel: ObservableObject {
         }
     }
     
-    // MARK: - TakeOver Functionality
+    // MARK: - Helper Functions
+    private func findConversation(by phoneNumber: String) -> Conversation? {
+        if let conv = humanConversations.first(where: { $0.phoneNumber == phoneNumber }) {
+            return conv
+        }
+        if let conv = aiConversations.first(where: { $0.phoneNumber == phoneNumber }) {
+            return conv
+        }
+        return nil
+    }
     
-    // Takes over an AI conversation and converts it to human-handled
+    private func updateConversation(_ conversation: Conversation) {
+        if conversation.handlerType == .human {
+            if let index = humanConversations.firstIndex(where: { $0.id == conversation.id }) {
+                humanConversations[index] = conversation
+            } else {
+                humanConversations.insert(conversation, at: 0)
+            }
+        } else {
+            if let index = aiConversations.firstIndex(where: { $0.id == conversation.id }) {
+                aiConversations[index] = conversation
+            } else {
+                aiConversations.insert(conversation, at: 0)
+            }
+        }
+    }
+    
+    // MARK: - TakeOver & Resolve
     func takeOverConversation() {
         guard let selected = selectedConversation,
               selected.handlerType == .ai,
               (selected.status == .pending || selected.status == .open) else {
-            print("  - handlerType: \(selectedConversation?.handlerType.rawValue ?? "nil")")
             return
         }
         
-        print("Take over convo: \(selected.name)")
+        print("Taking over conversation: \(selected.name)")
         
-        // Create updated conversation with human handler
-        let updatedConversation = Conversation(
-            id: selected.id,
-            name: selected.name,
-            message: selected.message,
-            time: getCurrentTime(),
-            profileImage: selected.profileImage,
-            unreadCount: selected.unreadCount,
-            hasWhatsApp: selected.hasWhatsApp,
-            phoneNumber: selected.phoneNumber,
-            handlerType: .human,  // Changed from .ai to .human
-            status: nil,          // Remove AI status
-            label: selected.label,
-            handledBy: currentUser,  // Assign to current user
-            handledAt: getCurrentTime(),
-            seenBy: [
-                SeenByRecord(
-                    user: currentUser,
-                    seenAt: getCurrentTime()
-                )
-            ],
-            internalNotes: selected.internalNotes
-        )
+        var updatedConversation = selected
+        updatedConversation.handlerType = .human
+        updatedConversation.status = nil
+        updatedConversation.handledBy = currentUser
+        updatedConversation.handledAt = getCurrentTime()
+        updatedConversation.seenBy = [
+            SeenByRecord(user: currentUser, seenAt: getCurrentTime())
+        ]
         
-        // Remove from AI list
         if let index = aiConversations.firstIndex(where: { $0.id == selected.id }) {
             aiConversations.remove(at: index)
-            print("Ai Convo removed :  \(index))")
         }
         
-        // Add to human list (at the top)
         humanConversations.insert(updatedConversation, at: 0)
-        print("Added to human convo \(humanConversations.count))")
-        
-        // Update selected conversation
         selectedConversation = updatedConversation
-        print("Updated selected conversation")
         
-        // Optional: Add internal note about takeover
         addInternalNote(
             to: updatedConversation.id,
             message: "Conversation taken over from AI by \(currentUser.name)"
         )
     }
     
-    // MARK: - Resolve Functionality
-    
-    // Resolves the current conversation
     func resolveConversation() {
-        guard let selected = selectedConversation else {
-            print("No conversation selected")
-            return
+        guard let selected = selectedConversation else { return }
+        
+        var updatedConversation = selected
+        updatedConversation.status = .resolved
+        updatedConversation.unreadCount = 0
+        
+        if selected.handlerType == .human {
+            if let index = humanConversations.firstIndex(where: { $0.id == selected.id }) {
+                humanConversations.remove(at: index)
+            }
+            aiConversations.insert(updatedConversation, at: 0)
+        } else {
+            if let index = aiConversations.firstIndex(where: { $0.id == selected.id }) {
+                aiConversations[index] = updatedConversation
+            }
         }
         
-        if selected.handlerType == .ai {
-            // Update AI conversation to resolved
-            if let index = aiConversations.firstIndex(where: { $0.id == selected.id }) {
-                let updatedConversation = Conversation(
-                    id: selected.id,
-                    name: selected.name,
-                    message: selected.message,
-                    time: selected.time,
-                    profileImage: selected.profileImage,
-                    unreadCount: 0,
-                    hasWhatsApp: selected.hasWhatsApp,
-                    phoneNumber: selected.phoneNumber,
-                    handlerType: selected.handlerType,
-                    status: .resolved,  // Update status
-                    label: selected.label,
-                    handledBy: selected.handledBy,
-                    handledAt: selected.handledAt,
-                    seenBy: selected.seenBy,
-                    internalNotes: selected.internalNotes
-                )
-                
-                aiConversations[index] = updatedConversation
-                selectedConversation = updatedConversation
-                print("AI conversation resolved: \(selected.name)")
-            }
-        } else {
-            // For human conversations
-            if selected.handlerType == .human {
-                if let index = humanConversations.firstIndex(where: { $0.id == selected.id }) {
-                    let updatedConversation = Conversation(
-                        id: selected.id,
-                        name: selected.name,
-                        message: selected.message,
-                        time: selected.time,
-                        profileImage: selected.profileImage,
-                        unreadCount: 0,
-                        hasWhatsApp: selected.hasWhatsApp,
-                        phoneNumber: selected.phoneNumber,
-                        handlerType: selected.handlerType,
-                        status: .resolved,  // Update status
-                        label: selected.label,
-                        handledBy: selected.handledBy,
-                        handledAt: selected.handledAt,
-                        seenBy: selected.seenBy,
-                        internalNotes: selected.internalNotes
-                    )
-                    humanConversations[index] = updatedConversation
-                    selectedConversation = updatedConversation
-                    
-                    if let index = humanConversations.firstIndex(where: { $0.id == selected.id}) {
-                        humanConversations.remove(at: index)
-                        print("Human convo to AI : \(index)")
-                    }
-                    
-                    aiConversations.insert(updatedConversation, at : 0)
-                    
-                    selectedConversation = updatedConversation
-                    print("Updated selected conversation")
-                    
-                    addInternalNote(
-                        to: updatedConversation.id,
-                        message: "Conversation marked as resolved by \(currentUser.name)"
-                    )
-                }
-            }
-        }
+        selectedConversation = updatedConversation
+        
+        addInternalNote(
+            to: updatedConversation.id,
+            message: "Conversation marked as resolved by \(currentUser.name)"
+        )
     }
     
     // MARK: - Internal Notes
-    
-    // Adds an internal note to a conversation
     private func addInternalNote(to conversationId: UUID, message: String) {
         let note = InternalNote(
             conversationId: conversationId,
@@ -279,22 +528,18 @@ class ConversationListViewModel: ObservableObject {
             timestamp: Date()
         )
         
-        // Update in human conversations
         if let index = humanConversations.firstIndex(where: { $0.id == conversationId }) {
             humanConversations[index].internalNotes.append(note)
         }
         
-        // Update in AI conversations
         if let index = aiConversations.firstIndex(where: { $0.id == conversationId }) {
             aiConversations[index].internalNotes.append(note)
         }
         
-        // Update selected conversation
         if selectedConversation?.id == conversationId {
             selectedConversation?.internalNotes.append(note)
         }
     }
-    
     
     private func getCurrentTime() -> String {
         let formatter = DateFormatter()

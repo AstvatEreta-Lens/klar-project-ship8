@@ -1,0 +1,652 @@
+ ConversationListViewModel.swift - Integrated with WhatsApp API
+import SwiftUI
+import Combine
+
+@MainActor
+class ConversationListViewModel: ObservableObject {
+    // MARK: - Published Properties
+    @Published var selectedConversation: Conversation?
+    @Published var humanConversations: [Conversation] = []
+    @Published var aiConversations: [Conversation] = []
+    @Published var searchText: String = ""
+    @Published var selectedFilter: String = "All"
+
+    // WhatsApp Integration
+    @Published var currentMessages: [Message] = []
+    @Published var isLoading = false
+    @Published var isConnected = false
+    @Published var errorMessage: String?
+    @Published var config: WhatsAppConfig
+
+    // MARK: - Private Properties
+    private let apiService = WhatsAppAPIService.shared
+    private let webhookService = WebhookService()
+    private let clientId: String
+    private var cancellables = Set<AnyCancellable>()
+
+    // Current user
+    private var currentUser: User = User(
+        name: "Current User",
+        profileImage: "user-avatar",
+        email: "user@example.com"
+    )
+
+    // MARK: - Computed Properties
+    var filterHumanConvo: [Conversation] {
+        var filtered = humanConversations
+
+        if !searchText.isEmpty {
+            filtered = filtered.filter { conversation in
+                conversation.name.localizedCaseInsensitiveContains(searchText) ||
+                conversation.message.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+
+        filtered = applyButtonFilter(to: filtered)
+        return filtered
+    }
+
+    var filterAiConvo: [Conversation] {
+        var filtered = aiConversations
+
+        if !searchText.isEmpty {
+            filtered = filtered.filter { conversation in
+                conversation.name.localizedCaseInsensitiveContains(searchText) ||
+                conversation.message.localizedCaseInsensitiveContains(searchText)
+            }
+        }
+
+        filtered = applyButtonFilter(to: filtered)
+        return filtered.sorted { $0.sortPriority < $1.sortPriority }
+    }
+
+    var unreadCount: Int {
+        let humanUnread = humanConversations.filter { $0.unreadCount > 0 }.count
+        let aiUnread = aiConversations.filter { $0.unreadCount > 0 }.count
+        return humanUnread + aiUnread
+    }
+
+    var unresolvedCount: Int {
+        let aiUnresolved = aiConversations.filter { $0.status != .resolved }.count
+        let humanUnresolved = humanConversations.filter { $0.status != .resolved }.count
+        return aiUnresolved + humanUnresolved
+    }
+
+    // MARK: - Initialization
+    init(config: WhatsAppConfig = .default) {
+        self.config = config
+        self.clientId = "macos-\(UUID().uuidString)"
+
+        setupWebhookService()
+        loadConversations()
+
+        Task { [weak self] in
+            await self?.initializeWhatsApp()
+        }
+    }
+
+    deinit {
+        let clientId = self.clientId
+        let apiService = self.apiService
+        let webhookService = self.webhookService
+
+        Task.detached {
+            webhookService.stop()
+
+            do {
+                try await apiService.unregisterClient(clientId: clientId)
+                print("👋 Unregistered client: \(clientId)")
+            } catch {
+                print("❌ Error unregistering: \(error)")
+            }
+        }
+    }
+
+    // MARK: - WhatsApp Initialization
+    private func initializeWhatsApp() async {
+        apiService.configure(baseURL: config.webhookServerURL)
+
+        do {
+            try webhookService.start()
+
+            let success = try await apiService.registerClient(
+                clientId: clientId,
+                callbackUrl: "http://localhost:8080/webhook"
+            )
+
+            if success {
+                isConnected = true
+                await syncWhatsAppConversations()
+            }
+        } catch {
+            errorMessage = "Failed to connect WhatsApp: \(error.localizedDescription)"
+            isConnected = false
+        }
+    }
+
+    // MARK: - Webhook Setup
+    private func setupWebhookService() {
+        webhookService.onMessageReceived = { [weak self] messageData in
+            print("🎯 ViewModel received message callback")
+            Task { @MainActor in
+                await self?.handleIncomingWhatsAppMessage(messageData)
+            }
+        }
+
+        webhookService.onStatusUpdate = { [weak self] statusData in
+            print("🎯 ViewModel received status callback")
+            Task { @MainActor in
+                await self?.handleStatusUpdate(statusData)
+            }
+        }
+    }
+
+    // MARK: - Data Loading
+    func loadConversations() {
+        // Load from dummy data or database
+        humanConversations = Conversation.humanDummyData
+        aiConversations = Conversation.aiDummyData
+    }
+
+    // Sync WhatsApp conversations with local data
+    private func syncWhatsAppConversations() async {
+        do {
+            let whatsappConvos = try await apiService.getConversations()
+
+            // Merge WhatsApp conversations with existing data
+            for whatsappConvo in whatsappConvos {
+                syncSingleConversation(from: whatsappConvo)
+            }
+
+            print("✅ Synced \(whatsappConvos.count) WhatsApp conversations")
+        } catch {
+            print("❌ Failed to sync WhatsApp conversations: \(error)")
+        }
+    }
+
+    // Sync single WhatsApp conversation
+    private func syncSingleConversation(from whatsappData: ConversationData) {
+        let phoneNumber = whatsappData.phoneNumber
+
+        // Check if conversation already exists
+        let existingInHuman = humanConversations.first { $0.phoneNumber == phoneNumber }
+        let existingInAI = aiConversations.first { $0.phoneNumber == phoneNumber }
+
+        if existingInHuman == nil && existingInAI == nil {
+            // Create new conversation
+            let newConversation = ConversationChat(
+                id: UUID(),
+                name: formatPhoneNumber(phoneNumber),
+                message: whatsappData.lastMessage,
+                time: formatTimestamp(whatsappData.timestamp),
+                profileImage: "default-avatar",
+                unreadCount: whatsappData.unreadCount,
+                hasWhatsApp: true,
+                phoneNumber: phoneNumber,
+                handlerType: .human,
+                status: nil,
+                label: nil,
+                handledBy: nil,
+                handledAt: nil,
+                seenBy: [],
+                internalNotes: []
+            )
+
+            humanConversations.insert(newConversation, at: 0)
+        } else {
+            // Update existing conversation
+            if let index = humanConversations.firstIndex(where: { $0.phoneNumber == phoneNumber }) {
+                humanConversations[index].message = whatsappData.lastMessage
+                humanConversations[index].time = formatTimestamp(whatsappData.timestamp)
+                humanConversations[index].unreadCount = whatsappData.unreadCount
+            } else if let index = aiConversations.firstIndex(where: { $0.phoneNumber == phoneNumber }) {
+                aiConversations[index].message = whatsappData.lastMessage
+                aiConversations[index].time = formatTimestamp(whatsappData.timestamp)
+                aiConversations[index].unreadCount = whatsappData.unreadCount
+            }
+        }
+    }
+
+    // MARK: - Conversation Selection
+    func selectConversation(_ conversation: Conversation) {
+        selectedConversation = conversation
+
+        // Clear unread count
+        clearUnreadCount(for: conversation)
+
+        // Load WhatsApp messages if phone number exists
+        if let phoneNumber = conversation.phoneNumber, !phoneNumber.isEmpty {
+            Task {
+                await loadWhatsAppMessages(for: phoneNumber)
+            }
+        }
+    }
+
+    private func clearUnreadCount(for conversation: Conversation) {
+        if let index = humanConversations.firstIndex(where: { $0.id == conversation.id }) {
+            humanConversations[index].unreadCount = 0
+        }
+        if let index = aiConversations.firstIndex(where: { $0.id == conversation.id }) {
+            aiConversations[index].unreadCount = 0
+        }
+    }
+
+    // MARK: - Load WhatsApp Messages
+    func loadWhatsAppMessages(for phoneNumber: String) async {
+        isLoading = true
+
+        do {
+            let messagesData = try await apiService.getMessages(for: phoneNumber)
+
+            var uniqueMessages: [String: Message] = [:]
+
+            for data in messagesData {
+                let messageId = data.messageId ?? UUID().uuidString
+
+                if uniqueMessages[messageId] != nil {
+                    print("⚠️ Skipping duplicate message: \(messageId)")
+                    continue
+                }
+
+                let message = Message(
+                    id: messageId,
+                    text: data.text,
+                    isFromMe: data.isFromMe,
+                    phoneNumber: data.from ?? data.to ?? phoneNumber,
+                    timestamp: parseDate(data.timestamp),
+                    status: mapStatus(data.status)
+                )
+
+                uniqueMessages[messageId] = message
+            }
+
+            currentMessages = uniqueMessages.values.sorted { $0.timestamp < $1.timestamp }
+
+            print("📥 Loaded \(currentMessages.count) unique messages")
+
+        } catch {
+            errorMessage = "Failed to load messages: \(error.localizedDescription)"
+        }
+
+        isLoading = false
+    }
+
+    // MARK: - Send WhatsApp Message
+    func sendWhatsAppMessage(text: String) async {
+        guard let conversation = selectedConversation,
+              let phoneNumber = conversation.phoneNumber,
+              !phoneNumber.isEmpty else {
+            print("⚠️ No phone number for selected conversation")
+            return
+        }
+
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return
+        }
+
+        let tempId = "temp-\(UUID().uuidString)"
+
+        let tempMessage = Message(
+            id: tempId,
+            text: text,
+            isFromMe: true,
+            phoneNumber: phoneNumber,
+            status: .sending
+        )
+        currentMessages.append(tempMessage)
+
+        // Update conversation last message
+        updateConversationMessage(phoneNumber: phoneNumber, lastMessage: text)
+
+        do {
+            let response = try await apiService.sendMessage(
+                to: phoneNumber,
+                text: text,
+                clientId: clientId
+            )
+
+            if response.success, let messageId = response.messageId {
+                if let index = currentMessages.firstIndex(where: { $0.id == tempId }) {
+                    currentMessages[index] = Message(
+                        id: messageId,
+                        text: text,
+                        isFromMe: true,
+                        phoneNumber: phoneNumber,
+                        timestamp: Date(),
+                        status: .sent
+                    )
+                    print("✅ Message sent with ID: \(messageId)")
+                }
+            } else {
+                throw APIError.sendMessageFailed(response.error ?? "Unknown error")
+            }
+
+        } catch {
+            if let index = currentMessages.firstIndex(where: { $0.id == tempId }) {
+                currentMessages[index] = Message(
+                    id: tempId,
+                    text: text,
+                    isFromMe: true,
+                    phoneNumber: phoneNumber,
+                    timestamp: Date(),
+                    status: .failed
+                )
+            }
+
+            errorMessage = "Failed to send message: \(error.localizedDescription)"
+        }
+    }
+
+    // MARK: - Handle Incoming WhatsApp Messages
+    private func handleIncomingWhatsAppMessage(_ messageData: WebhookMessageData) async {
+        guard let from = messageData.from else {
+            print("⚠️ No sender in message data")
+            return
+        }
+
+        print("📩 Processing incoming WhatsApp message from: \(from)")
+
+        let messageId = messageData.messageId ?? UUID().uuidString
+        if currentMessages.contains(where: { $0.id == messageId }) {
+            print("⚠️ Message already exists, skipping")
+            return
+        }
+
+        let message = Message(
+            id: messageId,
+            text: messageData.text ?? "[Unknown message]",
+            isFromMe: false,
+            phoneNumber: from,
+            timestamp: parseDate(messageData.timestamp)
+        )
+
+        // Add to current messages if viewing this conversation
+        if selectedConversation?.phoneNumber == from {
+            print("✅ Adding message to current conversation")
+            currentMessages.append(message)
+        } else {
+            print("ℹ️ Message for different conversation")
+        }
+
+        // Update or create conversation
+        updateOrCreateWhatsAppConversation(
+            phoneNumber: from,
+            lastMessage: messageData.text ?? "[Unknown message]",
+            incrementUnread: selectedConversation?.phoneNumber != from
+        )
+
+        print("✅ WhatsApp message processed successfully")
+    }
+
+    private func handleStatusUpdate(_ statusData: StatusUpdateData) async {
+        if let index = currentMessages.firstIndex(where: { $0.id == statusData.messageId }) {
+            currentMessages[index].status = mapStatus(statusData.status)
+            print("✅ Updated message status: \(statusData.status)")
+        }
+    }
+
+    // MARK: - Update Conversation
+    private func updateConversationMessage(phoneNumber: String, lastMessage: String) {
+        if let index = humanConversations.firstIndex(where: { $0.phoneNumber == phoneNumber }) {
+            humanConversations[index].message = lastMessage
+            humanConversations[index].time = getCurrentTime()
+        } else if let index = aiConversations.firstIndex(where: { $0.phoneNumber == phoneNumber }) {
+            aiConversations[index].message = lastMessage
+            aiConversations[index].time = getCurrentTime()
+        }
+    }
+
+    private func updateOrCreateWhatsAppConversation(
+        phoneNumber: String,
+        lastMessage: String,
+        incrementUnread: Bool = false
+    ) {
+        let existsInHuman = humanConversations.contains { $0.phoneNumber == phoneNumber }
+        let existsInAI = aiConversations.contains { $0.phoneNumber == phoneNumber }
+
+        if existsInHuman {
+            if let index = humanConversations.firstIndex(where: { $0.phoneNumber == phoneNumber }) {
+                humanConversations[index].message = lastMessage
+                humanConversations[index].time = getCurrentTime()
+                if incrementUnread {
+                    humanConversations[index].unreadCount += 1
+                }
+
+                // Move to top
+                let conv = humanConversations.remove(at: index)
+                humanConversations.insert(conv, at: 0)
+            }
+        } else if existsInAI {
+            if let index = aiConversations.firstIndex(where: { $0.phoneNumber == phoneNumber }) {
+                aiConversations[index].message = lastMessage
+                aiConversations[index].time = getCurrentTime()
+                if incrementUnread {
+                    aiConversations[index].unreadCount += 1
+                }
+
+                let conv = aiConversations.remove(at: index)
+                aiConversations.insert(conv, at: 0)
+            }
+        } else {
+            // Create new conversation
+            let newConversation = Conversation(
+                id: UUID(),
+                name: formatPhoneNumber(phoneNumber),
+                message: lastMessage,
+                time: getCurrentTime(),
+                profileImage: "default-avatar",
+                unreadCount: incrementUnread ? 1 : 0,
+                hasWhatsApp: true,
+                phoneNumber: phoneNumber,
+                handlerType: .human,
+                status: nil,
+                label: nil,
+                handledBy: nil,
+                handledAt: nil,
+                seenBy: [],
+                internalNotes: []
+            )
+
+            humanConversations.insert(newConversation, at: 0)
+        }
+    }
+
+    // MARK: - Filter & Search
+    func applyFilter(_ filter: String) {
+        selectedFilter = filter
+    }
+
+    func searchConversations() -> [Conversation] {
+        let allConversations = humanConversations + aiConversations
+        if searchText.isEmpty {
+            return allConversations
+        }
+        return allConversations.filter { conversation in
+            conversation.name.localizedCaseInsensitiveContains(searchText) ||
+            conversation.message.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+
+    private func applyButtonFilter(to conversations: [Conversation]) -> [Conversation] {
+        switch selectedFilter {
+        case "Unread":
+            return conversations.filter { $0.unreadCount > 0 }
+        case "Unresolved":
+            return conversations.filter { conversation in
+                if conversation.handlerType == .ai {
+                    return conversation.status != .resolved
+                }
+                return true
+            }
+        default:
+            return conversations
+        }
+    }
+
+    // MARK: - TakeOver & Resolve
+    func takeOverConversation() {
+        guard let selected = selectedConversation,
+              selected.handlerType == .ai,
+              (selected.status == .pending || selected.status == .open) else {
+            return
+        }
+
+        print("Take over conversation: \(selected.name)")
+
+        let updatedConversation = Conversation(
+            id: selected.id,
+            name: selected.name,
+            message: selected.message,
+            time: getCurrentTime(),
+            profileImage: selected.profileImage,
+            unreadCount: selected.unreadCount,
+            hasWhatsApp: selected.hasWhatsApp,
+            phoneNumber: selected.phoneNumber,
+            handlerType: .human,
+            status: nil,
+            label: selected.label,
+            handledBy: currentUser,
+            handledAt: getCurrentTime(),
+            seenBy: [SeenByRecord(user: currentUser, seenAt: getCurrentTime())],
+            internalNotes: selected.internalNotes
+        )
+
+        if let index = aiConversations.firstIndex(where: { $0.id == selected.id }) {
+            aiConversations.remove(at: index)
+        }
+
+        humanConversations.insert(updatedConversation, at: 0)
+        selectedConversation = updatedConversation
+
+        addInternalNote(
+            to: updatedConversation.id,
+            message: "Conversation taken over from AI by \(currentUser.name)"
+        )
+    }
+
+    func resolveConversation() {
+        guard let selected = selectedConversation else { return }
+
+        if selected.handlerType == .ai {
+            if let index = aiConversations.firstIndex(where: { $0.id == selected.id }) {
+                let updatedConversation = Conversation(
+                    id: selected.id,
+                    name: selected.name,
+                    message: selected.message,
+                    time: selected.time,
+                    profileImage: selected.profileImage,
+                    unreadCount: 0,
+                    hasWhatsApp: selected.hasWhatsApp,
+                    phoneNumber: selected.phoneNumber,
+                    handlerType: selected.handlerType,
+                    status: .resolved,
+                    label: selected.label,
+                    handledBy: selected.handledBy,
+                    handledAt: selected.handledAt,
+                    seenBy: selected.seenBy,
+                    internalNotes: selected.internalNotes
+                )
+
+                aiConversations[index] = updatedConversation
+                selectedConversation = updatedConversation
+            }
+        } else if selected.handlerType == .human {
+            if let index = humanConversations.firstIndex(where: { $0.id == selected.id }) {
+                let updatedConversation = Conversation(
+                    id: selected.id,
+                    name: selected.name,
+                    message: selected.message,
+                    time: selected.time,
+                    profileImage: selected.profileImage,
+                    unreadCount: 0,
+                    hasWhatsApp: selected.hasWhatsApp,
+                    phoneNumber: selected.phoneNumber,
+                    handlerType: selected.handlerType,
+                    status: .resolved,
+                    label: selected.label,
+                    handledBy: selected.handledBy,
+                    handledAt: selected.handledAt,
+                    seenBy: selected.seenBy,
+                    internalNotes: selected.internalNotes
+                )
+
+                humanConversations.remove(at: index)
+                aiConversations.insert(updatedConversation, at: 0)
+                selectedConversation = updatedConversation
+
+                addInternalNote(
+                    to: updatedConversation.id,
+                    message: "Conversation marked as resolved by \(currentUser.name)"
+                )
+            }
+        }
+    }
+
+    // MARK: - Internal Notes
+    private func addInternalNote(to conversationId: UUID, message: String) {
+        let note = InternalNote(
+            conversationId: conversationId,
+            author: currentUser,
+            message: message,
+            timestamp: Date()
+        )
+
+        if let index = humanConversations.firstIndex(where: { $0.id == conversationId }) {
+            humanConversations[index].internalNotes.append(note)
+        }
+
+        if let index = aiConversations.firstIndex(where: { $0.id == conversationId }) {
+            aiConversations[index].internalNotes.append(note)
+        }
+
+        if selectedConversation?.id == conversationId {
+            selectedConversation?.internalNotes.append(note)
+        }
+    }
+
+    // MARK: - Helpers
+    private func mapStatus(_ status: String?) -> Message.MessageStatus {
+        guard let status = status else { return .sent }
+
+        switch status.lowercased() {
+        case "sending": return .sending
+        case "sent": return .sent
+        case "delivered": return .delivered
+        case "read": return .read
+        case "failed": return .failed
+        default: return .sent
+        }
+    }
+
+    private func parseDate(_ dateString: String) -> Date {
+        let formatter = ISO8601DateFormatter()
+        return formatter.date(from: dateString) ?? Date()
+    }
+
+    private func formatTimestamp(_ timestamp: String) -> String {
+        let date = parseDate(timestamp)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH.mm"
+        return formatter.string(from: date)
+    }
+
+    private func formatPhoneNumber(_ phoneNumber: String) -> String {
+        let cleaned = phoneNumber.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
+
+        if cleaned.hasPrefix("62") && cleaned.count > 2 {
+            let prefix = "+62"
+            let number = String(cleaned.dropFirst(2))
+            return "\(prefix) \(number)"
+        }
+
+        return phoneNumber
+    }
+
+    private func getCurrentTime() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH.mm"
+        return formatter.string(from: Date())
+    }
+}
+
+

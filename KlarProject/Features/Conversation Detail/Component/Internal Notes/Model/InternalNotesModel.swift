@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct InternalNote: Identifiable {
+struct InternalNote: Identifiable, Codable {
     let id: UUID
     let conversationId: UUID
     let author: User

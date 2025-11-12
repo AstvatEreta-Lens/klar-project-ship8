@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-enum statusType{
+enum statusType: Codable{
     case pending
     case open
     case resolved
