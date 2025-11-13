@@ -12,6 +12,8 @@ import SwiftUI
 @MainActor
 class SettingsViewModel: ObservableObject {
     @Published var userProfiles: [UserProfile] = UserProfile.dummyList // nanti ubah ke real data
+    @Published var securityProperties: [SecurityProperties] = SecurityProperties.dummyList
+    @Published var platformConfigs: [WhatsAppConfig] = WhatsAppConfig.⁠defaultConfig // karena data nya hanya 1??
     
     
 }

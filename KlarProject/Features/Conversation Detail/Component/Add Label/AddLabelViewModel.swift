@@ -24,6 +24,8 @@ extension Conversation {
             label: newlabel, // Updated value
             handledBy: self.handledBy,
             handledAt: self.handledAt,
+            
+            isEvaluated: false,
             seenBy: self.seenBy,
             internalNotes: self.internalNotes
         )
@@ -84,6 +86,8 @@ extension Conversation {
             label: self.label,
             handledBy: self.handledBy,
             handledAt: self.handledAt,
+            
+            isEvaluated: false,
             seenBy: self.seenBy,
             internalNotes: newNotes  // Updated value
         )
@@ -105,8 +109,10 @@ extension Conversation {
             label: self.label,
             handledBy: self.handledBy,
             handledAt: self.handledAt,
+            
+            isEvaluated: true,
             seenBy: self.seenBy,
-            internalNotes: self.internalNotes
+            internalNotes: self.internalNotes,
         )
     }
     
@@ -126,8 +132,10 @@ extension Conversation {
             label: self.label,
             handledBy: self.handledBy,
             handledAt: self.handledAt,
+            
+            isEvaluated: false,
             seenBy: newSeenBy,  // Updated value
-            internalNotes: self.internalNotes
+            internalNotes: self.internalNotes,
         )
     }
     

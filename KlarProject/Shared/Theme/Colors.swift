@@ -84,6 +84,9 @@ extension Color {
     
     static let chatInputBackgroundColor = Color("ChatInputBackground")
     
+    // Evaluated Background
+    static let evaluatedBackgroundCard = Color("BackgroundTertiary")
+    
     
     
     

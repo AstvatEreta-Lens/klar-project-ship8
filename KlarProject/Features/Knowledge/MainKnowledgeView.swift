@@ -7,20 +7,37 @@
 
 import SwiftUI
 
+//private struct CustomSegmentedPickerViewWrapper: View {
+//    @Binding var selection: Int
+//    @State private var internalSelection: Int = 0
+//
+//    var body: some View {
+//        CustomSegmentedPickerView()
+//            .onChange(of: internalSelection) { _, newValue in
+//                selection = newValue
+//            }
+//            .onChange(of: selection) { _, newValue in
+//                internalSelection = newValue
+//            }
+//            .onAppear {
+//                internalSelection = selection
+//            }
+//    }
+//}
+
 struct KnowledgePage: View {
     
     @State private var title: String = "Knowledge"
     @State private var selectedTab: Int = 0
     @StateObject private var viewModel = KnowledgeViewModel()
+    @StateObject private var evaluationViewModel = EvaluationViewModel()
     
     var body: some View {
         GeometryReader { geometry in
             HStack(spacing: 0) {
                 
-                // 🔹 Sidebar Area (Knowledge Section)
                 VStack(alignment: .leading, spacing: 0) {
                     
-                    // MARK: - Header (Fixed di pojok kiri atas)
                     HStack {
                         Text(title)
                             .foregroundColor(Color.primaryText)
@@ -31,36 +48,26 @@ struct KnowledgePage: View {
                             .truncationMode(.tail)
                             .layoutPriority(1)
                         
-                        Spacer()
+//                        Spacer()
                         
-                        Picker("", selection: $selectedTab) {
-                            Text("Files").tag(0)
-                            Text("Evaluation").tag(1)
-                        }
-                        .pickerStyle(.segmented)
-                        .frame(width: 180)
-                        .padding(.vertical, 4)
-                        .padding(.horizontal, 6)
-                        .background(
-                            Capsule()
-                                .fill(Color.sectionHeader.opacity(0.18))
-                        )
-                        .clipShape(Capsule())
-                        .padding(.trailing, 14)
+                        CustomSegmentedPickerView(selectedIndex: $selectedTab)
+                            .frame(width : 169, height : 36)
+                            .padding(.vertical, 4)
+                            .padding(.leading, 70)
                     }
                     .frame(height: 60)
-                    .background(Color.backgroundPrimary)
                     .padding(.top, 10)
                     
-                    // MARK: - Konten Berdasarkan Tab
+                    Divider()
+                        .background(Color.borderColor)
+                        .padding(.bottom)
+                    
                     if selectedTab == 0 {
-                        // File Tab (KnowledgeView)
                         KnowledgeView(viewModel: viewModel, action: {})
                             .frame(width: 399)
                     } else if selectedTab == 1 {
-                        // Evaluation Tab
-                        EvaluationView(viewModel: ConversationListViewModel())
-                            .frame(width: 399, height: geometry.size.height)
+                        EvaluationView(evaluationViewModel: evaluationViewModel)
+                            .frame(width: 399)
                     }
                     
                     Spacer()
@@ -68,12 +75,10 @@ struct KnowledgePage: View {
                 .frame(width: 440)
                 .background(Color.backgroundPrimary)
                 
-                // MARK: - Divider (pemisah dari area kanan)
                 Divider()
                     .frame(height: geometry.size.height)
                     .background(Color.borderColor)
                 
-                // MARK: - PDF Preview Area
                 ZStack {
                     Color.white
                         .ignoresSafeArea()
@@ -88,11 +93,29 @@ struct KnowledgePage: View {
                             Text("Select a file to see the content")
                                 .foregroundColor(Color.secondaryText)
                         }
-                    } else {
-                        VStack {
-                            Text("Evaluation Panel")
-                                .font(.title2)
-                                .foregroundColor(.secondary)
+                    } else if selectedTab == 1, let conversation = evaluationViewModel.selectedConversation {
+                        EvaluationDetailView(
+                            conversation: conversation,
+                            canApprove: evaluationViewModel.canApprove(conversation),
+                            onRemove: {
+                                evaluationViewModel.removeConversation(conversation)
+                            },
+                            onEdit: {
+                                // add edit logic
+                            },
+                            onApprove: {
+                                evaluationViewModel.approveConversation(conversation)
+                            }
+                        )
+                        .padding()
+                    } else if selectedTab == 1 {
+                        VStack(spacing: 12) {
+                            Image(systemName: "list.bullet.rectangle")
+                                .font(.system(size: 48))
+                                .foregroundColor(Color.secondaryText.opacity(0.6))
+                            
+                            Text("Select a conversation to view evaluation details")
+                                .foregroundColor(Color.secondaryText)
                         }
                     }
                 }
@@ -108,5 +131,5 @@ struct KnowledgePage: View {
 
 #Preview {
     KnowledgePage()
-        .padding()
+        .padding(.leading)
 }

@@ -164,6 +164,10 @@ class ConversationListViewModel: ObservableObject {
             label: selected.label,
             handledBy: currentUser,  // Assign to current user
             handledAt: getCurrentTime(),
+            handledDate: Date(),
+            isEvaluated: selected.isEvaluated,
+            evaluatedAt: selected.evaluatedAt,
+            resolvedAt: selected.resolvedAt,        
             seenBy: [
                 SeenByRecord(
                     user: currentUser,
@@ -220,6 +224,10 @@ class ConversationListViewModel: ObservableObject {
                     label: selected.label,
                     handledBy: selected.handledBy,
                     handledAt: selected.handledAt,
+                    handledDate: Date(),
+                    isEvaluated: false,
+                    evaluatedAt: nil,
+                    resolvedAt: Date(),                  
                     seenBy: selected.seenBy,
                     internalNotes: selected.internalNotes
                 )
@@ -246,6 +254,10 @@ class ConversationListViewModel: ObservableObject {
                         label: selected.label,
                         handledBy: selected.handledBy,
                         handledAt: selected.handledAt,
+                        handledDate: Date(),
+                        isEvaluated: false,
+                        evaluatedAt: nil,
+                        resolvedAt: Date(),
                         seenBy: selected.seenBy,
                         internalNotes: selected.internalNotes
                     )
@@ -312,3 +324,4 @@ class ConversationListViewModel: ObservableObject {
         return formatter.string(from: Date())
     }
 }
+

@@ -22,6 +22,7 @@ struct ContentView: View {
                    KnowledgePage()
                case .settings:
                    SettingsView(editAction: {}, saveAction: {})
+                       .padding()
                default:
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }

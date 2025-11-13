@@ -58,9 +58,12 @@ struct Conversation: Identifiable {
     let handledAt: String
     let handledDate: Date
     
+    var isEvaluated: Bool
+    var evaluatedAt: Date?
+    var resolvedAt: Date?
+    
     // Collaboration Info
     var seenBy: [SeenByRecord]
-//    var collaborators: [User]
     
     // Internal Notes
     var internalNotes: [InternalNote]
@@ -89,6 +92,10 @@ struct Conversation: Identifiable {
         }
     }
     
+    var canBeEvaluated: Bool {
+        return status == .resolved
+    }
+    
     // MARK: - Initializer
     
     init(
@@ -105,9 +112,11 @@ struct Conversation: Identifiable {
         label: [LabelType] = [],
         handledBy: User,
         handledAt: String,
-        handledDate : Date = Date(),
+        handledDate: Date = Date(),
+        isEvaluated: Bool = false,
+        evaluatedAt: Date? = nil,
+        resolvedAt: Date? = nil,
         seenBy: [SeenByRecord] = [],
-//        collaborators: [User] = [],
         internalNotes: [InternalNote] = []
     ) {
         self.id = id
@@ -124,9 +133,35 @@ struct Conversation: Identifiable {
         self.handledBy = handledBy
         self.handledAt = handledAt
         self.handledDate = handledDate
+        self.isEvaluated = isEvaluated
+        self.evaluatedAt = evaluatedAt
+        self.resolvedAt = resolvedAt
         self.seenBy = seenBy
-//        self.collaborators = collaborators
         self.internalNotes = internalNotes
+    }
+    
+    func withEvaluationStatus(isEvaluated: Bool) -> Conversation {
+        return Conversation(
+            id: self.id,
+            name: self.name,
+            message: self.message,
+            time: self.time,
+            profileImage: self.profileImage,
+            unreadCount: self.unreadCount,
+            hasWhatsApp: self.hasWhatsApp,
+            phoneNumber: self.phoneNumber,
+            handlerType: self.handlerType,
+            status: self.status,
+            label: self.label,
+            handledBy: self.handledBy,
+            handledAt: self.handledAt,
+            handledDate: self.handledDate,
+            isEvaluated: isEvaluated,
+            evaluatedAt: isEvaluated ? Date() : self.evaluatedAt,
+            resolvedAt: self.resolvedAt,
+            seenBy: self.seenBy,
+            internalNotes: self.internalNotes
+        )
     }
 }
 
@@ -161,11 +196,6 @@ extension Conversation {
                     seenAt: "14.29"
                 )
             ],
-//            collaborators: [
-//                User(name: "Ninda", profileImage: "Photo Profile", email: "ninda@example.com"),
-//                User(name: "John", profileImage: "Photo Profile", email: "john@example.com"),
-//                User(name: "Sarah", profileImage: "Photo Profile", email: "sarah@example.com")
-//            ],
             internalNotes: [
                 InternalNote(
                     conversationId: UUID(),
@@ -202,9 +232,6 @@ extension Conversation {
                     seenAt: "01.50"
                 )
             ],
-//            collaborators: [
-//                User(name: "Photo Profile", profileImage: "Photo Profile", email: "user@example.com")
-//            ],
             internalNotes: [
                 InternalNote(
                     conversationId: UUID(),
@@ -237,30 +264,11 @@ extension Conversation {
             phoneNumber: "+61-1123-1123",
             handlerType: .human,
             status: nil,
-            label: [.spareparts, .service],
-            handledBy: User(name: "Admin", profileImage: "Photo Profile", email: "admin@example.com"),
+            label: [.warranty],
+            handledBy: User(name: "Photo Profile", profileImage: "Photo Profile", email: "admin@example.com"),
             handledAt: "01.50",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
-        ),
-        
-        Conversation(
-            name: "Bambang Sudirman",
-            message: "Tolong MBG di tangsel ditambah itu...",
-            time: "21.50",
-            profileImage: "Photo Profile",
-            unreadCount: 3,
-            hasWhatsApp: true,
-            phoneNumber: "+61-1123-1123",
-            handlerType: .human,
-            status: nil,
-            label: [.payment],
-            handledBy: User(name: "Finance Team", profileImage: "Photo Profile", email: "finance@example.com"),
-            handledAt: "21.50",
-            handledDate: Date().addingTimeInterval(-3600 * 4),
-            seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -278,7 +286,6 @@ extension Conversation {
             handledAt: "11.50",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -296,7 +303,6 @@ extension Conversation {
             handledAt: "11.50",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -314,7 +320,6 @@ extension Conversation {
             handledAt: "11.50",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -332,7 +337,6 @@ extension Conversation {
             handledAt: "11.50",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         )
     ]
     
@@ -357,7 +361,6 @@ extension Conversation {
                     seenAt: "15.30"
                 )
             ],
-//            collaborators: []
         ),
         
         Conversation(
@@ -375,7 +378,6 @@ extension Conversation {
             handledAt: "08.20",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -393,7 +395,6 @@ extension Conversation {
             handledAt: "12.00",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -411,25 +412,27 @@ extension Conversation {
             handledAt: "06.15",
             handledDate: Date().addingTimeInterval(-3600 * 4),
             seenBy: [],
-//            collaborators: []
         ),
         
+        // Resolved
         Conversation(
-            name: "Customer E",
-            message: "AI: All done!",
+            name: "Pak Daud",
+            message: "Mesin rusak terkena air serta terendam kecap. Dan Customer complain mengenai suaranya yang berisik",
             time: "16.45",
             profileImage: "Photo Profile",
             unreadCount: 0,
             hasWhatsApp: true,
-            phoneNumber: "+61-5555-5555",
+            phoneNumber: "+62 883-3443-4458",
             handlerType: .ai,
             status: .resolved,
             label: [.maintenance],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "16.45",
-            handledDate: Date().addingTimeInterval(-3600 * 4),
+            handledDate: Date().addingTimeInterval(-3600 * 24),
+            isEvaluated: false,
+            evaluatedAt: nil,
+            resolvedAt: Date().addingTimeInterval(-3600 * 23),
             seenBy: [],
-//            collaborators: []
         ),
         
         Conversation(
@@ -445,59 +448,50 @@ extension Conversation {
             label: [],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "02.30",
-            handledDate: Date().addingTimeInterval(-3600 * 4),
-            seenBy: [],
-//            collaborators: []
-        ),
-        
-        Conversation(
-            name: "Customer B",
-            message: "AI: Need help",
-            time: "08.20",
-            profileImage: "Photo Profile",
-            unreadCount: 0,
-            hasWhatsApp: true,
-            phoneNumber: "+61-2222-2222",
-            handlerType: .ai,
-            status: .pending,
-            label: [.warranty],
-            handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
-            handledAt: "08.20",
-            handledDate: Date().addingTimeInterval(-3600 * 4),
+            handledDate: Date().addingTimeInterval(-3600 * 48),
+            isEvaluated: true,
+            evaluatedAt: Date().addingTimeInterval(-3600 * 24),
+            resolvedAt: Date().addingTimeInterval(-3600 * 47),
             seenBy: [],
         ),
         
         Conversation(
-            name: "Customer B",
-            message: "AI: Need help",
+            name: "Customer G",
+            message: "AI: Service completed",
             time: "08.20",
             profileImage: "Photo Profile",
             unreadCount: 0,
             hasWhatsApp: true,
-            phoneNumber: "+61-2222-2222",
+            phoneNumber: "+61-7777-7777",
             handlerType: .ai,
-            status: .pending,
+            status: .resolved,
             label: [.warranty],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
             handledAt: "08.20",
-            handledDate: Date().addingTimeInterval(-3600 * 4),
+            handledDate: Date().addingTimeInterval(-3600 * 72),
+            isEvaluated: false,
+            evaluatedAt: nil,
+            resolvedAt: Date().addingTimeInterval(-3600 * 71),
             seenBy: [],
         ),
         
         Conversation(
-            name: "Customer B",
-            message: "AI: Need help",
-            time: "08.20",
+            name: "Customer H",
+            message: "AI: Issue resolved",
+            time: "14.15",
             profileImage: "Photo Profile",
             unreadCount: 0,
             hasWhatsApp: true,
-            phoneNumber: "+61-2222-2222",
+            phoneNumber: "+61-8888-8888",
             handlerType: .ai,
-            status: .pending,
-            label: [.warranty],
+            status: .resolved,
+            label: [.service],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
-            handledAt: "08.20",
-            handledDate: Date().addingTimeInterval(-3600 * 4),
+            handledAt: "14.15",
+            handledDate: Date().addingTimeInterval(-3600 * 96),
+            isEvaluated: false,
+            evaluatedAt: nil,
+            resolvedAt: Date().addingTimeInterval(-3600 * 95),
             seenBy: [],
         )
     ]

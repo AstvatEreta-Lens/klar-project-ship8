@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct EvaluationPage: View {
+    @StateObject private var evaluationViewModel = EvaluationViewModel()
+    
     var body: some View {
         GeometryReader { geometry in
             HStack{
                 // Header
-                EvaluationView(viewModel: ConversationListViewModel())
+                EvaluationView(evaluationViewModel: evaluationViewModel)
+                    .frame(width: 399, height: geometry.size.height)
                 
                 Divider()
                     .frame(height: geometry.size.height)
@@ -21,20 +24,34 @@ struct EvaluationPage: View {
                 ZStack {
                     Color.white
                         .edgesIgnoringSafeArea(.all)
-                    VStack {
-                        Text("Evaluation Page")
-                            .font(.largeTitle)
-                            .bold()
-                            .foregroundColor(.black)
+                    
+                    if let conversation = evaluationViewModel.selectedConversation {
+                        EvaluationDetailView(
+                            conversation: conversation,
+                            canApprove: evaluationViewModel.canApprove(conversation),
+                            onRemove: {
+                                evaluationViewModel.removeConversation(conversation)
+                            },
+                            onEdit: {
+                                // future editing logic
+                            },
+                            onApprove: {
+                                evaluationViewModel.approveConversation(conversation)
+                            }
+                        )
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        VStack(spacing: 12) {
+                            Image("LogoFix")
+                                .font(.system(size: 48))
+                                .foregroundColor(Color.secondaryText.opacity(0.6))
+                            
+                            Text("Select a context to evaluate")
+                                .font(.headline)
+                                .foregroundColor(Color.secondaryText)
+                        }
                     }
                 }
-                
-                Divider()
-                    .frame(height: geometry.size.height)
-                    .background(Color.borderColor)
-                
-                Text("Placeholder le")
-                    .padding(.trailing)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }

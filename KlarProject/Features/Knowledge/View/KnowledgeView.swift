@@ -15,10 +15,6 @@ struct KnowledgeView: View {
         GeometryReader { geometry in
             HStack{
                 VStack(alignment: .leading){
-                    // Divider
-                    Divider()
-                        .foregroundColor(Color.primaryText)
-                    
                     // Add Files Button
                     HStack{
                         Button(action : viewModel.uploadPDF){

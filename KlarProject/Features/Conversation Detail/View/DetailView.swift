@@ -225,7 +225,7 @@ struct ChatDetailView: View {
                             
                             Spacer()
                             
-                            EvaluateButton(evaluateAction: evaluateMessage)
+                            EvaluateButton(conversation: conversation, evaluateAction: evaluateMessage)
                                 .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 36)
                                 .padding(.horizontal)
                                 .padding(.bottom)

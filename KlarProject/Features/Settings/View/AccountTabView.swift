@@ -14,35 +14,41 @@ struct AccountTabView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Account")
-                .font(.largeTitle)
+                .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(Color.sectionHeader)
            
                     
                 VStack(alignment : .trailing, spacing: 20) {
-                        HStack(alignment: .top) {
-                            Text("Profile Picture")
-                                .font(.body)
-                                .foregroundColor(Color.textRegular)
-                                
-                            Spacer()
-                            Image("Pak Lu Hoot")
-                                .resizable()
+                    HStack{
+                        Text("Profile Picture")
+                            .font(.body)
+                            .foregroundColor(Color.textRegular)
+                            
+                        Spacer()
+                        
+                        if let profile = currentProfile {
+                            UserAvatarView(name: avatarName(for: profile))
                                 .frame(width: 56, height: 56)
-                                .clipShape(Circle())
+                                .padding(.trailing, 200)
+                        } else {
+                            UserAvatarView(name: "NA")
+                                .frame(width: 56, height: 56)
+                                .padding(.trailing, 200)
                         }
-                        fieldRow(title: "Username", text: binding(for: \.username))
-                        fieldRow(title: "Phone Number", text: binding(for: \.phoneNumber))
+                        
                     }
-                    .padding(20)
-                    .background(Color.white)
-                    .cornerRadius(12)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.sectionHeader, lineWidth: 1)
-                    )
+                    usernameRow(text: usernameBinding())
+                    fieldRow(title: "Phone Number", text: binding(for: \.phoneNumber))
+                }
+                .padding(20)
+                .background(Color.white)
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.sectionHeader, lineWidth: 1)
+                )
             }
-            Spacer()
         }
 
     
@@ -74,6 +80,42 @@ struct AccountTabView: View {
                 viewModel.userProfiles[selectedProfileIndex][keyPath: keyPath] = newValue
             }
         )
+    }
+    
+    private func usernameRow(text: Binding<String>) -> some View {
+        HStack(spacing: 6) {
+            Text("Username")
+                .font(.body)
+                .foregroundColor(Color.textRegular)
+            Spacer()
+            EditableTextBox(text: text)
+                .frame(width : 249)
+        }
+    }
+    
+    private func usernameBinding() -> Binding<String> {
+        Binding(
+            get: {
+                guard let profile = currentProfile else { return "" }
+                let value = profile.username
+                return value.hasPrefix("@") ? value : "@\(value)"
+            },
+            set: { newValue in
+                guard viewModel.userProfiles.indices.contains(selectedProfileIndex) else { return }
+                let trimmed = newValue.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmed.isEmpty {
+                    viewModel.userProfiles[selectedProfileIndex].username = ""
+                } else if trimmed.hasPrefix("@") {
+                    viewModel.userProfiles[selectedProfileIndex].username = trimmed
+                } else {
+                    viewModel.userProfiles[selectedProfileIndex].username = "@\(trimmed)"
+                }
+            }
+        )
+    }
+    
+    private func avatarName(for profile: UserProfile) -> String {
+        profile.username.replacingOccurrences(of: "@", with: "")
     }
 }
 
