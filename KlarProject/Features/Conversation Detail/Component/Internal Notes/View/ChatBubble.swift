@@ -10,10 +10,14 @@ import SwiftUI
 struct InternalNoteChatBubble: View {
     let note: InternalNote
     let isCurrentUser: Bool
+    let onEdit: () -> Void
+    let onDelete: () -> Void
+    
+    @State private var showActionButtons: Bool = false
     
     var body: some View {
         HStack(spacing: 0) {
-            ZStack {
+            ZStack(alignment: .topTrailing) {
                 UnevenRoundedRectangle(
                     topLeadingRadius: 11,
                     bottomLeadingRadius: isCurrentUser ? 11 : 0,
@@ -39,8 +43,44 @@ struct InternalNoteChatBubble: View {
                         .padding(.bottom, 8)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
+                
+                // Delete and Edit buttons - only for current user
+                if isCurrentUser {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showActionButtons.toggle()
+                        }
+                    }) {
+                        Image(systemName: "ellipsis")
+                            .font(.caption)
+                            .foregroundColor(Color.textRegular)
+                            .padding(6)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .overlay(alignment: .topTrailing) {
+                        if showActionButtons {
+                            DeleteAndEditButton(
+                                editAction: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        showActionButtons = false
+                                    }
+                                    onEdit()
+                                },
+                                deleteAction: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        showActionButtons = false
+                                    }
+                                    onDelete()
+                                }
+                            )
+                            .offset(x: 0, y: 25)
+                            .transition(.scale.combined(with: .opacity))
+                            .zIndex(10)
+                        }
+                    }
+                }
             }
-            .frame(maxWidth: .infinity) // Membuat bubble memenuhi lebar container
+            .frame(maxWidth: .infinity)
             .padding(.top, 1)
             .padding(.trailing, 21)
         }
@@ -55,11 +95,13 @@ struct InternalNoteChatBubble: View {
     InternalNoteChatBubble(
         note: InternalNote(
             conversationId: UUID(),
-            author: User(name: "Indri Kusuma", profileImage: ""),
+            author: User(name: "Indri Kusuma", profileImage: "", email: "indri@example.com"),
             message: "Konsumen tadi minta service mesin karena kerusakan kabel",
             timestamp: Date()
         ),
-        isCurrentUser: false
+        isCurrentUser: false,
+        onEdit: { print("Edit") },
+        onDelete: { print("Delete") }
     )
     .padding()
     .frame(width: 334)
@@ -70,11 +112,13 @@ struct InternalNoteChatBubble: View {
     InternalNoteChatBubble(
         note: InternalNote(
             conversationId: UUID(),
-            author: User(name: "Admin", profileImage: ""),
+            author: User(name: "Admin", profileImage: "", email: "admin@example.com"),
             message: "Oke noted, nanti saya proses dengan diskon 30%",
             timestamp: Date()
         ),
-        isCurrentUser: true
+        isCurrentUser: true,
+        onEdit: { print("Edit") },
+        onDelete: { print("Delete") }
     )
     .padding()
     .frame(width: 334)
@@ -85,11 +129,13 @@ struct InternalNoteChatBubble: View {
     InternalNoteChatBubble(
         note: InternalNote(
             conversationId: UUID(),
-            author: User(name: "Indri", profileImage: ""),
+            author: User(name: "Indri", profileImage: "", email: "indri@example.com"),
             message: "Ini adalah contoh pesan yang sangat panjang untuk menguji bagaimana tampilan chat bubble ketika ada banyak teks. Semoga bisa wrap dengan baik dan tidak overflow.",
             timestamp: Date()
         ),
-        isCurrentUser: false
+        isCurrentUser: false,
+        onEdit: { print("Edit") },
+        onDelete: { print("Delete") }
     )
     .padding()
     .frame(width: 334)
@@ -101,41 +147,49 @@ struct InternalNoteChatBubble: View {
         InternalNoteChatBubble(
             note: InternalNote(
                 conversationId: UUID(),
-                author: User(name: "Indri", profileImage: ""),
+                author: User(name: "Indri", profileImage: "", email: "indri@example.com"),
                 message: "Konsumen tadi minta service mesin",
                 timestamp: Date().addingTimeInterval(-3600)
             ),
-            isCurrentUser: false
+            isCurrentUser: false,
+            onEdit: {},
+            onDelete: {}
         )
         
         InternalNoteChatBubble(
             note: InternalNote(
                 conversationId: UUID(),
-                author: User(name: "Ahmad", profileImage: ""),
+                author: User(name: "Ahmad", profileImage: "", email: "ahmad@example.com"),
                 message: "Oke saya cek dulu ya",
                 timestamp: Date().addingTimeInterval(-3500)
             ),
-            isCurrentUser: true
+            isCurrentUser: true,
+            onEdit: {},
+            onDelete: {}
         )
         
         InternalNoteChatBubble(
             note: InternalNote(
                 conversationId: UUID(),
-                author: User(name: "Indri", profileImage: ""),
+                author: User(name: "Indri", profileImage: "", email: "indri@example.com"),
                 message: "Kasih diskon 30% ya karena teman dekat",
                 timestamp: Date().addingTimeInterval(-3400)
             ),
-            isCurrentUser: false
+            isCurrentUser: false,
+            onEdit: {},
+            onDelete: {}
         )
         
         InternalNoteChatBubble(
             note: InternalNote(
                 conversationId: UUID(),
-                author: User(name: "Tech Support", profileImage: ""),
+                author: User(name: "Tech Support", profileImage: "", email: "tech@example.com"),
                 message: "Siap, sudah saya input diskon 30% untuk customer ini",
                 timestamp: Date().addingTimeInterval(-3300)
             ),
-            isCurrentUser: true
+            isCurrentUser: true,
+            onEdit: {},
+            onDelete: {}
         )
     }
     .padding()
@@ -149,41 +203,49 @@ struct InternalNoteChatBubble: View {
             InternalNoteChatBubble(
                 note: InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Indri", profileImage: ""),
+                    author: User(name: "Indri", profileImage: "", email: "indri@example.com"),
                     message: "Customer complaint",
                     timestamp: Date()
                 ),
-                isCurrentUser: false
+                isCurrentUser: false,
+                onEdit: {},
+                onDelete: {}
             )
             
             InternalNoteChatBubble(
                 note: InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Current Admin", profileImage: ""),
+                    author: User(name: "Current Admin", profileImage: "", email: "admin@example.com"),
                     message: "I'll handle it",
                     timestamp: Date()
                 ),
-                isCurrentUser: true
+                isCurrentUser: true,
+                onEdit: {},
+                onDelete: {}
             )
             
             InternalNoteChatBubble(
                 note: InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Budi", profileImage: ""),
+                    author: User(name: "Budi", profileImage: "", email: "budi@example.com"),
                     message: "Need technical support",
                     timestamp: Date()
                 ),
-                isCurrentUser: false
+                isCurrentUser: false,
+                onEdit: {},
+                onDelete: {}
             )
             
             InternalNoteChatBubble(
                 note: InternalNote(
                     conversationId: UUID(),
-                    author: User(name: "Current Admin", profileImage: ""),
+                    author: User(name: "Current Admin", profileImage: "", email: "admin@example.com"),
                     message: "Done! ",
                     timestamp: Date()
                 ),
-                isCurrentUser: true
+                isCurrentUser: true,
+                onEdit: {},
+                onDelete: {}
             )
         }
         .padding()

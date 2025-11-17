@@ -20,7 +20,8 @@ struct EvaluationView: View {
     private var filteredConversations: [Conversation] {
         switch selectedFilter {
         case .all:
-            return evaluationViewModel.allConversations
+            // Return unevaluated first, then evaluated
+            return evaluationViewModel.unevaluatedConversations + evaluationViewModel.evaluatedConversations
         case .unevaluated:
             return evaluationViewModel.unevaluatedConversations
         case .evaluated:
@@ -70,16 +71,45 @@ struct EvaluationView: View {
             
             ScrollView {
                 LazyVStack(spacing: 12) {
-                    ForEach(evaluationViewModel.searchConversations(in: filteredConversations)) { conversation in
-                        EvaluationCard(
-                            conversation: conversation,
-                            state: evaluationViewModel.getCardState(for: conversation),
-                            onTap: {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    evaluationViewModel.selectConversation(conversation)
+                    if selectedFilter == .all {
+                        // Show unevaluated conversations first
+                        ForEach(evaluationViewModel.searchConversations(in: evaluationViewModel.unevaluatedConversations)) { conversation in
+                            EvaluationCard(
+                                conversation: conversation,
+                                state: evaluationViewModel.getCardState(for: conversation),
+                                onTap: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        evaluationViewModel.selectConversation(conversation)
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
+                        
+                        // Then show evaluated conversations
+                        ForEach(evaluationViewModel.searchConversations(in: evaluationViewModel.evaluatedConversations)) { conversation in
+                            EvaluationCard(
+                                conversation: conversation,
+                                state: evaluationViewModel.getCardState(for: conversation),
+                                onTap: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        evaluationViewModel.selectConversation(conversation)
+                                    }
+                                }
+                            )
+                        }
+                    } else {
+                        // Show filtered conversations
+                        ForEach(evaluationViewModel.searchConversations(in: filteredConversations)) { conversation in
+                            EvaluationCard(
+                                conversation: conversation,
+                                state: evaluationViewModel.getCardState(for: conversation),
+                                onTap: {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        evaluationViewModel.selectConversation(conversation)
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
                 .padding(.horizontal, 14)
@@ -106,7 +136,7 @@ struct EvaluationView: View {
 // MARK: - Previews
 
 #Preview("Evaluation View") {
-    EvaluationView(evaluationViewModel: EvaluationViewModel())
+    EvaluationView(evaluationViewModel: EvaluationViewModel.shared)
         .frame(width: 399, height: 800)
 }
 

@@ -18,7 +18,7 @@ class ChatViewModel: ObservableObject {
         
         // simulasi upload ke server
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-        self.uploadStatus = "✅ Uploaded: \(url.lastPathComponent)"
+        self.uploadStatus = "Uploaded: \(url.lastPathComponent)"
         }
     }
 }

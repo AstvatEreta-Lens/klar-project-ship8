@@ -13,9 +13,10 @@ final class SidebarViewModel: ObservableObject {
     
     // Top three items
     let mainItems: [SidebarItem] = [
-        SidebarItem(title: "Dashboard", icon: "house.fill", destination: .dashboard),
-        SidebarItem(title: "Conversation", icon: "bubble.fill", destination: .conversation),
-        SidebarItem(title: "Knowledge", icon: "book.closed", destination: .knowledge)
+        SidebarItem(title: "Dashboard", icon: "house", destination: .dashboard),
+        SidebarItem(title: "Conversation", icon: "bubble", destination: .conversation),
+        SidebarItem(title: "Knowledge", icon: "book.closed", destination: .knowledge),
+        SidebarItem(title : "Contact", icon : "person.2", destination: .contact)
     ]
     
     // Settings

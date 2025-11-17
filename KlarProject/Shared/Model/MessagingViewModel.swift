@@ -84,7 +84,7 @@ class MessagingViewModel: ObservableObject {
             }
             
             isSending = false
-            print("✅ Message sent successfully")
+            print("Message sent successfully")
             return true
             
         } catch {
@@ -92,7 +92,7 @@ class MessagingViewModel: ObservableObject {
             messages.removeAll { $0.id == newMessage.id }
             errorMessage = "Failed to send message: \(error.localizedDescription)"
             isSending = false
-            print("❌ Failed to send message: \(error)")
+            print("Failed to send message: \(error)")
             return false
         }
     }
@@ -106,11 +106,11 @@ class MessagingViewModel: ObservableObject {
             messages = try await service.fetchMessages(conversationId: conversationId)
             updateUnreadCount()
             isLoading = false
-            print("✅ Loaded \(messages.count) messages")
+            print("Loaded \(messages.count) messages")
         } catch {
             errorMessage = "Failed to load messages: \(error.localizedDescription)"
             isLoading = false
-            print("❌ Failed to load messages: \(error)")
+            print("Failed to load messages: \(error)")
         }
     }
     
@@ -148,7 +148,7 @@ class MessagingViewModel: ObservableObject {
         
         do {
             try await service.deleteMessage(messageId: id)
-            print("🗑️ Message deleted")
+            print("Message deleted")
         } catch {
             // Rollback on error
             if let message = deletedMessage {
@@ -156,7 +156,7 @@ class MessagingViewModel: ObservableObject {
                 messages.sort { $0.timestamp < $1.timestamp }
             }
             errorMessage = "Failed to delete message"
-            print("❌ Failed to delete message: \(error)")
+            print("Failed to delete message: \(error)")
         }
     }
     

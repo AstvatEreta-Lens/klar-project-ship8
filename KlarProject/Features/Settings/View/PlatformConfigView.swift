@@ -64,6 +64,7 @@ struct PlatformConfigView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .stroke(Color.sectionHeader, lineWidth: 1)
                     )
+                    .padding(.bottom)
             }
     }
     
@@ -77,9 +78,10 @@ struct PlatformConfigView: View {
             Text(title)
                 .font(.body)
                 .foregroundColor(Color.textRegular)
+                .frame(minWidth: 120)
             Spacer()
             EditableTextBox(text: text)
-                .frame(width : 249)
+                .frame(minWidth: 200, maxWidth: 300)
         }
         .padding(.horizontal)
         .padding(.bottom)

@@ -25,39 +25,41 @@ struct ChatDetailView: View {
     
     var body: some View {
         ZStack {
-            VStack {
-                VStack {
+            VStack(alignment : .leading) {
                     // Profile Image
                     if let conversation = detailViewModel.conversation {
-                        Image(conversation.profileImage)
-                            .resizable()
-                            .frame(width: 59, height: 59)
-                            .clipShape(Circle())
-                            .padding(.top, 36)
-                            .padding(.bottom)
                         
                         // Header - Customer Name & WhatsApp
-                        VStack {
-                            Text(conversation.name)
-                                .font(.body)
-                                .fontWeight(.bold)
-                                .foregroundStyle(Color.textRegular)
+                        HStack(alignment : .center){
+                            Image(conversation.profileImage)
+                                .resizable()
+                                .frame(width: 59, height: 59)
+                                .clipShape(Circle())
+                                .padding(.top, 14)
+                                .padding(.bottom)
                             
-                            Text(conversation.phoneNumber)
-                                .font(.caption2)
-                                .foregroundColor(Color.secondaryUsernameText)
-                                .padding(.bottom, 3)
-                            
-                            HStack {
-                                Image("whatsapp")
-                                    .resizable()
-                                    .frame(width: 14, height: 14)
-                                    .clipShape(Circle())
-                                    .foregroundColor(.green)
+                            VStack(alignment : .leading) {
+                                Text(conversation.name)
+                                    .font(.body)
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(Color.textRegular)
                                 
-                                Text("WhatsApp")
-                                    .font(.caption)
-                                    .foregroundColor(Color.greySecondary)
+                                Text(conversation.phoneNumber)
+                                    .font(.caption2)
+                                    .foregroundColor(Color.secondaryUsernameText)
+                                    .padding(.bottom, 3)
+                                
+                                HStack {
+                                    Image("whatsapp")
+                                        .resizable()
+                                        .frame(width: 14, height: 14)
+                                        .clipShape(Circle())
+                                        .foregroundColor(.green)
+                                    
+                                    Text("WhatsApp")
+                                        .font(.caption)
+                                        .foregroundColor(Color.greySecondary)
+                                }
                             }
                         }
                         .padding(.horizontal, 13)
@@ -160,7 +162,7 @@ struct ChatDetailView: View {
                                 
                                     .overlay(alignment : .bottom) {
                                         if isHovered1 {
-                                            BubbleTooltip(text: "Add private notes for this conversation. Only your team can see these notes — customers can’t.")
+                                            BubbleTooltip(text: "Add private notes for this conversation. Only your team can see these notes")
                                                 .zIndex(1)
                                                 .fixedSize(horizontal: false, vertical: true)
                                                 .offset(y:-10)
@@ -169,10 +171,10 @@ struct ChatDetailView: View {
                                     }
                                 
                             }
-                            
+
                             InternalNotesView(
                                 conversationId: conversation.id,
-                                currentUser: User(name: "Current Admin", profileImage: "", email: "admin@example.com")
+                                currentUser: conversationListViewModel.currentUser
                             )
                             .padding(.horizontal, 16)
                             
@@ -228,62 +230,80 @@ struct ChatDetailView: View {
                             EvaluateButton(conversation: conversation, evaluateAction: evaluateMessage)
                                 .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 36)
                                 .padding(.horizontal)
-                                .padding(.bottom)
+                                .padding(.bottom, 13)
                             
                             if shouldShowMarkResolvedButton(for: conversation) {
                                 ResolveButton(resolveAction: handleResolve)
                                     .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 36)
                                     .padding(.horizontal)
-                                    .padding(.bottom)
+                                    .padding(.bottom, 13)
                             }
-                        }
                     }
                 }
             }
             .frame(minWidth: 334, maxHeight: .infinity, alignment: .top)
             .background(Color.white)
+            .toast(manager: detailViewModel.toastManager)
             
             if detailViewModel.showingAddLabel {
-                Color.black.opacity(0.3)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            detailViewModel.showingAddLabel = false
-                        }
-                    }
-                
-                VStack {
-                    Spacer()
-                    
-                    if let conversation = detailViewModel.conversation {
-                        AddLabelView(
-                            viewModel: AddLabelViewModel(existingLabels: conversation.label),
-                            onLabelToggle: { label in
-                                detailViewModel.toggleLabel(label)
+                ZStack(alignment: .topTrailing) {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                detailViewModel.showingAddLabel = false
                             }
-                        )
-                        .shadow(color: Color.black.opacity(0.2), radius: 10, x: 0, y: 5)
-                        .transition(.scale(scale: 0.9).combined(with: .opacity))
+                        }
+
+                    VStack(alignment: .trailing, spacing: 0) {
+                        // Spacer untuk posisi tombol Add
+                        Spacer()
+                            .frame(height: 220) // Jarak dari top ke bawah tombol Add
+                            .allowsHitTesting(false)
+
+                        if let conversation = detailViewModel.conversation {
+                            AddLabelView(
+                                viewModel: AddLabelViewModel(existingLabels: conversation.label),
+                                onLabelToggle: { label in
+                                    detailViewModel.toggleLabel(label)
+                                }
+                            )
+                            .shadow(color: Color.black.opacity(0.15), radius: 8, x: 0, y: 2)
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                            .padding(.trailing, 14)
+                            .padding(.top, 8)
+                        }
+
+                        Spacer()
+                            .allowsHitTesting(false)
                     }
-                    
-                    Spacer()
                 }
             }
         }
+        // SwiftUI view modifier that lets you run code in response to changes in a value.
+        // keep the detail panel sync with the currently selected conversation
         .onChange(of: conversationListViewModel.selectedConversation?.id) { oldID, newID in
             if let _ = newID, let updated = conversationListViewModel.selectedConversation {
                 detailViewModel.updateConversation(updated)
             }
         }
+        
+        // handler type -> human / ai
         .onChange(of: conversationListViewModel.selectedConversation?.handlerType) { oldType, newType in
             if let _ = newType, let updated = conversationListViewModel.selectedConversation {
+                detailViewModel.updateConversation(updated)
+            }
+        }
+        .onChange(of: conversationListViewModel.selectedConversation?.status) { oldStatus, newStatus in
+            if let _ = newStatus, let updated = conversationListViewModel.selectedConversation {
                 detailViewModel.updateConversation(updated)
             }
         }
     }
     
     private func shouldShowMarkResolvedButton(for conversation: Conversation) -> Bool {
-        return conversation.handlerType == .human
+        return conversation.handlerType == .human && conversation.status != .resolved
     }
     
     private func handleResolve() {
@@ -302,7 +322,6 @@ struct ChatDetailView: View {
             print("Conversation updated: \(updatedConversation.name)")
         }
     )
-    .environmentObject(ConversationListViewModel())
+    .environmentObject(ConversationListViewModel.shared)
     .frame(width: 334)
 }
-

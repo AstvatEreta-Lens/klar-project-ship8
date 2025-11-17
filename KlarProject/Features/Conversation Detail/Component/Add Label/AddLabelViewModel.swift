@@ -8,7 +8,7 @@
 import Foundation
 
 extension Conversation {
-    // Creates a copy of the conversation with updated label
+    // Update label dengan value baru
     func updatinglabel(_ newlabel: [LabelType]) -> Conversation {
         return Conversation(
             id: self.id,
@@ -24,7 +24,6 @@ extension Conversation {
             label: newlabel, // Updated value
             handledBy: self.handledBy,
             handledAt: self.handledAt,
-            
             isEvaluated: false,
             seenBy: self.seenBy,
             internalNotes: self.internalNotes
@@ -86,7 +85,6 @@ extension Conversation {
             label: self.label,
             handledBy: self.handledBy,
             handledAt: self.handledAt,
-            
             isEvaluated: false,
             seenBy: self.seenBy,
             internalNotes: newNotes  // Updated value
@@ -109,7 +107,6 @@ extension Conversation {
             label: self.label,
             handledBy: self.handledBy,
             handledAt: self.handledAt,
-            
             isEvaluated: true,
             seenBy: self.seenBy,
             internalNotes: self.internalNotes,
@@ -213,8 +210,6 @@ class ConversationBuilder {
         return conversation
     }
 }
-
-// MARK: - View Model (Multi-Label Support)
 
 class AddLabelViewModel: ObservableObject {
     @Published var selectedLabels: Set<LabelType> = []

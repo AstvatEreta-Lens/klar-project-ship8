@@ -20,7 +20,7 @@ struct EvaluationCard: View {
                     .foregroundColor(state.textColor)
                     .font(.body)
                     .lineLimit(3)
-                    .frame(maxWidth: 350, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Spacer()
                 
@@ -61,7 +61,7 @@ struct EvaluationCard: View {
                 }
             }
             .padding()
-            .frame(width: 377, height: 128)
+            .frame(maxWidth: .infinity, minHeight: 128)
             .background(state.basicColor)
             .cornerRadius(11)
             .overlay(

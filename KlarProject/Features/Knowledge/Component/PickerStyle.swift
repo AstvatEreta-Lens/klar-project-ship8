@@ -15,7 +15,7 @@ private struct SegmentFramePreferenceKey: PreferenceKey {
 }
 
 struct CustomSegmentedPickerView: View {
-  @Binding var selectedIndex: Int 
+  @Binding var selectedIndex: Int
   private let titles: [String] = ["Files", "Evaluation"]
   private let colors: [Color] = [Color(hex: "#E6E6E6"), Color(hex: "#E6E6E6")]
   @State private var frames: [CGRect] = Array(repeating: .zero, count: 2)
@@ -29,6 +29,7 @@ struct CustomSegmentedPickerView: View {
             .fill(colors[selectedIndex].opacity(0.4))
             .frame(width: frames[selectedIndex].width, height: frames[selectedIndex].height)
             .offset(x: offsetXForSelected(), y: 0)
+            .animation(.easeInOut(duration: 0.2), value: selectedIndex)
         }
 
         HStack(spacing: 0) {
@@ -44,7 +45,10 @@ struct CustomSegmentedPickerView: View {
         }
       }
       .coordinateSpace(name: "SEGMENT")
-      .background(Capsule().stroke(Color.gray, lineWidth: 1))
+      .background(
+        Capsule()
+          .stroke(Color(hex: "#CCCCCC"), lineWidth: 1)
+      )
       .onPreferenceChange(SegmentFramePreferenceKey.self) { values in
         // Ensure we only keep as many frames as there are titles
         var newFrames = Array(values.prefix(titles.count))
@@ -55,19 +59,25 @@ struct CustomSegmentedPickerView: View {
       }
     }
     .padding(.vertical, 4)
+    .preferredColorScheme(.light)
   }
 
   @ViewBuilder
   private func segmentButton(title: String, index: Int) -> some View {
-    Button(action: { selectedIndex = index }) {
+    Button(action: {
+      withAnimation(.easeInOut(duration: 0.2)) {
+        selectedIndex = index
+      }
+    }) {
       Text(title)
         .foregroundColor(Color.textRegular)
+        .fontWeight(selectedIndex == index ? .semibold : .regular)
         .frame(maxWidth: 169)
         .padding(.vertical, 10)
-        
-//        .padding(.horizontal, 12)
+        .contentShape(Rectangle()) // Make entire area tappable
     }
-    .buttonStyle(.plain)
+    .buttonStyle(PlainButtonStyle())
+    .allowsHitTesting(true) // Ensure button can be tapped
   }
 
   private func offsetXForSelected() -> CGFloat {
@@ -76,10 +86,16 @@ struct CustomSegmentedPickerView: View {
   }
 }
 
-//struct CustomSegmentedPickerView_Previews: PreviewProvider {
-//  static var previews: some View {
-//    CustomSegmentedPickerView()
-//      .padding()
-//      
-//  }
-//}
+#Preview {
+  struct PreviewWrapper: View {
+    @State private var selectedIndex = 0
+    
+    var body: some View {
+      CustomSegmentedPickerView(selectedIndex: $selectedIndex)
+        .frame(width: 169, height: 36)
+        .padding()
+    }
+  }
+  
+  return PreviewWrapper()
+}

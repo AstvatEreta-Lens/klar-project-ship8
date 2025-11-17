@@ -14,28 +14,30 @@ struct ResolveButton: View {
         Button(action: resolveAction) {
             HStack(spacing: 8) {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(Color.borderColor)
+                    .foregroundColor(Color.white)
                     .font(.body)
                 
                 Text("Mark Resolved")
-                    .foregroundColor(Color.borderColor)
+                    .foregroundColor(Color.white)
                     .font(.body)
-                    .fontWeight(.medium)
+//                    .fontWeight(.medium)
             }
             .frame(minWidth: 307, maxWidth: .infinity,minHeight: 36, maxHeight: .infinity, alignment: .center)
-            .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color(red: 0.42, green: 0.68, blue: 0.74),
-                        Color(red: 0.25, green: 0.48, blue: 0.55)
-                    ]),
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-            )
+//            .background(
+//                LinearGradient(
+//                    gradient: Gradient(colors: [
+//                        Color(red: 0.42, green: 0.68, blue: 0.74),
+//                        Color(red: 0.25, green: 0.48, blue: 0.55)
+//                    ]),
+//                    startPoint: .leading,
+//                    endPoint: .trailing
+//                )
+//            )
             .cornerRadius(11)
             .shadow(color: .black.opacity(0.15), radius: 3, x: 0, y: 2)
         }
+        .background(Color.sectionHeader)
+        .cornerRadius(11)
         .buttonStyle(PlainButtonStyle())
     }
 }

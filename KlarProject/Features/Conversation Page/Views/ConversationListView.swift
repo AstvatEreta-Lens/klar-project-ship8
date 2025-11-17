@@ -53,7 +53,7 @@ struct ConversationListView: View {
                 // Filter Overlay
                 if showingFilter {
                     // Dimmed Background
-                    Color.black.opacity(0.3)
+                    Color.white.opacity(0)
                         .ignoresSafeArea()
                         .onTapGesture {
                             withAnimation(.easeInOut(duration: 0.2)) {
@@ -76,12 +76,18 @@ struct ConversationListView: View {
                             )
                             .frame(width: 307)
                             .cornerRadius(12)
-                            .shadow(color: Color.black.opacity(0.2), radius: 10, x: -5, y: 0)
+                            .overlay(
+                                RoundedRectangle(
+                                    cornerRadius: 12
+                                )
+                                .stroke(Color.sectionHeader, lineWidth: 1)
+                            )
                             .transition(.move(edge: .trailing))
                         }
                         Spacer()
                     }
-                    .padding(.top, 150) // Adjust sesuai posisi button filter
+                    .padding(.top, 90) // Adjust sesuai posisi button filter
+                    .padding(.trailing, 15)
                 }
             }
         }
@@ -112,6 +118,7 @@ struct ConversationListView: View {
                 }) {
                     ZStack {
                         Image(systemName: "slider.horizontal.3")
+                            .font(.body)
                             .foregroundColor(Color.primaryText)
                         
                         // Badge untuk show jumlah active filters
@@ -220,41 +227,47 @@ struct ConversationListView: View {
     
     // Empty state view
     private var emptyFilterState: some View {
-        VStack(spacing: 12) {
+        
+        VStack(spacing: 11) {
             Image(systemName: "tray")
                 .font(.system(size: 40))
-                .foregroundColor(.gray)
+                .foregroundColor(Color.borderColor)
             
             Text("No conversations found")
-                .font(.headline)
-                .foregroundColor(.gray)
+                .font(.caption)
+                .foregroundColor(Color.borderColor)
             
             if filterViewModel.hasActiveFilters {
                 Button(action: {
                     filterViewModel.clearAllFilters()
                 }) {
-                    Text("Clear Filters")
-                        .font(.subheadline)
-                        .foregroundColor(.white)
-                        .padding(.vertical, 2)
-                        .padding(.horizontal, 2)
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 11)
-//                                .stroke(style: StrokeStyle(lineWidth: 1))
-//                        )
-                        .background(Color.sectionHeader)
+                    HStack{
+                        Image(systemName: "line.3.horizontal.decrease.circle.fill")
+                            .foregroundColor(Color.tertiaryText)
+                            .font(.caption)
+                        Text("Clear Filters")
+                            .font(.caption)
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.tertiaryText)
+                            
+                    }
+                    .padding(.vertical, 2)
+                    .padding(.horizontal, 9)
+                    .background(Color.sectionHeader)
+                    .cornerRadius(11)
+                    
                 }
-                .cornerRadius(5)
+                .frame(width :  110, height : 24)
                 .buttonStyle(PlainButtonStyle())
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
+        .padding(.vertical, 100)
     }
 }
 
 #Preview {
-        ConversationListView(viewModel: ConversationListViewModel())
+        ConversationListView(viewModel: ConversationListViewModel.shared)
         .frame(width : 335, height : 900)
 }
 

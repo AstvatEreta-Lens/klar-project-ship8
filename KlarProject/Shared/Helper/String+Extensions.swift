@@ -7,6 +7,8 @@
 
 import Foundation
 
+
+// ambil kata pertama
 extension String {
     var initials: String {
         let words = self.components(separatedBy: .whitespaces)

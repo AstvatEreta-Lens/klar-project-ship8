@@ -8,13 +8,14 @@
 import SwiftUI
 import Combine
 
-@MainActor
+
 class DetailViewModel: ObservableObject {
     // MARK: - Published Properties
     
     @Published var conversation: Conversation?
     @Published var showingAddLabel = false
     @Published var showingAddCollaborator = false
+    @Published var toastManager = ToastManager()
     
     // Callback untuk notify parent view
     var onConversationUpdated: ((Conversation) -> Void)?
@@ -28,7 +29,7 @@ class DetailViewModel: ObservableObject {
     
     // MARK: - Label Management
     
-    /// Toggle label - Add if not exists, Remove if exists
+    // Toggle label - Add if not exists, Remove if exists
     func toggleLabel(_ label: LabelType) {
         guard var currentConversation = conversation else {
             print("Error: No conversation to update")
@@ -57,10 +58,12 @@ class DetailViewModel: ObservableObject {
         print("Current labels: \(updatedLabels.map { $0.text }.joined(separator: ", "))")
     }
     
-    /// Delete a specific label from the conversation
+    // Delete a specific label from the conversation
     func deleteLabel(_ label: LabelType) {
         guard var currentConversation = conversation else {
             print("Error: No conversation to update")
+            // Toast manager
+            toastManager.show(.errorWithoutButton)
             return
         }
         
@@ -70,16 +73,19 @@ class DetailViewModel: ObservableObject {
         // Update conversation
         currentConversation = currentConversation.updatinglabel(updatedLabels)
         conversation = currentConversation
+        toastManager.show(.successWithoutButton)
         
         // Notify parent
         onConversationUpdated?(currentConversation)
         
         print("Label deleted: \(label.text)")
+        // Toast manager
+        toastManager.show(.successWithoutButton)
     }
     
     // MARK: - Update Conversation
     
-    /// Update the current conversation
+    // Update the current conversation
     func updateConversation(_ newConversation: Conversation) {
         conversation = newConversation
     }

@@ -12,7 +12,7 @@ struct CustomDivider : View {
         Rectangle()
             .fill(Color.borderColor)
             .frame(width : 307, height : 1)
-            .padding(.top, 10)
+//            .padding(.top, 10)
             .padding(.bottom, 9)
             .padding(.leading, 16)
             .padding(.trailing, 16)

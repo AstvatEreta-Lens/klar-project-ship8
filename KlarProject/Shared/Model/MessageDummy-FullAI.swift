@@ -101,7 +101,7 @@ class MockMessageService: MessageServiceProtocol {
             }
         }
         
-        print("✅ MockService: Message sent successfully")
+        print("MockService: Message sent successfully")
         return updatedMessage
     }
     
@@ -141,7 +141,7 @@ class MockMessageService: MessageServiceProtocol {
             let filtered = messages.filter { $0.id != messageId }
             if filtered.count != messages.count {
                 messagesStore[conversationId] = filtered
-                print("🗑️ MockService: Message \(messageId) deleted")
+                print("MockService: Message \(messageId) deleted")
                 return
             }
         }
@@ -247,7 +247,7 @@ class MockMessageService: MessageServiceProtocol {
     func clearAllMessages() {
         messagesStore.removeAll()
         messageStatusStore.removeAll()
-        print("🗑️ MockService: All messages cleared")
+        print("MockService: All messages cleared")
     }
     
     // Get message count for conversation

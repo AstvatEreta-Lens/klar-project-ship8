@@ -12,12 +12,11 @@ struct KlarProjectApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .onAppear {
-                    // Force full screen on launch
-                    if let window = NSApplication.shared.windows.first {
-                        window.toggleFullScreen(nil)
-                    }
-                }
+                .frame(minHeight : 982, maxHeight : .infinity)
+                .frame(minWidth : 1500, maxWidth: .infinity)
+                .background(Color.white)
         }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
     }
 }

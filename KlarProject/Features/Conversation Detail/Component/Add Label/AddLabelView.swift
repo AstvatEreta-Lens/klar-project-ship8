@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Add Label View (Same Style as FilterView)
 
 struct AddLabelView: View {
     @ObservedObject var viewModel: AddLabelViewModel

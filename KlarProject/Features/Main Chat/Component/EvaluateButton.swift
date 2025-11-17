@@ -24,11 +24,11 @@ struct EvaluateButton: View {
         }) {
             HStack(spacing: 8) {
                 Image(systemName: "pencil.and.list.clipboard")
-                    .foregroundColor(canEvaluate ? Color.sectionHeader : Color.gray)
+                    .foregroundColor(canEvaluate ? Color.sectionHeader : Color.black)
                     .font(.body)
                 
                 Text("Evaluate this conversation")
-                    .foregroundColor(canEvaluate ? Color.sectionHeader : Color.gray)
+                    .foregroundColor(canEvaluate ? Color.sectionHeader : Color.black)
                     .font(.body)
             }
             .frame(minWidth: 307, maxWidth: .infinity, minHeight: 36, maxHeight: .infinity, alignment: .center)
@@ -38,7 +38,6 @@ struct EvaluateButton: View {
                 RoundedRectangle(cornerRadius: 11)
                     .stroke(canEvaluate ? Color.sectionHeader : Color.gray, lineWidth: 1)
             )
-            .shadow(color: .black.opacity(canEvaluate ? 0.15 : 0.05), radius: 3, x: 0, y: 2)
         }
         .buttonStyle(PlainButtonStyle())
         .disabled(!canEvaluate)
@@ -58,7 +57,7 @@ struct EvaluateButton: View {
                 hasWhatsApp: true,
                 phoneNumber: "+61-1123-1123",
                 handlerType: .ai,
-                status: .resolved,  // ✅ Resolved - Can evaluate
+                status: .resolved,
                 handledBy: User(name: "AI", profileImage: "", email: "ai@example.com"),
                 handledAt: "14.29"
             ),
@@ -67,10 +66,33 @@ struct EvaluateButton: View {
             }
         )
         .frame(width: 307, height: 36)
-        
-        Text("Status: Can Evaluate (Resolved)")
-            .font(.caption)
-            .foregroundColor(.green)
+    }
+    .padding()
+    .background(Color.gray.opacity(0.1))
+}
+
+
+#Preview("gabisa Evaluate") {
+    VStack(spacing: 20) {
+        EvaluateButton(
+            conversation: Conversation(
+                name: "Test Customer",
+                message: "Test message",
+                time: "14.29",
+                profileImage: "Photo Profile",
+                unreadCount: 0,
+                hasWhatsApp: true,
+                phoneNumber: "+61-1123-1123",
+                handlerType: .ai,
+                status: nil,
+                handledBy: User(name: "AI", profileImage: "", email: "ai@example.com"),
+                handledAt: "14.29"
+            ),
+            evaluateAction: {
+                print("Evaluation triggered!")
+            }
+        )
+        .frame(width: 307, height: 36)
     }
     .padding()
     .background(Color.gray.opacity(0.1))

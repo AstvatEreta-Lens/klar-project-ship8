@@ -13,10 +13,15 @@ class InternalNotesViewModel: ObservableObject {
     @Published var notes: [InternalNote] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    @Published var editingNote: InternalNote? = nil
     
     private let conversationId: UUID
     private let currentUser: User
     private let service: InternalNotesServiceProtocol
+    
+    var isEditMode: Bool {
+        editingNote != nil
+    }
     
     init(
         conversationId: UUID,
@@ -27,7 +32,7 @@ class InternalNotesViewModel: ObservableObject {
         self.currentUser = currentUser
         self.service = service
         
-        print("\(conversationId)")
+        print("InternalNotesViewModel initialized for conversation: \(conversationId)")
         
         // Load notes on init
         Task {
@@ -39,24 +44,64 @@ class InternalNotesViewModel: ObservableObject {
         let trimmed = message.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         
-        let newNote = InternalNote(
-            conversationId: conversationId,
-            author: currentUser,
-            message: trimmed
-        )
+        // Check if we're in edit mode
+        if let editingNote = editingNote {
+            updateNote(editingNote, with: trimmed)
+            self.editingNote = nil
+        } else {
+            // Create new note
+            let newNote = InternalNote(
+                conversationId: conversationId,
+                author: currentUser,
+                message: trimmed
+            )
+            
+            // Optimistic update (add to UI immediately)
+            notes.append(newNote)
+            
+            // Save in background
+            Task {
+                do {
+                    try await service.saveNote(newNote)
+                    print("Note sent successfully")
+                } catch {
+                    // Rollback on error
+                    notes.removeAll { $0.id == newNote.id }
+                    errorMessage = "Failed to send note: \(error.localizedDescription)"
+                }
+            }
+        }
+    }
+    
+    func startEditingNote(_ note: InternalNote) {
+        editingNote = note
+        print("Editing note: \(note.message)")
+    }
+    
+    func cancelEditing() {
+        editingNote = nil
+        print("Editing cancelled")
+    }
+    
+    private func updateNote(_ note: InternalNote, with newMessage: String) {
+        let updatedNote = note.updating(message: newMessage)
         
-        // Optimistic update (add to UI immediately)
-        notes.append(newNote)
+        // Optimistic update
+        if let index = notes.firstIndex(where: { $0.id == note.id }) {
+            notes[index] = updatedNote
+        }
         
-        // Save in background
+        // Update in background
         Task {
             do {
-                try await service.saveNote(newNote)
-                print("Note sent successfully")
+                try await service.updateNote(updatedNote)
+                print("Note updated successfully")
             } catch {
                 // Rollback on error
-                notes.removeAll { $0.id == newNote.id }
-                errorMessage = "Failed to send note: \(error.localizedDescription)"
+                if let index = notes.firstIndex(where: { $0.id == updatedNote.id }) {
+                    notes[index] = note // Restore original
+                }
+                errorMessage = "Failed to update note: \(error.localizedDescription)"
             }
         }
     }
@@ -68,27 +113,32 @@ class InternalNotesViewModel: ObservableObject {
         do {
             notes = try await service.fetchNotes(conversationId: conversationId)
             isLoading = false
+            print("Loaded \(notes.count) notes")
         } catch {
             errorMessage = "Failed to load notes: \(error.localizedDescription)"
             isLoading = false
         }
     }
     
-    func deleteNote(id: UUID) {
+    func deleteNote(_ note: InternalNote) {
+        // Cancel editing if we're deleting the note being edited
+        if editingNote?.id == note.id {
+            editingNote = nil
+        }
+        
         // Optimistic delete
-        let deletedNote = notes.first { $0.id == id }
-        notes.removeAll { $0.id == id }
+        notes.removeAll { $0.id == note.id }
         
         // Delete in background
         Task {
             do {
-                try await service.deleteNote(id: id)
+                try await service.deleteNote(id: note.id)
+                print("Note deleted successfully")
             } catch {
                 // Rollback on error
-                if let note = deletedNote {
-                    notes.append(note)
-                    errorMessage = "Failed to delete note"
-                }
+                notes.append(note)
+                notes.sort { $0.timestamp < $1.timestamp }
+                errorMessage = "Failed to delete note: \(error.localizedDescription)"
             }
         }
     }

@@ -11,13 +11,13 @@ struct SidebarRow: View {
     let item: SidebarItem
     let isSelected: Bool
     @State private var isHovered = false
-    
+
     var body: some View {
         HStack(spacing: 10) {
             Image(systemName: item.icon)
                 .foregroundColor(Color.primaryText)
                 .frame(width: 20)
-            
+
             Text(item.title)
                 .font(.body)
                 .foregroundColor(Color.primaryText)
@@ -60,7 +60,8 @@ struct SidebarRow: View {
 // MARK: - Sidebar View
 struct SidebarView: View {
     @ObservedObject var viewModel: SidebarViewModel
-    
+    @State private var isHovering: Bool = false
+
     var body: some View {
         VStack(spacing: 0) {
             VStack(spacing: 6) {
@@ -73,7 +74,7 @@ struct SidebarView: View {
             }
             .frame(maxWidth: .infinity)
             .background(Color.backgroundPrimary)
-            
+
             VStack(spacing: 4) {
                 ForEach(viewModel.mainItems) { item in
                     Button(action: {
@@ -84,10 +85,9 @@ struct SidebarView: View {
                     .buttonStyle(.plain)
                 }
             }
-//            .padding(.horizontal, 12)
-            
+
             Spacer()
-            
+
             VStack(spacing: 4) {
                 ForEach(viewModel.bottomItems) { item in
                     Button(action: {
@@ -98,9 +98,9 @@ struct SidebarView: View {
                     .buttonStyle(.plain)
                 }
             }
-//            .padding(.horizontal, 12)
             .padding(.bottom, 16)
         }
+
         .frame(minWidth: 214, maxWidth: 247)
         .background(Color.backgroundPrimary)
     }

@@ -10,9 +10,7 @@ import SwiftUI
 
 struct MainChatView: View {
     @EnvironmentObject var viewModel: ConversationListViewModel
-    
-    
-    
+
     var body: some View {
         VStack(spacing: 0) {
             // Top Section
@@ -43,7 +41,8 @@ struct MainChatView: View {
                             .padding(.bottom, 8)
                         
                         TakeOverButton(takeoverAction: handleTakeOver)
-                            .padding(.horizontal, 22)
+                            .frame(minWidth: 599, maxWidth: .infinity, maxHeight: 36)
+                            .padding(.horizontal, 16)
                         
 //                        Spacer()
                     }
@@ -136,6 +135,6 @@ struct MessageBubble: View {
 
 #Preview {
     MainChatView()
-        .environmentObject(ConversationListViewModel())
+        .environmentObject(ConversationListViewModel.shared)
         .padding()
 }

@@ -11,19 +11,15 @@ struct PDFCardView: View {
     let pdfDocument: PDFDocument
     let action: () -> Void
     var isSelected: Bool = false
+    @State private var showActionButtons: Bool = false
     
     var body: some View {
         HStack{
             HStack{
                 ZStack(alignment: .bottom){
-                    Image(systemName: "clipboard.fill")
+                    Image("Group 12")
                         .font(.title)
                         .foregroundColor(Color.sectionHeader)
-                    Text("PDF")
-                        .font(.system(size: 8))
-                        .foregroundColor(.white)
-                        .padding(.horizontal)
-                        .padding(.bottom, 2)
                 }
                 
                 VStack(alignment : .leading){
@@ -37,12 +33,38 @@ struct PDFCardView: View {
                 
                 Spacer()
                 
-                Button(action : action){
+                Button(action: {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showActionButtons.toggle()
+                    }
+                }){
                     Image(systemName: "ellipsis")
                         .rotationEffect(Angle(degrees: 90))
                         .foregroundColor(Color.black)
                 }
                 .buttonStyle(PlainButtonStyle())
+                .overlay{
+                    if showActionButtons {
+                        DeleteAndEditButton(
+                            editAction: {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showActionButtons = false
+                                }
+                                // Add edit logic
+                                print("Edit PDF: \(pdfDocument.title)")
+                            },
+                            deleteAction: {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showActionButtons = false
+                                }
+                                action() // Trigger delete action
+                            }
+                        )
+                        .offset(x: -35)
+                        .transition(.scale.combined(with: .opacity))
+                        .zIndex(10)
+                    }
+                }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.vertical, 12)

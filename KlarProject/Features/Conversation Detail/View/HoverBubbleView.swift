@@ -24,7 +24,7 @@ struct HoverBubbleView: View {
             .overlay(alignment: .topLeading) {
                 if isHovered {
                     BubbleTooltip(text: "Ini adalah informasi tambahan yang muncul saat hover.")
-                        .fixedSize(horizontal: false, vertical: true) // biar semua teks terlihat
+                        .fixedSize(horizontal: false, vertical: true) 
                         .offset(x: 30, y: -10)
                         .transition(.opacity.combined(with: .scale))
                 }

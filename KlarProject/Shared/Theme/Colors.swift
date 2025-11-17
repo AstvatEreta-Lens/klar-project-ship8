@@ -87,7 +87,8 @@ extension Color {
     // Evaluated Background
     static let evaluatedBackgroundCard = Color("BackgroundTertiary")
     
-    
+    // Unable to Evaluate Background
+    static let unableToEvaluateBackgroundCard = Color("UnableToEvaluateColor")
     
     
     // Grey Color

@@ -10,16 +10,23 @@ import Combine
 
 @MainActor
 class ConversationListViewModel: ObservableObject {
-    // MARK: - Published Properties
-    
+    static let shared = ConversationListViewModel()
+
+
     @Published var selectedConversation: Conversation?
     @Published var humanConversations: [Conversation] = []
     @Published var aiConversations: [Conversation] = []
     @Published var searchText: String = ""
     @Published var selectedFilter: String = "All" // Added for filter buttons
-    
-    // MARK: - Computed Properties for Filtering
-    
+    @Published var toastManager = ToastManager()
+
+    // Current logged in user
+    var currentUser: User = User(
+        name: "Current User",
+        profileImage: "user-avatar",
+        email: "user@example.com"
+    )
+
     // Filtered human conversations (by search text)
     var filterHumanConvo: [Conversation] {
         var filtered = humanConversations
@@ -76,18 +83,11 @@ class ConversationListViewModel: ObservableObject {
     
     
     // Current user buat satu
-    private var currentUser: User = User(
-        name: "Current User",
-        profileImage: "user-avatar",
-        email: "user@example.com"
-    )
-    
-    
-    init() {
+    private init() {
         loadConversations()
     }
     
-    // MARK: - Data Loading
+    // MARK: Data Loading
     
     func loadConversations() {
         // Load from dummy data or API
@@ -136,7 +136,7 @@ class ConversationListViewModel: ObservableObject {
         }
     }
     
-    // MARK: - TakeOver Functionality
+    // MARK: TakeOver Functionality
     
     // Takes over an AI conversation and converts it to human-handled
     func takeOverConversation() {
@@ -283,13 +283,59 @@ class ConversationListViewModel: ObservableObject {
         }
     }
     
-    // MARK: Evaluate Functionality
-    func evaluateMessage(){
-        // add ke evaluation
-        // evaluate pakai AI (panggil AI SUmmary service lagi)
+    // MARK: - Evaluate Functionality
+
+    // Add conversation to evaluation page
+    func evaluateMessage() {
+        guard let selected = selectedConversation else {
+            print("No conversation selected")
+            toastManager.show(.evaluationError)
+            return
+        }
+
+        // Check if conversation can be evaluated
+        guard selected.canBeEvaluated else {
+            print("Conversation cannot be evaluated (must be resolved)")
+            toastManager.show(.evaluationError)
+            return
+        }
+
+        // Add to evaluation list via shared instance
+        EvaluationViewModel.shared.addConversation(selected)
+        print("Conversation sent to evaluation: \(selected.name)")
+        toastManager.show(.evaluationSuccess)
     }
-    
-    
+
+    // MARK: - Update Conversation
+
+    // Update conversation in the list (for label changes, etc)
+    func updateConversation(_ updatedConversation: Conversation) {
+        // Update in human conversations
+        if let index = humanConversations.firstIndex(where: { $0.id == updatedConversation.id }) {
+            humanConversations[index] = updatedConversation
+            // Update selected conversation if it's the same one
+            if selectedConversation?.id == updatedConversation.id {
+                selectedConversation = updatedConversation
+            }
+            print("Update conversation : \(updatedConversation.name)")
+            return
+        }
+
+        // Update in AI conversations
+        if let index = aiConversations.firstIndex(where: { $0.id == updatedConversation.id }) {
+            aiConversations[index] = updatedConversation
+            // Update selected conversation if it's the same one
+            if selectedConversation?.id == updatedConversation.id {
+                selectedConversation = updatedConversation
+            }
+            print("Update conversation: \(updatedConversation.name)")
+            return
+        }
+
+        print("Conversation not found: \(updatedConversation.id)")
+    }
+
+
     // MARK: - Internal Notes
     
     // Adds an internal note to a conversation

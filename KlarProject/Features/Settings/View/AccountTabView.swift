@@ -24,19 +24,17 @@ struct AccountTabView: View {
                         Text("Profile Picture")
                             .font(.body)
                             .foregroundColor(Color.textRegular)
-                            
+
                         Spacer()
-                        
+
                         if let profile = currentProfile {
                             UserAvatarView(name: avatarName(for: profile))
                                 .frame(width: 56, height: 56)
-                                .padding(.trailing, 200)
                         } else {
                             UserAvatarView(name: "NA")
                                 .frame(width: 56, height: 56)
-                                .padding(.trailing, 200)
                         }
-                        
+
                     }
                     usernameRow(text: usernameBinding())
                     fieldRow(title: "Phone Number", text: binding(for: \.phoneNumber))
@@ -63,9 +61,10 @@ struct AccountTabView: View {
             Text(title)
                 .font(.body)
                 .foregroundColor(Color.textRegular)
+                .frame(minWidth: 100)
             Spacer()
             EditableTextBox(text: text)
-                .frame(width : 249)
+                .frame(minWidth: 200, maxWidth: 300)
         }
     }
     
@@ -87,9 +86,10 @@ struct AccountTabView: View {
             Text("Username")
                 .font(.body)
                 .foregroundColor(Color.textRegular)
+                .frame(minWidth: 100)
             Spacer()
             EditableTextBox(text: text)
-                .frame(width : 249)
+                .frame(minWidth: 200, maxWidth: 300)
         }
     }
     

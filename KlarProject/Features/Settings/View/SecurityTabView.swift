@@ -46,9 +46,10 @@ struct SecurityTabView: View {
             Text(title)
                 .font(.body)
                 .foregroundColor(Color.textRegular)
+                .frame(minWidth: 120)
             Spacer()
             EditableTextBox(text: text)
-                .frame(width : 249)
+                .frame(minWidth: 200, maxWidth: 300)
         }
     }
     

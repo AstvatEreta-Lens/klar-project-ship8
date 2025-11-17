@@ -139,7 +139,7 @@ struct FilterView: View {
             .padding(.bottom, 20)
         }
         .padding(.horizontal, 20)
-        .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 330, alignment: .top)
+        .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 360, alignment: .top)
         .background(Color.white)
     }
 }

@@ -12,33 +12,27 @@ struct TakeOverButton : View{
     
     var body: some View{
         Button(action: takeoverAction) {
-            HStack(spacing: 8) {
+            HStack{
                 Text("Take Over")
                     .foregroundColor(Color.white)
                     .font(.body)
                     .fontWeight(.light)
-                    .padding(.top, 8.5)
+                    .frame(minWidth : 599, maxWidth: .infinity, minHeight : 36, maxHeight: .infinity, alignment: .center)
+                    .background(
+                        RoundedRectangle(cornerRadius: 11)
+                            .foregroundColor(Color.sectionHeader)
+                            
+                    )
             }
-            .frame(minWidth: 595, maxWidth: .infinity, maxHeight: 36, alignment: .top)
-            .background(
-                LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: Color.borderColor, location: 0.01),
-                        .init(color: Color.secondaryTextColor, location: 1.0)
-                    ]),
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-            )
-            .cornerRadius(11)
-            .shadow(color: .black.opacity(0.5), radius: 1, x: 0, y: 2)
         }
-        .padding(.bottom)
         .buttonStyle(PlainButtonStyle())
+        .cornerRadius(11)
+        .padding(.bottom, 24)
     }
 }
 
 #Preview{
     TakeOverButton(takeoverAction: {})
+        .frame(width : 599, height : 36)
         .padding()
 }

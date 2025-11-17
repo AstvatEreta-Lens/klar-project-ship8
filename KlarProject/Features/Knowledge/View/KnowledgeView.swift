@@ -10,6 +10,7 @@ import SwiftUI
 struct KnowledgeView: View {
     @ObservedObject var viewModel : KnowledgeViewModel
     let action: () -> Void
+    let onAddFiles: () -> Void
     
     var body: some View {
         GeometryReader { geometry in
@@ -17,27 +18,20 @@ struct KnowledgeView: View {
                 VStack(alignment: .leading){
                     // Add Files Button
                     HStack{
-                        Button(action : viewModel.uploadPDF){
+                        Button(action: onAddFiles){
                             ZStack{
                                 HStack{
                                     Image(systemName: "plus")
-                                        .foregroundColor(Color.border)
+                                        .foregroundColor(Color.white)
                                         .font(.body)
                                     Text("Add Files")
-                                        .foregroundColor(Color.border)
+                                        .foregroundColor(Color.white)
                                         .font(.body)
                                 }
                             }
                             .frame(width: 106, height: 36)
                         }
-                        .background(LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color(red: 0.42, green: 0.68, blue: 0.74),
-                                Color(red: 0.25, green: 0.48, blue: 0.55)
-                            ]),
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        ))
+                        .background(Color.sectionHeader)
                         .cornerRadius(11)
                         .padding(.leading, 14)
                         
@@ -73,7 +67,6 @@ struct KnowledgeView: View {
                 }
                 .background(Color.backgroundPrimary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                
             }
         }
     }
@@ -87,7 +80,8 @@ struct KnowledgeView: View {
                     PDFCardView(
                         pdfDocument: pdf,
                         action: {
-                            // Handle PDF selection
+                            // Handle delete request
+                            viewModel.requestDeletePDF(pdf)
                         },
                         isSelected: viewModel.selectedPDF?.id == pdf.id
                     )
@@ -134,7 +128,6 @@ struct KnowledgeView: View {
 
 
 #Preview {
-    KnowledgeView(viewModel: KnowledgeViewModel(), action: {})
-//        .frame(width: 1908, height: 982)
+    KnowledgeView(viewModel: KnowledgeViewModel(), action: {}, onAddFiles: {})
         .padding()
 }

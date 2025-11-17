@@ -9,53 +9,9 @@ import Foundation
 protocol InternalNotesServiceProtocol {
     func fetchNotes(conversationId: UUID) async throws -> [InternalNote]
     func saveNote(_ note: InternalNote) async throws
+    func updateNote(_ note: InternalNote) async throws  // NEW: Added for edit functionality
     func deleteNote(id: UUID) async throws
 }
-
-// MARK: - Mock Service (for development without API)
-//class MockInternalNotesService: InternalNotesServiceProtocol {
-//    // In-memory storage (simulates backend)
-//    private var storage: [UUID: [InternalNote]] = [:]
-//    
-//    func fetchNotes(conversationId: UUID) async throws -> [InternalNote] {
-//        // Simulate network delay
-//        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
-//        
-//        // Return saved notes or dummy data
-//        if let notes = storage[conversationId], !notes.isEmpty {
-//            return notes.sorted { $0.timestamp < $1.timestamp }
-//        } else {
-//            // First load - return dummy data
-//            let dummyNotes = InternalNote.dummyNotes
-//            storage[conversationId] = dummyNotes
-//            return dummyNotes
-//        }
-//    }
-//    
-//    func saveNote(_ note: InternalNote) async throws {
-//        // Simulate network delay
-//        try await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
-//        
-//        // Save to memory
-//        if storage[note.conversationId] != nil {
-//            storage[note.conversationId]?.append(note)
-//        } else {
-//            storage[note.conversationId] = [note]
-//        }
-//        
-//        print("✅ Note saved: \(note.message)")
-//    }
-//    
-//    func deleteNote(id: UUID) async throws {
-//        try await Task.sleep(nanoseconds: 200_000_000)
-//        
-//        for (conversationId, notes) in storage {
-//            storage[conversationId] = notes.filter { $0.id != id }
-//        }
-//        
-//        print("🗑️ Note deleted: \(id)")
-//    }
-//}
 
 // MARK: - Mock Service with Per-Conversation Storage
 class MockInternalNotesService: InternalNotesServiceProtocol {
@@ -95,8 +51,28 @@ class MockInternalNotesService: InternalNotesServiceProtocol {
             storage[note.conversationId] = [note]
         }
         
-        print("✅ Note saved for conversation: \(note.conversationId)")
-        print("   Total notes for this conversation: \(storage[note.conversationId]?.count ?? 0)")
+        print("Note saved for conversation: \(note.conversationId)")
+        print(" Total notes for this conversation: \(storage[note.conversationId]?.count ?? 0)")
+    }
+    
+    // NEW: Update existing note
+    func updateNote(_ note: InternalNote) async throws {
+        try await Task.sleep(nanoseconds: 200_000_000)
+        
+        guard var notes = storage[note.conversationId] else {
+            throw NSError(domain: "InternalNotesService", code: 404,
+                         userInfo: [NSLocalizedDescriptionKey: "Conversation not found"])
+        }
+        
+        if let index = notes.firstIndex(where: { $0.id == note.id }) {
+            notes[index] = note
+            storage[note.conversationId] = notes
+            print("Note updated for conversation: \(note.conversationId)")
+            print("Updated message: \(note.message)")
+        } else {
+            throw NSError(domain: "InternalNotesService", code: 404,
+                         userInfo: [NSLocalizedDescriptionKey: "Note not found"])
+        }
     }
     
     func deleteNote(id: UUID) async throws {
@@ -105,7 +81,7 @@ class MockInternalNotesService: InternalNotesServiceProtocol {
         for (conversationId, notes) in storage {
             if let index = notes.firstIndex(where: { $0.id == id }) {
                 storage[conversationId]?.remove(at: index)
-                print("🗑️ Note deleted from conversation: \(conversationId)")
+                print("Note deleted from conversation: \(conversationId)")
                 return
             }
         }
@@ -113,7 +89,7 @@ class MockInternalNotesService: InternalNotesServiceProtocol {
 }
 
 
-// MARK: - Real API Service (for production - not implemented yet)
+// MARK: - Real API Service (not implemented yet)
 class APIInternalNotesService: InternalNotesServiceProtocol {
     private let baseURL = "https://api.yourapp.com" // Replace with actual API
     
@@ -128,6 +104,19 @@ class APIInternalNotesService: InternalNotesServiceProtocol {
     
     func saveNote(_ note: InternalNote) async throws {
         // TODO: Implement real API call
+        fatalError("API not implemented yet - use MockInternalNotesService")
+    }
+    
+    // NEW: Update note via API
+    func updateNote(_ note: InternalNote) async throws {
+        // TODO: Implement real API call
+        // let url = URL(string: "\(baseURL)/notes/\(note.id)")!
+        // var request = URLRequest(url: url)
+        // request.httpMethod = "PUT"
+        // request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        // request.httpBody = try JSONEncoder().encode(note)
+        // let (_, _) = try await URLSession.shared.data(for: request)
+        
         fatalError("API not implemented yet - use MockInternalNotesService")
     }
     

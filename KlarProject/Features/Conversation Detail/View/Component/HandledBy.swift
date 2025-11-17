@@ -45,7 +45,7 @@ struct HandledBySection: View { // bantu preview doang
 extension Date {
     func formattedShortDayDate() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "E, d/M/yyyy"
+        formatter.dateFormat = "E, d MMM yyyy"
         return formatter.string(from: self)
     }
 }

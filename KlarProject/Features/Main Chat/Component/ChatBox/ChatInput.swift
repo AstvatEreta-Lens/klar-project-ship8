@@ -30,7 +30,8 @@ struct ChatInputView: View {
                 text: $messageText,
                 height: $textHeight,
                 minHeight: minHeight,
-                maxHeight: maxHeight
+                maxHeight: maxHeight,
+                onEnter: sendMessage
             )
             .frame(height: textHeight)
             .background(Color.white)

@@ -23,5 +23,6 @@ enum SidebarDestination {
     case knowledge
     case settings
     case ticketing
+    case contact
 }
 

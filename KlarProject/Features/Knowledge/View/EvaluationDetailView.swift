@@ -16,176 +16,228 @@ struct EvaluationDetailView: View {
     let onApprove: () -> Void
     
     @State private var showingRemoveConfirmation = false
+    @State private var showingApproveSuccess = false
     
     var body: some View {
-        VStack(spacing: 0) {
-            EvaluationHeaderView(conversation: conversation)
+        ZStack {
+            // Main Content
+            VStack(spacing: 0) {
+                EvaluationHeaderView(conversation: conversation, user: conversation.handledBy)
+                
+                Divider()
+                    .foregroundColor(Color.sectionHeader)
+                
+                ScrollView {
+                        // Messages Section dari al
+                        
+    //                    MessagesSection(conversation: conversation)
+                }
+                
+                Divider()
+                    .foregroundColor(Color.sectionHeader)
+                
+                // Buttons
+                HStack(spacing: 12) {
+                    // Remove Button
+                    Button(action: {
+                        showingRemoveConfirmation = true
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "trash")
+                                .foregroundColor(Color.textRegular)
+                                .font(.body)
+                            Text("Remove")
+                                .foregroundColor(Color.textRegular)
+                                .font(.body)
+                        }
+                        .frame(minWidth: 100)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.redStatus)
+                        .cornerRadius(11)
+                        .overlay(RoundedRectangle(cornerRadius: 11).stroke(Color.textRegular))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+
+                    // Edit Button (for future implementation)
+                    Button(action: onEdit) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "pencil")
+                                .foregroundColor(Color.textRegular)
+                                .font(.body)
+                            Text("Edit")
+                                .foregroundColor(Color.textRegular)
+                                .font(.body)
+                        }
+                        .frame(minWidth: 80)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.yellowStatusColor)
+                        .cornerRadius(11)
+                        .overlay(RoundedRectangle(cornerRadius: 11).stroke(Color.textRegular))
+                    }
+                    .buttonStyle(PlainButtonStyle())
+
+
+                    // Approve Button
+                    Button(action: {
+                        showingApproveSuccess = true
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(Color.bubbleChat)
+                                .font(.body)
+                            Text("Approve")
+                                .foregroundColor(Color.bubbleChat)
+                                .font(.body)
+                        }
+                        .frame(minWidth: 110)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
+                        .background(canApprove ? Color.sectionHeader : Color.gray)
+                        .foregroundColor(.white)
+                        .cornerRadius(11)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .disabled(!canApprove)
+                    .opacity(canApprove ? 1.0 : 0.5)
+                }
+                .padding()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.white)
             
-            Divider()
-                .foregroundColor(Color.sectionHeader)
-            
-            ScrollView {
-                    // Messages Section dari al
-                    
-//                    MessagesSection(conversation: conversation)
+            // Custom Delete Alert Overlay
+            if showingRemoveConfirmation {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showingRemoveConfirmation = false
+                    }
+                
+                EvaluationConversationDeleteAlert(
+                    conversation: conversation,
+                    deleteAction: {
+                        showingRemoveConfirmation = false
+                        onRemove()
+                    },
+                    cancelAction: {
+                        showingRemoveConfirmation = false
+                    }
+                )
             }
             
-            Divider()
-                .foregroundColor(Color.sectionHeader)
-            
-            // Buttons
-            HStack(spacing: 12) {
-                // Remove Button
-                Button(action: {
-                    showingRemoveConfirmation = true
-                }) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "trash")
-                            .foregroundColor(Color.textRegular)
-                            .font(.body)
-                        Text("Remove")
-                            .foregroundColor(Color.textRegular)
-                            .font(.body)
-//                            .fontWeight(.medium)
-                    }
-                    .frame(width : 101, height : 36)
-                    .padding(.vertical, 5)
-                    .background(Color.redStatus)
-                    .cornerRadius(11)
-                    .overlay(RoundedRectangle(cornerRadius: 11).stroke(Color.textRegular))
-                }
-                .buttonStyle(PlainButtonStyle())
+            // Approve Success Alert Overlay
+            if showingApproveSuccess {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
                 
-                // Edit Button (for future implementation)
-                Button(action: onEdit) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "pencil")
-                            .foregroundColor(Color.textRegular)
-                            .font(.body)
-                        Text("Edit")
-                            .foregroundColor(Color.textRegular)
-                            .font(.body)
+                ContextSuccessfullyEvaluated(
+                    continueAction: {
+                        showingApproveSuccess = false
+                        onApprove()
                     }
-                    .frame(width : 71, height : 36)
-                    .padding(.vertical, 5)
-                    .background(Color.yellowStatusColor)
-                    .cornerRadius(11)
-                    .overlay(RoundedRectangle(cornerRadius: 11).stroke(Color.textRegular))
-                }
-                .buttonStyle(PlainButtonStyle())
-//                .disabled(true)
-                
-                // Approve Button
-                Button(action: onApprove) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .foregroundColor(Color.bubbleChat)
-                            .font(.body)
-                        Text("Approve")
-                            .foregroundColor(Color.bubbleChat)
-                            .font(.body)
-                    }
-                    .frame(width : 108, height : 36)
-                    .padding(.vertical, 5)
-                    .background(canApprove ? Color.sectionHeader : Color.gray)
-                    .foregroundColor(.white)
-                    .cornerRadius(11)
-                }
-                .buttonStyle(PlainButtonStyle())
-                .disabled(!canApprove)
-                .opacity(canApprove ? 1.0 : 0.5)
-                
+                )
             }
-            .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
-        .alert("Remove Conversation", isPresented: $showingRemoveConfirmation) {
-            Button("Cancel", role: .cancel) { }
-            Button("Remove", role: .destructive) {
-                onRemove()
-            }
-        } message: {
-            Text("Yakin?")
-        }
     }
 }
 
 
 struct EvaluationHeaderView: View {
     let conversation: Conversation
+    let user : User
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Profile Image
-            Image(conversation.profileImage)
-                .resizable()
-                .frame(width: 60, height: 60)
-                .clipShape(Circle())
-                .overlay(
-                    Circle()
-                        .stroke(Color.borderColor.opacity(0.3), lineWidth: 1)
-                )
-            
-            // Customer Info
-            VStack(alignment: .leading, spacing: 6) {
-                Text(conversation.name)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.textRegular)
+        // Profile and Customer Info
+        HStack(alignment: .top, spacing: 16) {
+            // Profile Image and Customer Info Section
+            HStack(spacing: 16) {
+                // Profile Image
+                Image(conversation.profileImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
+                    .clipShape(Circle())
+                    .overlay(
+                        Circle()
+                            .stroke(Color.borderColor.opacity(0.3), lineWidth: 1)
+                    )
                 
-                HStack(spacing: 4) {
+                // Customer Info
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(conversation.name)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.textRegular)
+                        .lineLimit(1)
+                    
                     Text(conversation.phoneNumber)
                         .font(.body)
                         .foregroundColor(Color.avatarCount)
+                        .lineLimit(1)
                     
-                }
-                if conversation.hasWhatsApp {
-                    HStack{
-                        Image("whatsapp")
-                            .resizable()
-                            .frame(width: 16, height: 16)
-                        Text("WhatsApp")
-                            .foregroundColor(Color.textRegular)
+                    if conversation.hasWhatsApp {
+                        HStack(spacing: 4) {
+                            Image("whatsapp")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                            Text("WhatsApp")
+                                .foregroundColor(Color.textRegular)
+                                .font(.caption)
+                        }
                     }
                 }
             }
+            .frame(minWidth: 200, maxWidth: .infinity, alignment: .leading)
             
-            Spacer()
-            
-            // Last Resolved Info
+            // Last Conversation Section
             VStack(alignment: .leading, spacing: 4) {
-                Text("Last Conversation:")
+                Text("Last Conversation")
                     .font(.caption)
-                    .foregroundColor(Color.avatarCount)
+                    .foregroundColor(Color.gray)
                 
-                if let resolvedDate = conversation.resolvedAt {
-                    Text("\(formatDate(resolvedDate))")
-                        .font(.caption)
-                        .foregroundColor(Color.secondaryText)
-                }
-                Text("Handled By : ")
+                Text(conversation.handledDate.formattedShortDayDate())
                     .font(.caption)
-                    .foregroundColor(Color.avatarCount)
+                    .foregroundColor(Color.sectionHeader)
+                    .lineLimit(1)
                 
-                // Betulin ntar
-                Text("\(conversation.handledBy)")
+                Text("Handled by: ")
                     .font(.caption)
-                    .foregroundColor(Color.secondaryText)
+                    .foregroundColor(Color.gray)
                 
-                
+                Text(user.name)
+                    .font(.caption)
+                    .foregroundColor(Color.sectionHeader)
+                    .lineLimit(1)
             }
+            .frame(minWidth: 150, maxWidth: 200, alignment: .leading)
             
-            AISummarySection(conversation: conversation)
-            
+            // AI Summary Section
+            VStack(alignment: .leading, spacing: 4) {
+                Text("AI Summary")
+                    .font(.caption)
+                    .foregroundColor(Color.textRegular)
+                
+                // Ganti dengan ai summarry (tembak api, blm buat)
+                Text("Customer Pak Daud mengajukan komplain mengenai kerusakan mesin EAC tipe 605H akibat kemasukan cairan.")
+                    .font(.caption)
+                    .foregroundColor(Color.avatarCount)
+                    .lineLimit(3)
+                    .padding()
+                    .frame(maxWidth: .infinity, minHeight: 48, alignment: .topLeading)
+                    .background(Color.componentBackgroundColor)
+                    .cornerRadius(11)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 11)
+                            .stroke(Color.sectionHeader, lineWidth: 1)
+                    )
+            }
+            .frame(minWidth: 250, maxWidth: .infinity, alignment: .leading)
         }
         .padding()
-    }
-    
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM yyyy, HH:mm"
-        return formatter.string(from: date)
     }
 }
 
@@ -235,49 +287,23 @@ struct InfoRow: View {
     let value: String
     
     var body: some View {
-        HStack {
+        HStack(alignment: .top) {
             Text("\(label):")
                 .font(.body)
                 .foregroundColor(Color.secondaryText)
-                .frame(width: 100, alignment: .leading)
+                .frame(minWidth: 100, maxWidth: 150, alignment: .leading)
             
             Text(value)
                 .font(.body)
                 .foregroundColor(Color.textRegular)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
             
             Spacer()
         }
     }
 }
 
-// MARK: - AI Summary Section
-
-struct AISummarySection: View {
-    let conversation: Conversation
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Text("AI Summary")
-                    .font(.caption)
-                    .foregroundColor(Color.textRegular)
-            }
-            
-            // Placeholder for AI Summary
-            Text("Customer Pak Daud mengajukan komplain mengenai kerusakan mesin EAC tipe 605H akibat kemasukan cairan.")
-                .font(.caption)
-                .italic()
-                .foregroundColor(Color.avatarCount)
-                .cornerRadius(8)
-                .padding()
-            
-                .overlay(
-                    RoundedRectangle(cornerRadius: 5)
-                        .stroke(Color.sectionHeader, lineWidth: 1)
-                )
-        }
-    }
-}
 
 
 // MARK: - Previews
@@ -314,7 +340,7 @@ struct AISummarySection: View {
         onEdit: { print("Edit tapped") },
         onApprove: { print("Approve tapped") }
     )
-    .frame(width: 750, height: 800)
+    .frame(width: 897, height: 800)
 }
 
 #Preview("Evaluation Detail - Evaluated") {

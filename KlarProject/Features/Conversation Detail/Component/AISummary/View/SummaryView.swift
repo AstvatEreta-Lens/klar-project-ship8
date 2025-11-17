@@ -198,7 +198,7 @@ struct AISummaryView: View {
                 }
                 .frame(maxHeight: 100)
                 
-                // Metadata footer
+                // Copy action
                 HStack {
                     Button(action: {
                         let pasteboard = NSPasteboard.general

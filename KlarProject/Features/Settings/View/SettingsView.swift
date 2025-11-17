@@ -12,65 +12,69 @@ struct SettingsView: View {
     let saveAction : () -> Void
     
     var body: some View {
-//        GeometryReader { geometry in
-        VStack{
-            
-            // Header Section
-            HStack{
-                Text("Settings")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.sectionHeader)
-                    .padding()
-                
-                Spacer()
-                
-                Button(action : editAction){
-                    HStack{
-                        Image(systemName: "pencil")
-                            .font(.title2)
-                        Text("Edit")
-                            .font(.title2)
+        GeometryReader { geometry in
+            let contentPadding = max(20, min(252, (geometry.size.width - 775) / 2))
+
+            VStack{
+
+                // Header Section
+                HStack{
+                    Text("Settings")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.sectionHeader)
+                        .padding()
+
+                    Spacer()
+
+                    Button(action : editAction){
+                        HStack{
+                            Image(systemName: "pencil")
+                                .font(.title2)
+                            Text("Edit")
+                                .font(.title2)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
                     }
-                    
-                    .frame(width : 110, height : 36)
-                }
-                .cornerRadius(11)
-                .foregroundColor(Color.gray)
-                
-                Button(action : saveAction){
-                    HStack{
-                        Text("Save")
-                            .font(.title2)
-                            .foregroundColor(Color.white)
+                    .cornerRadius(11)
+                    .foregroundColor(Color.gray)
+
+                    Button(action : saveAction){
+                        HStack{
+                            Text("Save")
+                                .font(.title2)
+                                .foregroundColor(Color.white)
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
                     }
-                    
-                    .frame(width : 57, height : 36)
+                    .background(Color.sectionHeader)
+                    .cornerRadius(11)
+                    .padding(.trailing)
+
                 }
-                .background(Color.sectionHeader)
-                .cornerRadius(11)
-                .padding(.trailing)
-                  
-                //        }
+
+                AccountTabView(viewModel: SettingsViewModel())
+                    .padding(.horizontal, contentPadding)
+
+                SecurityTabView(viewModel: SettingsViewModel())
+                    .padding(.horizontal, contentPadding)
+
+                PlatformConfigView(viewModel : SettingsViewModel(), tutorialAction: {})
+                    .padding(.horizontal, contentPadding)
+
+
+
             }
-          AccountTabView(viewModel: SettingsViewModel())
-                .padding(.horizontal, 252)
-            
-          SecurityTabView(viewModel: SettingsViewModel())
-                .padding(.horizontal, 252)
-            
-            PlatformConfigView(viewModel : SettingsViewModel(), tutorialAction: {})
-                .padding(.horizontal, 252)
-            
-            
-            
+            .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .top)
+            .background(.white)
+            .overlay(
+                RoundedRectangle(cornerRadius: 11)
+                    .stroke(Color.sectionHeader, lineWidth: 1)
+            )
+            .padding(.bottom)
         }
-        .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .top)
-        .background(.white)
-        .overlay(
-            RoundedRectangle(cornerRadius: 11)
-                .stroke(Color.sectionHeader, lineWidth: 1)
-        )
     }
 }
 

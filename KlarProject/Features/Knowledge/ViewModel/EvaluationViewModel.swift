@@ -10,42 +10,61 @@ import Combine
 
 @MainActor
 class EvaluationViewModel: ObservableObject {
-    
+
+    // Singleton instance untuk share state across the app
+    static let shared = EvaluationViewModel()
+
     @Published var selectedConversation: Conversation?
     @Published var evaluatedConversations: [Conversation] = []
     @Published var unevaluatedConversations: [Conversation] = []
     @Published var searchText: String = ""
-    
-    
+
+
     var allConversations: [Conversation] {
         return evaluatedConversations + unevaluatedConversations
     }
-    
+
     var evaluatedCount: Int {
         return evaluatedConversations.count
     }
-    
+
     var unevaluatedCount: Int {
         return unevaluatedConversations.count
     }
-    
-    
+
+
     init() {
-        loadEvaluationConversations()
+        // Load dummy data hanya untuk testing - nanti akan dihapus
+        loadDummyDataForTesting()
     }
-    
-    
-    func loadEvaluationConversations() {
-        // sementara dumy data
-        let allResolved = Conversation.aiDummyData.filter { $0.status == .resolved }
-        
-        // Separate by evaluation status
-        evaluatedConversations = allResolved.filter { $0.isEvaluated == true }
+
+    // MARK: - Load dummy data for testing only
+    private func loadDummyDataForTesting() {
+        // Hanya load yang sudah isEvaluated = true untuk testing
+        let testEvaluated = Conversation.aiDummyData.filter { $0.isEvaluated == true }
+        evaluatedConversations = testEvaluated
             .sorted { ($0.evaluatedAt ?? Date()) > ($1.evaluatedAt ?? Date()) }
-        
-        unevaluatedConversations = allResolved.filter { $0.isEvaluated != true }
-            .sorted { ($0.resolvedAt ?? Date()) > ($1.resolvedAt ?? Date()) }
-        
+
+        // Unevaluated akan diisi melalui addConversation() dari button Evaluate
+        unevaluatedConversations = []
+    }
+
+    // MARK: - Add Conversation to Evaluation
+
+    // Add a conversation to the evaluation list (called when "Evaluate this conversation" is clicked)
+    func addConversation(_ conversation: Conversation) {
+        // Check if conversation is already in the list
+        let alreadyInUnevaluated = unevaluatedConversations.contains(where: { $0.id == conversation.id })
+        let alreadyInEvaluated = evaluatedConversations.contains(where: { $0.id == conversation.id })
+
+        if alreadyInUnevaluated || alreadyInEvaluated {
+            print("Conversation already in evaluation list")
+            return
+        }
+
+        // Add to unevaluated list
+        unevaluatedConversations.insert(conversation, at: 0)
+        print("Added conversation to evaluation: \(conversation.name)")
     }
     
     
@@ -65,21 +84,22 @@ class EvaluationViewModel: ObservableObject {
             print("Conversation not found in unevaluated list")
             return
         }
-        
+
         // Update conversation with evaluated status
         var updatedConversation = unevaluatedConversations[index]
         updatedConversation.isEvaluated = true
         updatedConversation.evaluatedAt = Date()
-        
+
         // Remove from unevaluated
         unevaluatedConversations.remove(at: index)
-        
+
         // Add to evaluated (at the top)
         evaluatedConversations.insert(updatedConversation, at: 0)
-        
-        // Update selected conversation
-        selectedConversation = updatedConversation
-        
+
+        // Deselect conversation so card shows evaluated state (not selected)
+        selectedConversation = nil
+
+        print("Conversation approved: \(conversation.name)")
     }
     
     // MARK: - Remove Functionality

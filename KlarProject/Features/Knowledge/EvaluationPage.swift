@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct EvaluationPage: View {
-    @StateObject private var evaluationViewModel = EvaluationViewModel()
+    @ObservedObject private var evaluationViewModel = EvaluationViewModel.shared
     
     var body: some View {
         GeometryReader { geometry in
-            HStack{
+            HStack(spacing: 0) {
                 // Header
                 EvaluationView(evaluationViewModel: evaluationViewModel)
-                    .frame(width: 399, height: geometry.size.height)
+                    .frame(minWidth: 350, idealWidth: 399, maxWidth: 450)
+                    .frame(height: geometry.size.height)
                 
                 Divider()
                     .frame(height: geometry.size.height)
@@ -43,7 +44,9 @@ struct EvaluationPage: View {
                     } else {
                         VStack(spacing: 12) {
                             Image("LogoFix")
-                                .font(.system(size: 48))
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: min(213, geometry.size.width * 0.2), height: min(48, geometry.size.height * 0.06))
                                 .foregroundColor(Color.secondaryText.opacity(0.6))
                             
                             Text("Select a context to evaluate")
@@ -52,6 +55,7 @@ struct EvaluationPage: View {
                         }
                     }
                 }
+                .frame(maxWidth: .infinity)
             }
             .frame(width: geometry.size.width, height: geometry.size.height)
         }
