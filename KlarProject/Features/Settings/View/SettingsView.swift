@@ -54,7 +54,7 @@ struct SettingsView: View {
                     .padding(.trailing)
 
                 }
-
+                
                 AccountTabView(viewModel: SettingsViewModel())
                     .padding(.horizontal, contentPadding)
 

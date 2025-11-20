@@ -24,7 +24,7 @@ struct ContactTableView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            VStack(spacing: 0) {
+            VStack(alignment : .leading, spacing: 0) {
                 headerRow(width: geometry.size.width)
         
                 ScrollView {
@@ -45,12 +45,22 @@ struct ContactTableView: View {
                     }
                 }
                 .frame(minHeight: 100)
+//                
+                Text(NSLocalizedString("Total Data: ", comment : "") + " \(conversations.count)")
+                    .font(.title2)
+                    .foregroundColor(Color.textRegular)
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                
+//                
             }
+//            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
             .padding(.horizontal, 2)
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(Color.gray.opacity(0.2), lineWidth: 1)
             )
+//            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
         }
     }
     
@@ -80,7 +90,7 @@ struct ContactTableView: View {
     
     func headerText(_ text: String) -> some View {
         Text(text)
-            .font(.headline)
+            .font(.title3)
             .foregroundColor(.gray)
     }
 }
@@ -126,10 +136,10 @@ struct ContactRow: View {
                 .lineLimit(1)
         }
         .padding(.vertical, 8)
-        .background(isSelected ? Color.blue.opacity(0.1) : Color.white)
+        .background(isSelected ? Color(hex : "F5F5F5") : Color.white)
         .overlay(
             Rectangle()
-                .stroke(isSelected ? Color.blue : Color.clear, lineWidth: 1)
+                .stroke(isSelected ? Color(hex : "F5F5F5"): Color.clear, lineWidth: 1)
         )
     }
     
@@ -161,3 +171,4 @@ struct ContactRow: View {
     .frame(height: 400)
     .padding()
 }
+

@@ -19,7 +19,7 @@ struct KnowledgeView: View {
                     // Add Files Button
                     HStack{
                         Button(action: onAddFiles){
-                            ZStack{
+                            ZStack(alignment : .leading){
                                 HStack{
                                     Image(systemName: "plus")
                                         .foregroundColor(Color.white)
@@ -28,6 +28,7 @@ struct KnowledgeView: View {
                                         .foregroundColor(Color.white)
                                         .font(.body)
                                 }
+                                Spacer()
                             }
                             .frame(width: 106, height: 36)
                         }
@@ -65,6 +66,7 @@ struct KnowledgeView: View {
                     // PDF ScrollView dengan adaptive height
                     pdfScrollView(height: geometry.size.height)
                 }
+                .padding(.top)
                 .background(Color.backgroundPrimary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }

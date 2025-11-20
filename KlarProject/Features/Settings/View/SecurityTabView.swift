@@ -21,10 +21,10 @@ struct SecurityTabView: View {
            
                     
                 VStack(alignment : .trailing, spacing: 20) {
-                        fieldRow(title: "Workspace Email", text: binding(for: \.workSpaceEmail))
-                        fieldRow(title: "Role", text: binding(for: \.role))
-                        fieldRow(title: "Password", text: binding(for: \.password))
-                        fieldRow(title: "PIN", text: binding(for: \.PIN))
+                    fieldRow(title: NSLocalizedString("Workspace Email", comment : ""), text: binding(for: \.workSpaceEmail))
+                    fieldRow(title: NSLocalizedString("Role", comment : ""), text: binding(for: \.role))
+                    fieldRow(title: NSLocalizedString("Password", comment :""), text: binding(for: \.password))
+                    fieldRow(title: NSLocalizedString("PIN", comment : ""), text: binding(for: \.PIN))
                     }
                     .padding(20)
                     .background(Color.white)
@@ -46,7 +46,7 @@ struct SecurityTabView: View {
             Text(title)
                 .font(.body)
                 .foregroundColor(Color.textRegular)
-                .frame(minWidth: 120)
+//                .frame(minWidth: 120)
             Spacer()
             EditableTextBox(text: text)
                 .frame(minWidth: 200, maxWidth: 300)

@@ -37,13 +37,13 @@ struct PlatformConfigView: View {
                     Divider()
                         .foregroundColor(Color.sectionHeader)
                     
-                        fieldRow(title: "Access Token", text: binding(for: \.accessToken))
-                        fieldRow(title: "Phone Number ID", text: binding(for: \.phoneNumberId))
-                        fieldRow(title: "Verify Token", text: binding(for: \.localWebhookPort))
-                        fieldRow(title: "Webhook URL", text: binding(for: \.webhookServerURL))
+                        fieldRow(title: NSLocalizedString("Access Token", comment: ""), text: binding(for: \.accessToken))
+                    fieldRow(title: NSLocalizedString("Phone Number ID", comment : ""), text: binding(for: \.phoneNumberId))
+                    fieldRow(title: NSLocalizedString("Verify Token", comment : ""), text: binding(for: \.localWebhookPort))
+                    fieldRow(title: NSLocalizedString("Webhook URL", comment : ""), text: binding(for: \.webhookServerURL))
                     
                     HStack{
-                        Text("How can I connect my platforms to this app?")
+                        Text("How can I connect my platform to this app?")
                             .font(.caption2)
                             .foregroundColor(Color.textRegular)
                             .padding(.leading)
@@ -78,7 +78,7 @@ struct PlatformConfigView: View {
             Text(title)
                 .font(.body)
                 .foregroundColor(Color.textRegular)
-                .frame(minWidth: 120)
+//                .frame(minWidth: 120)
             Spacer()
             EditableTextBox(text: text)
                 .frame(minWidth: 200, maxWidth: 300)

@@ -16,11 +16,11 @@ enum statusType : Hashable{
     var text: String {
         switch self {
         case .pending:
-            return "Pending"
+            return NSLocalizedString("Pending", comment :"")
         case .open:
-            return "Open"
+            return NSLocalizedString("Open", comment :"")
         case .resolved:
-            return "Resolved"
+            return NSLocalizedString("Resolved", comment :"")
         }
     }
     

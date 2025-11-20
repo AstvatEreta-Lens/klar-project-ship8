@@ -289,21 +289,21 @@ class ConversationListViewModel: ObservableObject {
     func evaluateMessage() {
         guard let selected = selectedConversation else {
             print("No conversation selected")
-            toastManager.show(.evaluationError)
+            toastManager.show(.conversationSuccessfullyEvaluated)
             return
         }
 
         // Check if conversation can be evaluated
         guard selected.canBeEvaluated else {
             print("Conversation cannot be evaluated (must be resolved)")
-            toastManager.show(.evaluationError)
+            toastManager.show(.errorToEvaluateConversation)
             return
         }
 
         // Add to evaluation list via shared instance
         EvaluationViewModel.shared.addConversation(selected)
         print("Conversation sent to evaluation: \(selected.name)")
-        toastManager.show(.evaluationSuccess)
+        toastManager.show(.successEvaluateConversation)
     }
 
     // MARK: - Update Conversation

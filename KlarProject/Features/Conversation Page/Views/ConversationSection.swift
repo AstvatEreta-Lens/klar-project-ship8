@@ -10,20 +10,26 @@ import SwiftUI
 struct ConversationSection<Content: View>: View {
     let title: String
     let content: Content
+    var count : Int?
+    var viewModel : ConversationListViewModel?
     
     init(
         title: String,
+        count : Int? = nil,
+        viewModel : ConversationListViewModel? = nil,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
+        self.count = count
+        self.viewModel = viewModel
         self.content = content()
     }
     
     var body: some View {
         VStack(spacing: 0) {
             // Section Header
-            SectionHeader(title: title)
-            
+            SectionHeader(title: title, count : count, viewModel: viewModel)
+                    
             // Content with frame
             content
                 .background(Color.backgroundPrimary)

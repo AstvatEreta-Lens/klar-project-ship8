@@ -24,7 +24,7 @@ struct PDFCardView: View {
                 
                 VStack(alignment : .leading){
                     Text(pdfDocument.title + ".pdf")
-                        .font(.caption)
+                        .font(.body)
                         .foregroundColor(Color.textRegular)
                     Text(pdfDocument.formattedDateAdded)
                         .font(.caption)
@@ -42,7 +42,7 @@ struct PDFCardView: View {
                         .rotationEffect(Angle(degrees: 90))
                         .foregroundColor(Color.black)
                 }
-                .buttonStyle(PlainButtonStyle())
+//                .buttonStyle(PlainButtonStyle())
                 .overlay{
                     if showActionButtons {
                         DeleteAndEditButton(

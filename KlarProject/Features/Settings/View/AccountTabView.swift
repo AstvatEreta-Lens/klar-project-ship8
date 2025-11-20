@@ -19,7 +19,7 @@ struct AccountTabView: View {
                 .foregroundColor(Color.sectionHeader)
            
                     
-                VStack(alignment : .trailing, spacing: 20) {
+                VStack(alignment : .leading, spacing: 20) {
                     HStack{
                         Text("Profile Picture")
                             .font(.body)
@@ -30,6 +30,7 @@ struct AccountTabView: View {
                         if let profile = currentProfile {
                             UserAvatarView(name: avatarName(for: profile))
                                 .frame(width: 56, height: 56)
+                                .padding(.trailing, 260)
                         } else {
                             UserAvatarView(name: "NA")
                                 .frame(width: 56, height: 56)
@@ -37,6 +38,7 @@ struct AccountTabView: View {
 
                     }
                     usernameRow(text: usernameBinding())
+                    
                     fieldRow(title: "Phone Number", text: binding(for: \.phoneNumber))
                 }
                 .padding(20)
@@ -61,7 +63,7 @@ struct AccountTabView: View {
             Text(title)
                 .font(.body)
                 .foregroundColor(Color.textRegular)
-                .frame(minWidth: 100)
+//                .frame(minWidth: 100)
             Spacer()
             EditableTextBox(text: text)
                 .frame(minWidth: 200, maxWidth: 300)
@@ -86,7 +88,7 @@ struct AccountTabView: View {
             Text("Username")
                 .font(.body)
                 .foregroundColor(Color.textRegular)
-                .frame(minWidth: 100)
+//                .frame(minWidth: 100)
             Spacer()
             EditableTextBox(text: text)
                 .frame(minWidth: 200, maxWidth: 300)

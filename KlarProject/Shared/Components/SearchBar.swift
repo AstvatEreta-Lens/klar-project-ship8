@@ -10,7 +10,7 @@ import SwiftUI
 struct SearchBar : View {
     @Binding var text : String
     
-    var placeholder: String = "Search..."
+    var placeholder: String = NSLocalizedString("Search...", comment: "")
     var onSearch: () -> Void = {}
     
     var body: some View {

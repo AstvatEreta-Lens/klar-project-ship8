@@ -42,16 +42,16 @@ struct ChatKlarView: View {
                             .frame(maxHeight: .infinity)
                     } else {
                         // Empty state
-                        VStack(spacing: 363) {
-                            Image("Logo")
+                        VStack(spacing : 10){
+                            Image("Logo Placeholder No Convo")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: min(64, centerWidth * 0.05), height: min(64, geometry.size.height * 0.07))
-                                .foregroundColor(.gray.opacity(0.3))
+                                .frame(width: 213, height : 48)
+//                                .padding(.bottom, 290)
 
-                            Text("Select a conversation to see message")
-                                .font(.system(size: 18))
-                                .foregroundColor(.gray)
+                            Text("Select a conversation to see message.")
+                                .font(.caption)
+                                .foregroundColor(.sectionHeader)
                         }
                         .frame(width: centerWidth + sidebarWidth + 1)
                         .frame(maxHeight: .infinity)

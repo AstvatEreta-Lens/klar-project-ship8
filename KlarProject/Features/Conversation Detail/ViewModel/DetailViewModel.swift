@@ -63,7 +63,7 @@ class DetailViewModel: ObservableObject {
         guard var currentConversation = conversation else {
             print("Error: No conversation to update")
             // Toast manager
-            toastManager.show(.errorWithoutButton)
+            toastManager.show(.successUpdateLabel)
             return
         }
         
@@ -73,14 +73,14 @@ class DetailViewModel: ObservableObject {
         // Update conversation
         currentConversation = currentConversation.updatinglabel(updatedLabels)
         conversation = currentConversation
-        toastManager.show(.successWithoutButton)
+        toastManager.show(.successUpdateLabel)
         
         // Notify parent
         onConversationUpdated?(currentConversation)
         
         print("Label deleted: \(label.text)")
         // Toast manager
-        toastManager.show(.successWithoutButton)
+        toastManager.show(.successUpdateLabel)
     }
     
     // MARK: - Update Conversation

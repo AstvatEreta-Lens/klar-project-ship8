@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SectionHeader: View {
     let title: String
+    var count: Int?
+    var viewModel: ConversationListViewModel?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -16,7 +18,19 @@ struct SectionHeader: View {
                 Text(title)
                     .font(.caption)
                     .foregroundColor(Color.tertiaryText)
-                    .padding(.horizontal, 14)
+                    .padding(.leading, 14)
+                
+                ZStack{
+                    Circle()
+                        .fill(Color.tertiaryText)
+                        .frame(width: 14, height: 12)
+                    if let count = count {
+                        Text("\(count)")
+                            .foregroundColor(Color.sectionHeader)
+                            .font(.caption)
+                            .fontWeight(.bold)
+                    }
+                }
                 Spacer()
             }
             .padding(.top, 12)
@@ -48,8 +62,9 @@ struct SectionHeader: View {
 
 #Preview {
     VStack(spacing : 10){
-        SectionHeader(title: "HANDLED BY HUMAN AGENTS")
-        SectionHeader(title: "HANDLED BY AI")
+        var viewModel: ConversationListViewModel?
+        SectionHeader(title: "HANDLED BY HUMAN AGENTS", count: viewModel?.unreadCount)
+        SectionHeader(title: "HANDLED BY AI", count: 7)
     }
     .padding(10)
 }

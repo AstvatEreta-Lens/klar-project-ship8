@@ -44,7 +44,7 @@ struct FilterView: View {
                     }
                 } else {
                     // Empty state
-                    Text("No active filters, choose below.")
+                    Text(NSLocalizedString("No active filters, choose below.", comment : ""))
                         .font(.caption)
                         .foregroundColor(.gray)
                 }
@@ -139,7 +139,7 @@ struct FilterView: View {
             .padding(.bottom, 20)
         }
         .padding(.horizontal, 20)
-        .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 360, alignment: .top)
+        .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 400, alignment: .top)
         .background(Color.white)
     }
 }

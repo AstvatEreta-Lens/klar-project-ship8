@@ -13,15 +13,15 @@ final class SidebarViewModel: ObservableObject {
     
     // Top three items
     let mainItems: [SidebarItem] = [
-        SidebarItem(title: "Dashboard", icon: "house", destination: .dashboard),
-        SidebarItem(title: "Conversation", icon: "bubble", destination: .conversation),
-        SidebarItem(title: "Knowledge", icon: "book.closed", destination: .knowledge),
-        SidebarItem(title : "Contact", icon : "person.2", destination: .contact)
+        SidebarItem(title: NSLocalizedString("Dashboard", comment : ""), icon: "house", destination: .dashboard),
+        SidebarItem(title: NSLocalizedString("Conversation", comment : ""), icon: "bubble", destination: .conversation),
+        SidebarItem(title: NSLocalizedString("Knowledge", comment : ""), icon: "book.closed", destination: .knowledge),
+        SidebarItem(title: NSLocalizedString("Contact", comment : ""), icon : "person.2", destination: .contact)
     ]
     
     // Settings
     let bottomItems: [SidebarItem] = [
-        SidebarItem(title: "Settings", icon: "gear", destination: .settings)
+        SidebarItem(title: NSLocalizedString("Settings", comment : ""), icon: "gear", destination: .settings)
     ]
     
     // helper

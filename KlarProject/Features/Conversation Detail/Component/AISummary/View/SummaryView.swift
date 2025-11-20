@@ -57,11 +57,12 @@ struct AISummaryView: View {
                             .stroke(Color.avatarCount, lineWidth: 1)
                     )
                 
-                VStack(spacing: 12) {
+                VStack{
                     Image(systemName: "hand.raised")
                         .font(.system(size: 30))
-                        .foregroundColor(Color.componentComponentColor)
-                        .padding(.top, 40)
+                        .foregroundColor(Color.sectionHeader)
+                        .padding(.top, 26)
+                        .padding(.bottom, 13)
                     
                     Text("No summary yet.")
                         .font(.caption)
@@ -79,15 +80,15 @@ struct AISummaryView: View {
                         }
                     }) {
                         Text("Generate AI Summary")
-                            .font(.caption)
-                            .foregroundColor(Color.white.opacity(0.8))
-                            .frame(width: 287, height: 36)
-                            .background(
+                            .foregroundColor(Color.sectionHeader)
+                            .overlay(
                                 RoundedRectangle(cornerRadius: 11)
-                                    .foregroundColor(Color.sectionHeader)
+                                    .stroke(.sectionHeader, lineWidth: 1)
+                                    .frame(width: 287, height: 36)
                             )
+                            .frame(width: 287, height: 36)
                     }
-                    .padding(.bottom, 40)
+                    .padding(.bottom, 5)
                     .buttonStyle(PlainButtonStyle())
                 }
                 .frame(width: 307, height: 177)

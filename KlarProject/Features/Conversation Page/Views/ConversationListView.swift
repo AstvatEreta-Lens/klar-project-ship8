@@ -32,12 +32,20 @@ struct ConversationListView: View {
                     
                     VStack(spacing: 12) {
                         // Human Agents Section
-                        ConversationSection(title: "HANDLED BY HUMAN AGENTS") {
+                        ConversationSection(
+                            title: NSLocalizedString("HANDLED BY HUMAN AGENTS", comment : ""),
+                            count: viewModel.unreadCount,
+                            viewModel: viewModel
+                        ){
                             humanConversationsScrollView(height: geometry.size.height)
                         }
                         
                         // AI Section
-                        ConversationSection(title: "HANDLED BY AI") {
+                        ConversationSection(
+                            title: NSLocalizedString("HANDLED BY AI", comment: ""),
+                            count: viewModel.unresolvedCount,
+                            viewModel: viewModel
+                        ){
                             aiConversationsScrollView(height: geometry.size.height)
                         }
                     }
@@ -74,7 +82,7 @@ struct ConversationListView: View {
                                     }
                                 }
                             )
-                            .frame(width: 307)
+                            .frame(width: 320)
                             .cornerRadius(12)
                             .overlay(
                                 RoundedRectangle(
@@ -138,21 +146,21 @@ struct ConversationListView: View {
             
             // Filter Buttons
             HStack(spacing: 7) {
-                FilterButton(title: "All", isSelected: viewModel.selectedFilter == "All") {
+                FilterButton(title: NSLocalizedString("All", comment: ""), isSelected: viewModel.selectedFilter == "All") {
                     viewModel.applyFilter("All")
                 }
                 
                 FilterButton(
-                    title: "Unread",
-                    count: viewModel.unreadCount,
+                    title: NSLocalizedString("Unread", comment : ""),
+//                    count: viewModel.unreadCount,
                     isSelected: viewModel.selectedFilter == "Unread"
                 ) {
                     viewModel.applyFilter("Unread")
                 }
                 
                 FilterButton(
-                    title: "Unresolved",
-                    count: viewModel.unresolvedCount,
+                    title: String(localized : "Unresolved", comment: ""),
+//                    count: viewModel.unresolvedCount,
                     isSelected: viewModel.selectedFilter == "Unresolved"
                 ) {
                     viewModel.applyFilter("Unresolved")

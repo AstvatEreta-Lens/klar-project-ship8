@@ -17,6 +17,7 @@ struct FilterButton: View {
         Button(action: action) {
             HStack(spacing: 4) {
                 Text(title)
+                    .foregroundColor(isSelected ? Color.white : Color.sectionHeader)
                     .font(.caption).fontWeight(.bold)
                 
                 if let count = count {
@@ -25,14 +26,14 @@ struct FilterButton: View {
                         .fontWeight(.bold)
                 }
             }
-            .foregroundColor(isSelected ? Color.bubbleChat : Color.secondaryTextColor)
+            .foregroundColor(isSelected ? Color.bubbleChat : Color.sectionHeader)
             .padding(.horizontal, 16)
             .padding(.vertical, 5)
-            .background(isSelected ? Color.icon : Color.white)
+            .background(isSelected ? Color.sectionHeader : Color.white)
             .cornerRadius(36)
             .overlay(
                 RoundedRectangle(cornerRadius: 36)
-                    .stroke(Color.borderColor)
+                    .stroke(Color.sectionHeader)
             )
         }
         .buttonStyle(PlainButtonStyle())
@@ -41,9 +42,9 @@ struct FilterButton: View {
 
 #Preview {
     VStack(spacing : 3){
-        FilterButton(title: "All", count: nil, isSelected: true, action: {})
-        FilterButton(title: "Unread", count: 2, isSelected: false, action: {})
-        FilterButton(title: "Unresolved", count: 2, isSelected: false, action: {})
+        FilterButton(title: "All",isSelected: true, action: {})
+        FilterButton(title: "Unread",isSelected: false, action: {})
+        FilterButton(title: "Unresolved",isSelected: false, action: {})
     }
     .padding(10)
 }

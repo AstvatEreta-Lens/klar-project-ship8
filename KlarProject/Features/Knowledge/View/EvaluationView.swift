@@ -15,6 +15,17 @@ struct EvaluationView: View {
         case all = "All"
         case unevaluated = "Unevaluated"
         case evaluated = "Evaluated"
+        
+        var localizedTitle: String {
+            switch self {
+            case .all:
+                return NSLocalizedString("All", comment: "Filter to show all conversations")
+            case .unevaluated:
+                return NSLocalizedString("Unevaluated", comment: "Filter to show unevaluated conversations")
+            case .evaluated:
+                return NSLocalizedString("Evaluated", comment: "Filter to show evaluated conversations")
+            }
+        }
     }
     
     private var filteredConversations: [Conversation] {
@@ -32,28 +43,21 @@ struct EvaluationView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 8) {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(Color.secondaryText)
-                    .font(.body)
-                
-                TextField("Search", text: $evaluationViewModel.searchText)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .font(.body)
+                SearchBar(
+                    text: $evaluationViewModel.searchText,
+                    onSearch: {
+                        $evaluationViewModel.searchText
+                    }
+                )
             }
             .padding(10)
-            .background(Color.white)
             .cornerRadius(8)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.borderColor.opacity(0.3), lineWidth: 1)
-            )
-            .padding(.horizontal, 14)
             .padding(.top, 16)
             
             HStack(spacing: 12) {
                 ForEach(EvaluationFilter.allCases, id: \.self) { filter in
                     FilterButton(
-                        title: filter.rawValue,
+                        title: filter.localizedTitle,
                         count: countFor(filter),
                         isSelected: selectedFilter == filter
                     ) {

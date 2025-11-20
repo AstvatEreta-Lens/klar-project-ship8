@@ -54,7 +54,7 @@ struct KnowledgeBaseView: View {
                     PDFViewer(pdfURL: selectedPDF.fileURL)
                         .padding()
                 } else {
-                    Text("Pilih atau unggah PDF untuk melihat preview")
+                    Text("Choose or uload PDF to see the preview")
                         .foregroundColor(.secondary)
                 }
             }

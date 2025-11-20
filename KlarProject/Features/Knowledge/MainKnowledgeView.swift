@@ -9,45 +9,40 @@ import SwiftUI
 
 struct KnowledgePage: View {
 
-    @State private var title: String = "Knowledge"
-    @State private var selectedTab: Int = 1
+    @State private var title: String = NSLocalizedString("Knowledge", comment : "")
+    @State private var selectedTab: Int = 0
     @StateObject private var viewModel = KnowledgeViewModel()
     @ObservedObject private var evaluationViewModel = EvaluationViewModel.shared
     @State private var showAddFilesView: Bool = false
     
+    
     var body: some View {
         GeometryReader { geometry in
+            let sidebarWidth = max(350, min(440, geometry.size.width * 0.3))
             ZStack {
                 HStack(spacing: 0) {
 
-                    let sidebarWidth = max(350, min(440, geometry.size.width * 0.3))
+                    VStack(alignment: .center, spacing: 0) {
 
-                    VStack(alignment: .leading, spacing: 0) {
-
-                        HStack {
+                        VStack(alignment: .leading, spacing: 12) {
                             Text(title)
                                 .foregroundColor(Color.primaryText)
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
-                                .padding(.leading, 14)
                                 .lineLimit(1)
                                 .truncationMode(.tail)
                                 .layoutPriority(1)
 
-                            Spacer()
-
-                            CustomSegmentPicker(selectedTab : $selectedTab)
+                            CustomSegmentPicker1(selectedTab : $selectedTab)
+                                .frame(maxWidth: sidebarWidth - 28, maxHeight: 36)
                         }
-                        
+                        .padding(.horizontal, 14)
+                        .padding(.top, 20)
                         .tint(Color.sectionHeader)
-                        .frame(height: 60)
-                        .padding(.top, 10)
                         .allowsHitTesting(true)
-                        .zIndex(1)
 
                         Divider()
                             .background(Color.borderColor)
-                            .padding(.bottom)
 
                         if selectedTab == 0 {
                             KnowledgeView(
@@ -103,7 +98,7 @@ struct KnowledgePage: View {
                             .padding()
                         } else if selectedTab == 1 {
                             VStack(spacing: 12) {
-                                Image(systemName: "list.bullet.rectangle")
+                                Image("LogoFix")
                                     .font(.system(size: 48))
                                     .foregroundColor(Color.secondaryText.opacity(0.6))
                                 

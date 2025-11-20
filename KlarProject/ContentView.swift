@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var sidebarVM = SidebarViewModel()
        var body: some View {
-           NavigationSplitView {
+           NavigationSplitView(columnVisibility : .constant(.all)) {
                SidebarView(viewModel: sidebarVM)
            } detail: {
                switch sidebarVM.selectedItem?.destination {
@@ -28,13 +28,16 @@ struct ContentView: View {
                        .padding()
                        .ignoresSafeArea(edges : .top)
                case .contact:
-                   ContactTableView()
+                   MainContactView(contactViewModel: ConversationListViewModel.shared, addContactAction : {})
                        .padding()
-//                       .ignoresSafeArea(edges : .top)
+                       .ignoresSafeArea(edges : .top)
                default:
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }
            }
+           
+           .environment(\.locale, Locale(identifier: "en"))
+           .navigationSplitViewStyle(.balanced) // hide hide sidebar
        }
 }
 

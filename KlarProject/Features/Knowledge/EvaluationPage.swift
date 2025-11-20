@@ -40,6 +40,7 @@ struct EvaluationPage: View {
                                 evaluationViewModel.approveConversation(conversation)
                             }
                         )
+                        .ignoresSafeArea(edges : .top)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     } else {
                         VStack(spacing: 12) {

@@ -35,6 +35,7 @@ struct HumanConversationItemView: View {
                 // Name and Message
                 VStack(alignment: .leading, spacing: 5) {
                     Text(conversation.name)
+                        .fontWeight(.bold)
                         .font(.body)
                         .foregroundColor(Color.primaryUsernameText)
                     

@@ -16,11 +16,11 @@ enum LabelType : String, Codable, CaseIterable,Hashable {
     
     var text: String {
         switch self {
-        case .warranty: return "Warranty"
-        case .service: return "Service"
-        case .payment: return "Payment"
-        case .maintenance: return "Maintenance"
-        case .spareparts: return "Spareparts"
+        case .warranty: return NSLocalizedString("Warranty", comment : "")
+        case .service: return NSLocalizedString("Service", comment : "")
+        case .payment: return NSLocalizedString("Payment", comment : "")
+        case .maintenance: return NSLocalizedString("Maintenance", comment : "")
+        case .spareparts: return NSLocalizedString("Spareparts", comment : "")
         }
     }
 }

@@ -17,7 +17,7 @@ struct ResolveButton: View {
                     .foregroundColor(Color.white)
                     .font(.body)
                 
-                Text("Mark Resolved")
+                Text(NSLocalizedString("Mark Resolved", comment : ""))
                     .foregroundColor(Color.white)
                     .font(.body)
 //                    .fontWeight(.medium)
