@@ -8,12 +8,24 @@
 import SwiftUI
 
 struct DashboardView: View {
+    
     var body: some View {
-        Text("Dashboard Page")
-        
+        GeometryReader { geometry in
+
+            VStack{
+                Text("uhuk")
+                    .foregroundColor(Color.white)
+            }
+            .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .center)
+            .overlay(
+                RoundedRectangle(cornerRadius: 11)
+                    .stroke(Color.sectionHeader, lineWidth: 1)
+            )
+        }
     }
 }
 
 #Preview {
     DashboardView()
+        .padding()
 }

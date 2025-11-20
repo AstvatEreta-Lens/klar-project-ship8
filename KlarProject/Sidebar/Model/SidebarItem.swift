@@ -19,8 +19,10 @@ struct SidebarItem: Identifiable, Hashable {
 
 enum SidebarDestination {
     case dashboard
-    case chat
+    case conversation
+    case knowledge
     case settings
     case ticketing
+    case contact
 }
 
