@@ -81,7 +81,7 @@ struct ContactTableView: View {
             headerText("Address")
                 .frame(width: width * 0.32, alignment: .center) // 32%
             
-            headerText("Tags")
+            headerText("Label")
                 .frame(width: width * 0.15, alignment: .center) // 15%
         }
         .padding(.vertical, 12)
