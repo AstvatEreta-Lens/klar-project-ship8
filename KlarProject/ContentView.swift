@@ -17,27 +17,33 @@ struct ContentView: View {
                case .dashboard:
                    DashboardView()
                        .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
                case .conversation:
                    ChatKlarView()
                        .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
                case .knowledge:
                    KnowledgePage()
                        .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
                case .settings:
                    SettingsView(editAction: {}, saveAction: {})
                        .padding()
                        .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
                case .contact:
-                   MainContactView(contactViewModel: ConversationListViewModel.shared, addContactAction : {})
+                   MainContactView(addContactAction : {})
                        .padding()
                        .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
                default:
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }
            }
-           
+
            .environment(\.locale, Locale(identifier: "en"))
            .navigationSplitViewStyle(.balanced) // hide hide sidebar
+           .detectFullScreen()
        }
 }
 

@@ -13,19 +13,34 @@ struct DashboardView: View {
         GeometryReader { geometry in
 
             VStack{
-                Text("uhuk")
-                    .foregroundColor(Color.white)
+                HStack{
+                    ChatHandledByAI()
+                    ChatHandledByAI()
+                    ChatHandledByAI()
+                }
+                .padding(.horizontal)
+                .padding(.top)
+                .foregroundColor(.red)
+                .frame(height : 200)
+                
+                
+                HStack{
+//                    ChartView()
+//                    StatisticsView()
+                }
+                .padding(.horizontal)
+                .padding(.bottom)
+                .foregroundColor(Color.blue)
             }
-            .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .center)
-            .overlay(
-                RoundedRectangle(cornerRadius: 11)
-                    .stroke(Color.sectionHeader, lineWidth: 1)
-            )
+            .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .top)
+            .background(.white)
+            .padding(.bottom)
         }
     }
 }
 
 #Preview {
     DashboardView()
+        .frame(width : 1000, height : 600)
         .padding()
 }

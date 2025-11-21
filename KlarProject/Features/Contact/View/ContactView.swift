@@ -8,86 +8,82 @@
 import SwiftUI
 
 struct ContactTableView: View {
-    
-    @State var conversations: [Conversation]
-    @State private var selectedContact: Conversation?
-    
+
+    @State var contacts: [ContactModel]
+    @State private var selectedContact: ContactModel?
+
     // Callback untuk handle selection
-    var onContactSelected: ((Conversation) -> Void)?
-    
-    init(conversations: [Conversation]? = nil, onContactSelected: ((Conversation) -> Void)? = nil) {
+    var onContactSelected: ((ContactModel) -> Void)?
+
+    init(contacts: [ContactModel]? = nil, onContactSelected: ((ContactModel) -> Void)? = nil) {
         // Jika tidak ada data yang diberikan, gunakan semua data dummy
-        let allConversations = conversations ?? (Conversation.humanDummyData + Conversation.aiDummyData)
-        _conversations = State(initialValue: allConversations)
+        let allContacts = contacts ?? ContactModel.contactModelDummydata
+        _contacts = State(initialValue: allContacts)
         self.onContactSelected = onContactSelected
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             VStack(alignment : .leading, spacing: 0) {
                 headerRow(width: geometry.size.width)
-        
+
                 ScrollView {
                     VStack(spacing: 0) {
-                        ForEach(Array(conversations.enumerated()), id: \.element.id) { index, conversation in
+                        ForEach(Array(contacts.enumerated()), id: \.element.id) { index, contact in
                             ContactRow(
                                 number: index + 1,
-                                conversation: conversation,
-                                isSelected: selectedContact?.id == conversation.id,
+                                contact: contact,
+                                isSelected: selectedContact?.id == contact.id,
                                 totalWidth: geometry.size.width
                             )
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                selectedContact = conversation
-                                onContactSelected?(conversation)
+                                selectedContact = contact
+                                onContactSelected?(contact)
                             }
                         }
                     }
                 }
                 .frame(minHeight: 100)
-//                
-                Text(NSLocalizedString("Total Data: ", comment : "") + " \(conversations.count)")
+
+                Text(NSLocalizedString("Total Data: ", comment : "") + " \(contacts.count)")
                     .font(.title2)
                     .foregroundColor(Color.textRegular)
                     .padding(.horizontal)
                     .padding(.bottom)
-                
-//                
             }
-//            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
             .padding(.horizontal, 2)
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(Color.gray.opacity(0.2), lineWidth: 1)
             )
-//            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
         }
     }
-    
+
     func headerRow(width: CGFloat) -> some View {
         HStack(spacing: 0) {
             headerText("No.")
                 .frame(width: width * 0.05, alignment: .center) // 5%
-            
+
             headerText("Name")
                 .frame(width: width * 0.15, alignment: .center) // 15%
-            
+
             headerText("Phone Number")
                 .frame(width: width * 0.18, alignment: .center) // 18%
-            
+
             headerText("Channel")
                 .frame(width: width * 0.15, alignment: .center) // 15%
-            
+
             headerText("Address")
                 .frame(width: width * 0.32, alignment: .center) // 32%
-            
+
             headerText("Tags")
                 .frame(width: width * 0.15, alignment: .center) // 15%
         }
         .padding(.vertical, 12)
         .background(Color.gray.opacity(0.06))
     }
-    
+
     func headerText(_ text: String) -> some View {
         Text(text)
             .font(.title3)
@@ -97,39 +93,40 @@ struct ContactTableView: View {
 
 struct ContactRow: View {
     let number: Int
-    let conversation: Conversation
+    let contact: ContactModel
     let isSelected: Bool
     let totalWidth: CGFloat
-    
+
     var body: some View {
         HStack(spacing: 0) {
             Text("\(number)")
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.05, alignment: .center) // 5%
-            
-            Text(conversation.name)
+
+            Text(contact.name)
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.15, alignment: .center) // 15%
                 .lineLimit(1)
-            
-            Text(conversation.phoneNumber)
+
+            Text(contact.channel)
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.18, alignment: .center) // 18%
                 .lineLimit(1)
-            
+
             HStack(spacing: 6) {
-                Image(systemName: channelIcon)
+                Image(systemName: "message.circle.fill")
                     .foregroundColor(.green)
-                Text(channelName)
+                Text("WhatsApp")
                     .foregroundColor(Color.textRegular)
             }
             .frame(width: totalWidth * 0.15, alignment: .center) // 15%
-            
-            Text("-") // Address kosong sementara
+
+            Text(contact.address)
                 .frame(width: totalWidth * 0.32, alignment: .center) // 32%
-                .foregroundColor(.gray.opacity(0.5))
-            
-            // Display tags/labels
+                .foregroundColor(Color.textRegular)
+                .lineLimit(1)
+
+            // Display tags
             Text(tagsText)
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.15, alignment: .center) // 15%
@@ -142,33 +139,24 @@ struct ContactRow: View {
                 .stroke(isSelected ? Color(hex : "F5F5F5"): Color.clear, lineWidth: 1)
         )
     }
-    
+
     // Helper computed properties
-    private var channelIcon: String {
-        conversation.hasWhatsApp ? "message.circle.fill" : "envelope.circle.fill"
-    }
-    
-    private var channelName: String {
-        conversation.hasWhatsApp ? "WhatsApp" : "Email"
-    }
-    
     private var tagsText: String {
-        if conversation.label.isEmpty {
+        if contact.tags.isEmpty {
             return "-"
         }
-        return conversation.label.map { $0.rawValue }.joined(separator: ", ")
+        return contact.tags.joined(separator: ", ")
     }
 }
 
 #Preview {
-    // Preview dengan dummy data dari Conversation model
+    // Preview dengan dummy data dari ContactModel
     ContactTableView(
-        conversations: Conversation.humanDummyData + Conversation.aiDummyData,
-        onContactSelected: { conversation in
-            print("Selected: \(conversation.name)")
+        contacts: ContactModel.contactModelDummydata,
+        onContactSelected: { contact in
+            print("Selected: \(contact.name)")
         }
     )
     .frame(height: 400)
     .padding()
 }
-

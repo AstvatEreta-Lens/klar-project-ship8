@@ -9,9 +9,13 @@ import SwiftUI
 
 struct dump: View {
     @State private var text : String = "Miaomiaoniga"
+    @State private var nameText : String = "Pak Daud"
     
     var body: some View {
-        EditableTextBox(text : $text)
+        VStack{
+            EditableTextBox(text : $text)
+            EditableTextBox(text : $nameText)
+        }
     }
 }
 

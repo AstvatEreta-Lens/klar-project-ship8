@@ -37,7 +37,7 @@ struct PlatformConfigView: View {
                     Divider()
                         .foregroundColor(Color.sectionHeader)
                     
-                        fieldRow(title: NSLocalizedString("Access Token", comment: ""), text: binding(for: \.accessToken))
+                    fieldRow(title: NSLocalizedString("Access Token", comment: ""), text: binding(for: \.accessToken))
                     fieldRow(title: NSLocalizedString("Phone Number ID", comment : ""), text: binding(for: \.phoneNumberId))
                     fieldRow(title: NSLocalizedString("Verify Token", comment : ""), text: binding(for: \.localWebhookPort))
                     fieldRow(title: NSLocalizedString("Webhook URL", comment : ""), text: binding(for: \.webhookServerURL))
