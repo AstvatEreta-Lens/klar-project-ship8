@@ -2,83 +2,82 @@
 //  StatisticsView.swift
 //  KlarProject
 //
-//  Created by Nicholas Tristandi on 20/11/25.
+//  Created by Nicholas Tristandi on 24/11/25.
 //
-//
+
 import SwiftUI
 import Charts
 
 struct StatisticsView: View {
     var body: some View {
         Chart{
-            ForEach(stackedBarData){ shape in
-                BarMark(
-                    x: .value("Shape Type", shape.type),
-                    y: .value("Count", shape.count)
+            ForEach(resolvedData){ ResolvedAIChat in
+                AreaMark(
+                        x: .value("Shape Type", ResolvedAIChat.day),
+                        y: .value("Count", ResolvedAIChat.count)
                 )
-                .foregroundStyle(by: .value("Count", shape.color))
+                .foregroundStyle(
+                        LinearGradient(
+                            colors: [
+                                Color.sectionHeader.opacity(0.25),
+                                Color.sectionHeader.opacity(0.05)
+                            ],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                
+                
+                LineMark(
+                    x: .value("Shape Type", ResolvedAIChat.day),
+                    y: .value("Count", ResolvedAIChat.count)
+                )
+                .foregroundStyle(Color.sectionHeader)
+            }
+            .annotation(position : .top){
+                Text("Resolved Chat by AI")
+                    .padding(.leading)
+                    .font(.title)
+                    .foregroundColor(Color.textRegular)
             }
         }
-    }
-}
-
-struct StatisticsView1 : View {
-    var body: some View {
-        Chart{
-            ForEach(data){ shape in
-                BarMark(
-                    x: .value("Shape Type", shape.type),
-                    y: .value("Count", shape.count)
-                )
-                .foregroundStyle(shape.color)
+        .chartYScale(domain: 0...600)
+        .chartYAxis(.hidden)
+        .chartXAxis {
+            AxisMarks(values: .automatic) { _ in
+                AxisValueLabel()
+                    .foregroundStyle(Color.textRegular)
             }
         }
+        .padding(.bottom)
         
+        
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .background(Color.white)
+    .cornerRadius(18)
+    .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
     }
 }
-
-
-struct ToyShape : Identifiable{
-    var type :  String
-    var count : Double
-    var id = UUID()
-    var color : Color
-}
-
-var data: [ToyShape] = [
-    .init(type: "Car", count: 100, color : Color.red),
-    .init(type: "Plane", count: 50, color : Color.yellow),
-    .init(type: "Cat", count: 300, color : Color.blue)
-]
-
-
-struct ToyShape1: Identifiable{
-    var color :  String
-    var type : String
-    var count : Double
-    var id =  UUID()
-}
-
-var stackedBarData: [ToyShape1] = [
-    .init(color: "Green", type: "Cube", count: 2),
-    .init(color: "Green", type: "Sphere", count: 0),
-    .init(color: "Green", type: "Pyramid", count: 1),
-    .init(color: "Purple", type: "Cube", count: 1),
-    .init(color: "Purple", type: "Sphere", count: 1),
-    .init(color: "Purple", type: "Pyramid", count: 1),
-    .init(color: "Pink", type: "Cube", count: 1),
-    .init(color: "Pink", type: "Sphere", count: 2),
-    .init(color: "Pink", type: "Pyramid", count: 0),
-    .init(color: "Yellow", type: "Cube", count: 1),
-    .init(color: "Yellow", type: "Sphere", count: 1),
-    .init(color: "Yellow", type: "Pyramid", count: 2)
-]
-
 
 #Preview {
     StatisticsView()
-    StatisticsView1()
+        .frame(width : 947)
         .padding()
 }
 
 
+struct ResolvedAIChat : Identifiable{
+    var day :  String
+    var count : Double
+    var id = UUID()
+}
+
+var resolvedData: [ResolvedAIChat] = [
+    .init(day: "Sun", count: 50),
+    .init(day: "Mon", count: 175),
+    .init(day: "Tue", count: 150),
+    .init(day: "Wed", count: 175),
+    .init(day: "Thu", count: 275),
+    .init(day: "Fri", count: 250),
+    .init(day: "Sat", count: 500)
+]

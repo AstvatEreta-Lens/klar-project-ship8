@@ -6,56 +6,55 @@
 //
 
 import SwiftUI
-import SwiftUI
 
 struct ChatHandledByAI: View {
     @State private var resolvedChats: Int = 0
-    let targetChats: Int = 48
-    let improvementPercent: Double = 12.0
-
+    let targetChats: Int = 12
+    let improvementPercent: Double = 3.0
+    
+    
     var body: some View {
-        VStack(spacing: 10) {
+        HStack(alignment : .top){
+            VStack(alignment : .leading){
+                    Text("Chat Handled by AI")
+                        .fontWeight(.light)
+                        .font(.headline)
+                        .foregroundColor(Color(hex: "#1A1A1A"))
+                    
+                    Text("\(resolvedChats)")
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(Color.textRegular)
+                        .shadow(color: Color.black.opacity(0.15), radius: 4, y: 2)
+                        .animation(.spring(response: 0.6, dampingFraction: 0.8), value: resolvedChats)
+                Spacer()
+                    HStack(spacing: 2) {
+                        Image(systemName: improvementPercent >= 0 ? "arrow.up.right" : "arrow.down.right")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        Text("\(String(format: "%.0f", improvementPercent))%")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                        Text("from yesterday")
+                            .foregroundColor(Color.textRegular)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                    }
+                    .padding(.bottom)
+                    .foregroundColor(Color.green)
+                }
+                .padding(.top)
+                .padding(.leading)
             
-            // Indicator
-            HStack(spacing: 6) {
-                Image(systemName: improvementPercent >= 0 ? "arrow.up.right" : "arrow.down.right")
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                Text("\(String(format: "%.0f", improvementPercent))%")
-                    .font(.caption)
-                    .fontWeight(.medium)
+                Spacer()
+            
+                VStack{
+                    Image("Photo Profile 1")
+                        .frame(width : 90, height : 90)
+                    Spacer()
+                }
             }
-            .foregroundColor(Color.sectionHeader)
-
-            // Title
-            Text("Chat Resolved Today")
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(Color(hex: "#1A1A1A"))
-            
-            // Animated counter
-            Text("\(resolvedChats)")
-                .font(.system(size: 48, weight: .bold))
-                .foregroundColor(Color.sectionHeader)
-                .shadow(color: Color.black.opacity(0.15), radius: 4, y: 2)
-                .animation(.spring(response: 0.6, dampingFraction: 0.8), value: resolvedChats)
-        }
-        .padding(.vertical, 32)
-        .frame(maxWidth: .infinity)
-        .background(
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.white,
-                    Color(hex: "#E7F4F5")
-                ]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(Color.sectionHeader.opacity(0.5), lineWidth: 1.2)
-        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.white)
         .cornerRadius(18)
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
 //        .padding()
@@ -69,4 +68,6 @@ struct ChatHandledByAI: View {
 
 #Preview {
     ChatHandledByAI()
+        .frame(width : 305, height : 151)
+        .padding()
 }

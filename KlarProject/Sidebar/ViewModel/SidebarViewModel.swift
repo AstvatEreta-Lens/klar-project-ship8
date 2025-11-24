@@ -21,7 +21,7 @@ final class SidebarViewModel: ObservableObject {
     
     // Settings
     let bottomItems: [SidebarItem] = [
-        SidebarItem(title: NSLocalizedString("Settings", comment : ""), icon: "gear", destination: .settings)
+        SidebarItem(title: NSLocalizedString("Settings", comment : ""), icon: "gear.circle", destination: .settings)
     ]
     
     // helper

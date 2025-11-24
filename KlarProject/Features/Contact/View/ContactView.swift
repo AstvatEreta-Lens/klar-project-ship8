@@ -9,18 +9,11 @@ import SwiftUI
 
 struct ContactTableView: View {
 
-    @State var contacts: [ContactModel]
+    let contacts: [ContactModel]
     @State private var selectedContact: ContactModel?
 
     // Callback untuk handle selection
     var onContactSelected: ((ContactModel) -> Void)?
-
-    init(contacts: [ContactModel]? = nil, onContactSelected: ((ContactModel) -> Void)? = nil) {
-        // Jika tidak ada data yang diberikan, gunakan semua data dummy
-        let allContacts = contacts ?? ContactModel.contactModelDummydata
-        _contacts = State(initialValue: allContacts)
-        self.onContactSelected = onContactSelected
-    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -126,7 +119,6 @@ struct ContactRow: View {
                 .foregroundColor(Color.textRegular)
                 .lineLimit(1)
 
-            // Display tags
             Text(tagsText)
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.15, alignment: .center) // 15%

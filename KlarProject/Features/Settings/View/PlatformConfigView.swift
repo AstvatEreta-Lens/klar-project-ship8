@@ -12,6 +12,7 @@ struct PlatformConfigView: View {
     @ObservedObject var viewModel: SettingsViewModel
     @State private var selectedProfileIndex: Int = 0
     let tutorialAction: () -> Void
+    @State private var isHidden : Bool = true
     
     
     var body: some View {
@@ -74,6 +75,7 @@ struct PlatformConfigView: View {
     }
     
     private func fieldRow(title: String, text: Binding<String>) -> some View {
+        
         HStack(spacing: 6) {
             Text(title)
                 .font(.body)

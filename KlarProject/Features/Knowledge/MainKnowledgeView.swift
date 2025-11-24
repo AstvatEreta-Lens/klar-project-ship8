@@ -112,6 +112,7 @@ struct KnowledgePage: View {
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height)
                 .background(Color.backgroundPrimary)
+                .background(Color.backgroundPrimary)
                 .blur(radius: showAddFilesView || viewModel.showDeleteAlert ? 3 : 0)
                 
                 // Add Files View Overlay

@@ -14,7 +14,7 @@ struct SidebarRow: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            Image(systemName: item.icon)
+            Image(systemName: isSelected ? item.icon + ".fill" : item.icon)
                 .foregroundColor(Color.primaryText)
                 .frame(width: 20)
 

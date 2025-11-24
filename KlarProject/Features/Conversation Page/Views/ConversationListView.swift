@@ -61,13 +61,14 @@ struct ConversationListView: View {
                 // Filter Overlay
                 if showingFilter {
                     // Dimmed Background
-                    Color.white.opacity(0)
+                    Color.clear
                         .ignoresSafeArea()
                         .onTapGesture {
                             withAnimation(.easeInOut(duration: 0.2)) {
                                 showingFilter = false
                             }
                         }
+                        .allowsHitTesting(false)
                     
                     // Filter Panel
                     VStack {

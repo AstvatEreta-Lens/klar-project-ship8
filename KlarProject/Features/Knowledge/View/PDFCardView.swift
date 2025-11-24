@@ -42,7 +42,7 @@ struct PDFCardView: View {
                         .rotationEffect(Angle(degrees: 90))
                         .foregroundColor(Color.black)
                 }
-//                .buttonStyle(PlainButtonStyle())
+                .buttonStyle(PlainButtonStyle())
                 .overlay{
                     if showActionButtons {
                         DeleteAndEditButton(

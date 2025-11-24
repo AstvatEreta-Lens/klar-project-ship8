@@ -9,45 +9,85 @@ import SwiftUI
 
 struct MainContactView: View {
     @StateObject private var contactViewModel = ContactViewModel()
-
-    let addContactAction : () -> Void
+    @State private var showAddContact: Bool = false
 
     var body: some View {
-        VStack(alignment : .leading){
-            Text("Contact")
-                .font(.largeTitle)
-                .foregroundColor(Color.sectionHeader)
+        ZStack {
+            VStack(alignment : .leading){
+                Text("Contact")
+                    .font(.largeTitle)
+                    .foregroundColor(Color.sectionHeader)
 
-            HStack{
-                Button(action : addContactAction){
-                    Image("Add Contact Button")
+                HStack{
+                    Button(action: {
+                        showAddContact = true
+                    }){
+                        HStack{
+                            Image(systemName: "plus")
+                                .font(.title2)
+                                .foregroundColor(Color.white)
+                            Text("Add Contact")
+                                .font(.title2)
+                                .foregroundColor(Color.white)
+                        }
+                        .frame(minWidth : 231, maxWidth: .infinity, minHeight : 36, maxHeight: .infinity, alignment: .center)
+                        .background(
+                            RoundedRectangle(cornerRadius: 11)
+                                .foregroundColor(Color.sectionHeader)
+                                
+                        )
+                    }
+                    .frame(width : 231, height : 36)
+                    .buttonStyle(PlainButtonStyle())
+
+                    Spacer()
+
+                    SearchBar(
+                        text: $contactViewModel.searchText,
+                        onSearch : {
+                            contactViewModel.searchContacts()
+                        }
+                    )
+                    .frame(maxWidth : 382, alignment : .trailing)
                 }
-                .frame(width : 231, height : 36)
-                .buttonStyle(PlainButtonStyle())
+                .padding(.bottom, 16)
 
-                Spacer()
-
-                SearchBar(
-                    text: $contactViewModel.searchText,
-                    onSearch : {
-                        contactViewModel.searchContacts()
+                ContactTableView(
+                    contacts: contactViewModel.filteredContacts,
+                    onContactSelected: { contact in
+                        contactViewModel.selectContact(contact)
                     }
                 )
-                .frame(maxWidth : 382, alignment : .trailing)
             }
-            .padding(.bottom, 16)
-
-            ContactTableView(
-                contacts: contactViewModel.filteredContacts,
-                onContactSelected: { contact in
-                    contactViewModel.selectContact(contact)
-                }
-            )
+            .blur(radius: showAddContact ? 3 : 0)
+            .disabled(showAddContact)
+            
+            // Overlay AddContactView
+            if showAddContact {
+                Color.black.opacity(0.4)
+                    .ignoresSafeArea()
+                    .onTapGesture {
+                        showAddContact = false
+                    }
+                
+                AddContactView(
+                    onSave: { newContact in
+                        contactViewModel.addContact(newContact)
+                        showAddContact = false
+                    },
+                    onCancel: {
+                        showAddContact = false
+                    }
+                )
+                .transition(.scale.combined(with: .opacity))
+                .zIndex(1)
+            }
         }
+        .animation(.easeInOut(duration: 0.3), value: showAddContact)
     }
 }
 
 #Preview {
-    MainContactView(addContactAction : {})
+    MainContactView()
         .padding()
 }

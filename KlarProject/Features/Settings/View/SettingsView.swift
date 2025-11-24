@@ -54,17 +54,19 @@ struct SettingsView: View {
                     .padding(.trailing)
 
                 }
-                
-                AccountTabView(viewModel: SettingsViewModel())
-                    .padding(.horizontal, contentPadding)
-
-                SecurityTabView(viewModel: SettingsViewModel())
-                    .padding(.horizontal, contentPadding)
-
-                PlatformConfigView(viewModel : SettingsViewModel(), tutorialAction: {})
-                    .padding(.horizontal, contentPadding)
-
-
+                ScrollView{
+                    AccountTabView(viewModel: SettingsViewModel())
+                        .padding(.horizontal, contentPadding)
+                    
+                    SecurityTabView(viewModel: SettingsViewModel())
+                        .padding(.horizontal, contentPadding)
+                    
+                    PlatformConfigView(viewModel : SettingsViewModel(), tutorialAction: {})
+                        .padding(.horizontal, contentPadding)
+                    PreferenceView()
+                        .padding(.horizontal, contentPadding)
+                    
+                }
 
             }
             .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .top)

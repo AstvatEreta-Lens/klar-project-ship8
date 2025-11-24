@@ -11,14 +11,10 @@ import Combine
 @MainActor
 class ContactViewModel: ObservableObject {
 
-    // MARK: - Published Properties
     @Published var contacts: [ContactModel] = []
     @Published var selectedContact: ContactModel?
     @Published var searchText: String = ""
 
-    // MARK: - Computed Properties
-
-    // Filtered contacts based on search text
     var filteredContacts: [ContactModel] {
         if searchText.isEmpty {
             return contacts
@@ -36,38 +32,30 @@ class ContactViewModel: ObservableObject {
         loadContacts()
     }
 
-
     func loadContacts() {
         contacts = ContactModel.contactModelDummydata
-        print("Loaded \(contacts.count) contacts")
     }
 
-
     func searchContacts() {
-        print("Searching contacts with: '\(searchText)'")
-        print("Found \(filteredContacts.count) results")
+        print("Found \(filteredContacts.count)")
     }
 
     func selectContact(_ contact: ContactModel) {
         selectedContact = contact
-        print("Selected contact: \(contact.name)")
     }
 
-
     func addContact(_ contact: ContactModel) {
-        contacts.append(contact)
-        print("Added contact: \(contact.name)")
+        contacts.insert(contact, at: 0)
+        print("Tambah: \(contact.name)")
     }
 
     func updateContact(_ contact: ContactModel) {
         if let index = contacts.firstIndex(where: { $0.id == contact.id }) {
             contacts[index] = contact
-            print("Updated contact: \(contact.name)")
         }
     }
 
     func deleteContact(_ contact: ContactModel) {
         contacts.removeAll { $0.id == contact.id }
-        print("Deleted contact: \(contact.name)")
     }
 }

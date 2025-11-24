@@ -32,7 +32,7 @@ struct ContentView: View {
                        .ignoresSafeArea(edges : .top)
                        .fullScreenSafePadding()
                case .contact:
-                   MainContactView(addContactAction : {})
+                   MainContactView()
                        .padding()
                        .ignoresSafeArea(edges : .top)
                        .fullScreenSafePadding()

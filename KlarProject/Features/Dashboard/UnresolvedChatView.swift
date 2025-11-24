@@ -1,5 +1,5 @@
 //
-//  ChatHandledByHuman.swift
+//  UnresolvedChatView.swift
 //  KlarProject
 //
 //  Created by Nicholas Tristandi on 20/11/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ChatHandledByHuman: View {
+struct UnresolvedChatView: View {
     @State private var resolvedChats: Int = 0
     let targetChats: Int = 8
     let improvementPercent: Double = 3.0
@@ -16,10 +16,10 @@ struct ChatHandledByHuman: View {
     var body: some View {
         HStack(alignment : .top){
             VStack(alignment : .leading){
-                    Text("Chat Handled by Human")
-                        .font(.headline)
+                    Text("Unresolved Chat")
                         .fontWeight(.light)
-                        .foregroundColor(Color(hex: "#1A1A1A"))
+                        .font(.headline)
+                        .foregroundColor(Color.textRegular)
                     
                     Text("\(resolvedChats)")
                         .font(.system(size: 48, weight: .bold))
@@ -31,7 +31,7 @@ struct ChatHandledByHuman: View {
                         Image(systemName: improvementPercent >= 0 ? "arrow.up.right" : "arrow.down.right")
                             .font(.caption)
                             .fontWeight(.semibold)
-                        Text("\(String(format: "%.0f", improvementPercent))% ")
+                        Text("\(String(format: "%.0f", improvementPercent))%")
                             .font(.caption)
                             .fontWeight(.medium)
                         Text("from yesterday")
@@ -48,7 +48,7 @@ struct ChatHandledByHuman: View {
                 Spacer()
             
                 VStack{
-                    Image("Photo Profile 3")
+                    Image("Photo Profile 2")
                         .frame(width : 90, height : 90)
                     Spacer()
                 }
@@ -67,7 +67,7 @@ struct ChatHandledByHuman: View {
 }
 
 #Preview {
-    ChatHandledByHuman()
+    UnresolvedChatView()
         .frame(width : 305, height : 151)
         .padding()
 }

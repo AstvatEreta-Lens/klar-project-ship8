@@ -1,22 +1,23 @@
 //
-//  ChatHandledByHuman.swift
+//  TotalCustomerView.swift
 //  KlarProject
 //
-//  Created by Nicholas Tristandi on 20/11/25.
+//  Created by Nicholas Tristandi on 21/11/25.
 //
+
 
 import SwiftUI
 
-struct ChatHandledByHuman: View {
+struct TotalCustomerView: View {
     @State private var resolvedChats: Int = 0
-    let targetChats: Int = 8
-    let improvementPercent: Double = 3.0
+    let targetChats: Int = 1386
+    let improvementPercent: Double = 33.0
     
     
     var body: some View {
         HStack(alignment : .top){
             VStack(alignment : .leading){
-                    Text("Chat Handled by Human")
+                    Text("Total Customer")
                         .font(.headline)
                         .fontWeight(.light)
                         .foregroundColor(Color(hex: "#1A1A1A"))
@@ -40,7 +41,7 @@ struct ChatHandledByHuman: View {
                             .fontWeight(.medium)
                     }
                     .padding(.bottom)
-                    .foregroundColor(Color.red)
+                    .foregroundColor(Color.green)
                 }
                 .padding(.top)
                 .padding(.leading)
@@ -48,14 +49,14 @@ struct ChatHandledByHuman: View {
                 Spacer()
             
                 VStack{
-                    Image("Photo Profile 3")
+                    Image("Photo Profile 4")
                         .frame(width : 90, height : 90)
                     Spacer()
                 }
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
-        .cornerRadius(18)
+        .cornerRadius(11)
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
 //        .padding()
         .onAppear {
@@ -67,7 +68,7 @@ struct ChatHandledByHuman: View {
 }
 
 #Preview {
-    ChatHandledByHuman()
+    TotalCustomerView()
         .frame(width : 305, height : 151)
         .padding()
 }

@@ -14,9 +14,23 @@ struct DashboardView: View {
 
             VStack{
                 HStack{
+                    Text("Dashboard")
+                        .font(.largeTitle)
+                        .foregroundColor(Color.sectionHeader)
+                        .fontWeight(.bold)
+                    
+                    Spacer()
+                    
+                    Text("Picker")
+                }
+                .padding(.top, 18)
+                .padding(.horizontal)
+                
+                HStack{
+                    UnresolvedChatView()
                     ChatHandledByAI()
-                    ChatHandledByAI()
-                    ChatHandledByAI()
+                    ChatHandledByHuman()
+                    TotalCustomerView()
                 }
                 .padding(.horizontal)
                 .padding(.top)
@@ -24,23 +38,37 @@ struct DashboardView: View {
                 .frame(height : 200)
                 
                 
-                HStack{
-//                    ChartView()
-//                    StatisticsView()
+                HStack(alignment : .top){
+                    StatisticsView()
+                        .chartXAxis(.visible)
+                        .frame(maxHeight : 408)
+                    ConversationLabels(label : .warranty)
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
-                .foregroundColor(Color.blue)
+                
+                Spacer()
+                
             }
+            .padding()
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color.white,
+                        Color(hex: "#E7F4F5")
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
             .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .top)
-            .background(.white)
-            .padding(.bottom)
+//            .padding()
         }
     }
 }
 
 #Preview {
     DashboardView()
-        .frame(width : 1000, height : 600)
+        .frame(width : 1260, height : 600)
         .padding()
 }
