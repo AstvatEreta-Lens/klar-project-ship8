@@ -5,16 +5,27 @@
 //  Created by Ahmad Al Wabil on 14/10/25.
 //
 
-
 import Foundation
 import SwiftUI
 
 final class SidebarViewModel: ObservableObject {
     @Published var selectedItem: SidebarItem?
-    let items: [SidebarItem] = [
-        SidebarItem(title: "Dashboard", icon: "rectangle.grid.2x2", destination: .dashboard),
-        SidebarItem(title: "Chat", icon: "bubble", destination: .chat),
-        SidebarItem(title: "Ticketing", icon: "ticket", destination: .ticketing),
-        SidebarItem(title: "Settings", icon: "gearshape", destination: .settings)
+    
+    // Top three items
+    let mainItems: [SidebarItem] = [
+        SidebarItem(title: NSLocalizedString("Dashboard", comment : ""), icon: "house", destination: .dashboard),
+        SidebarItem(title: NSLocalizedString("Conversation", comment : ""), icon: "bubble", destination: .conversation),
+        SidebarItem(title: NSLocalizedString("Knowledge", comment : ""), icon: "book.closed", destination: .knowledge),
+        SidebarItem(title: NSLocalizedString("Contact", comment : ""), icon : "person.2", destination: .contact)
     ]
+    
+    // Settings
+    let bottomItems: [SidebarItem] = [
+        SidebarItem(title: NSLocalizedString("Settings", comment : ""), icon: "gear", destination: .settings)
+    ]
+    
+    // helper
+    var items: [SidebarItem] {
+        mainItems + bottomItems
+    }
 }
