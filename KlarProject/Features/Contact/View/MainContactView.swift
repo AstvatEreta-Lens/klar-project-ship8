@@ -17,6 +17,7 @@ struct MainContactView: View {
                 Text("Contact")
                     .font(.largeTitle)
                     .foregroundColor(Color.sectionHeader)
+                    .fontWeight(.bold)
 
                 HStack{
                     Button(action: {
@@ -37,9 +38,11 @@ struct MainContactView: View {
                                 
                         )
                     }
-                    .frame(width : 231, height : 36)
+                    .frame(width : 231,
+                           height : 36)
                     .buttonStyle(PlainButtonStyle())
 
+              
                     Spacer()
 
                     SearchBar(
@@ -49,6 +52,10 @@ struct MainContactView: View {
                         }
                     )
                     .frame(maxWidth : 382, alignment : .trailing)
+                    
+//                    Image(systemName: "slider.horizontal.3")
+//                        .font(.body)
+//                        .foregroundColor(Color.primaryText)
                 }
                 .padding(.bottom, 16)
 

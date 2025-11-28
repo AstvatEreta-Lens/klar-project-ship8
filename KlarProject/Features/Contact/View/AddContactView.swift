@@ -187,12 +187,12 @@ struct AddContactView: View {
                 }
             }
             .padding(.horizontal)
-            .padding(.bottom)
+            .padding(.bottom, 30)
             .buttonStyle(PlainButtonStyle())
             .disabled(!isFormValid)
         }
         .padding(.top)
-        .frame(width : 700, height : 409)
+        .frame(minWidth : 700, minHeight : 409)
         .background(Color.white)
         .cornerRadius(11)
         .overlay(

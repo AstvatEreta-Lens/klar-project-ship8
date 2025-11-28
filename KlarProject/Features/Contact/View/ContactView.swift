@@ -40,15 +40,17 @@ struct ContactTableView: View {
                 .frame(minHeight: 100)
 
                 Text(NSLocalizedString("Total Data: ", comment : "") + " \(contacts.count)")
-                    .font(.title2)
+                    .font(.title3)
                     .foregroundColor(Color.textRegular)
                     .padding(.horizontal)
                     .padding(.bottom)
             }
             .padding(.horizontal, 2)
             .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                RoundedRectangle(cornerRadius: 25)
+                    .fill(Color.white)
+//                    .stroke(Color.gray.opacity(0.2), lineWidth: 0.2)
+                    .shadow(color : .black.opacity(0.2), radius: 12, x: 6, y: 6)
             )
         }
     }
@@ -73,14 +75,17 @@ struct ContactTableView: View {
             headerText("Tags")
                 .frame(width: width * 0.15, alignment: .center) // 15%
         }
-        .padding(.vertical, 12)
-        .background(Color.gray.opacity(0.06))
+        .padding(.vertical, 11)
+        .background(
+            RoundedRectangle(cornerRadius: 21)
+                .fill(Color.backgroundTertiary)
+        )
     }
 
     func headerText(_ text: String) -> some View {
         Text(text)
             .font(.title3)
-            .foregroundColor(.gray)
+            .foregroundColor(Color(hex : "#808080"))
     }
 }
 
@@ -99,12 +104,14 @@ struct ContactRow: View {
             Text(contact.name)
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.15, alignment: .center) // 15%
-                .lineLimit(1)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
 
             Text(contact.channel)
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.18, alignment: .center) // 18%
-                .lineLimit(1)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
 
             HStack(spacing: 6) {
                 Image(systemName: "message.circle.fill")
@@ -117,12 +124,14 @@ struct ContactRow: View {
             Text(contact.address)
                 .frame(width: totalWidth * 0.32, alignment: .center) // 32%
                 .foregroundColor(Color.textRegular)
-                .lineLimit(1)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
 
             Text(tagsText)
                 .foregroundColor(Color.textRegular)
                 .frame(width: totalWidth * 0.15, alignment: .center) // 15%
-                .lineLimit(1)
+                .lineLimit(2)
+                .minimumScaleFactor(0.75)
         }
         .padding(.vertical, 8)
         .background(isSelected ? Color(hex : "F5F5F5") : Color.white)
@@ -149,6 +158,6 @@ struct ContactRow: View {
             print("Selected: \(contact.name)")
         }
     )
-    .frame(height: 400)
+    .frame(width : 1000, height: 400)
     .padding()
 }

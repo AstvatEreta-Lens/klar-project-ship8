@@ -36,9 +36,11 @@ struct ConversationListView: View {
                             title: NSLocalizedString("HANDLED BY HUMAN AGENTS", comment : ""),
                             count: viewModel.unreadCount,
                             viewModel: viewModel
-                        ){
+                        )
+                        {
                             humanConversationsScrollView(height: geometry.size.height)
                         }
+                        .accessibilityLabel("Ai Chat scroll view")
                         
                         // AI Section
                         ConversationSection(
@@ -48,6 +50,7 @@ struct ConversationListView: View {
                         ){
                             aiConversationsScrollView(height: geometry.size.height)
                         }
+                        .accessibilityLabel("Ai Chat scroll view")
                     }
                     .padding(.horizontal, 14)
                     .padding(.top, 8)
@@ -108,7 +111,7 @@ struct ConversationListView: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal, 14)
-                .foregroundColor(Color.primaryText)
+                .foregroundColor(Color.sectionHeader)
             
             HStack {
                 SearchBar(
@@ -198,6 +201,7 @@ struct ConversationListView: View {
                     emptyFilterState
                 }
             }
+            .accessibilityLabel("Human Chat scroll view")
             .padding(8)
         }
         .frame(height: scrollHeight)
@@ -228,6 +232,7 @@ struct ConversationListView: View {
                     emptyFilterState
                 }
             }
+            .accessibilityLabel("Ai Chat scroll view")
             .padding(8)
         }
         .frame(height: scrollHeight)
@@ -239,7 +244,7 @@ struct ConversationListView: View {
         
         VStack(spacing: 11) {
             Image(systemName: "tray")
-                .font(.system(size: 40))
+                .font(.largeTitle)
                 .foregroundColor(Color.borderColor)
             
             Text("No conversations found")

@@ -27,28 +27,28 @@ struct SettingsView: View {
 
                     Spacer()
 
-                    Button(action : editAction){
-                        HStack{
-                            Image(systemName: "pencil")
-                                .font(.title2)
-                            Text("Edit")
-                                .font(.title2)
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                    }
-                    .cornerRadius(11)
-                    .foregroundColor(Color.gray)
-
-                    Button(action : saveAction){
-                        HStack{
-                            Text("Save")
-                                .font(.title2)
-                                .foregroundColor(Color.white)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 8)
-                    }
+//                    Button(action : editAction){
+//                        HStack{
+//                            Image(systemName: "pencil")
+//                                .font(.title2)
+//                            Text("Edit")
+//                                .font(.title2)
+//                        }
+//                        .padding(.horizontal, 16)
+//                        .padding(.vertical, 8)
+//                    }
+//                    .cornerRadius(11)
+//                    .foregroundColor(Color.gray)
+//
+//                    Button(action : saveAction){
+//                        HStack{
+//                            Text("Save")
+//                                .font(.title2)
+//                                .foregroundColor(Color.white)
+//                        }
+//                        .padding(.horizontal, 20)
+//                        .padding(.vertical, 8)
+//                    }
                     .background(Color.sectionHeader)
                     .cornerRadius(11)
                     .padding(.trailing)
@@ -63,8 +63,8 @@ struct SettingsView: View {
                     
                     PlatformConfigView(viewModel : SettingsViewModel(), tutorialAction: {})
                         .padding(.horizontal, contentPadding)
-                    PreferenceView()
-                        .padding(.horizontal, contentPadding)
+//                    PreferenceView()
+//                        .padding(.horizontal, contentPadding)
                     
                 }
 

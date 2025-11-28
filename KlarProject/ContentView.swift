@@ -12,6 +12,7 @@ struct ContentView: View {
        var body: some View {
            NavigationSplitView(columnVisibility : .constant(.all)) {
                SidebarView(viewModel: sidebarVM)
+                   .accessibilityLabel("Sidebar")
            } detail: {
                switch sidebarVM.selectedItem?.destination {
                case .dashboard:
@@ -33,17 +34,19 @@ struct ContentView: View {
                        .fullScreenSafePadding()
                case .contact:
                    MainContactView()
-                       .padding()
+                       .padding(.top)
+                       .padding(.horizontal)
+                       .padding(.bottom, 10)
                        .ignoresSafeArea(edges : .top)
                        .fullScreenSafePadding()
                default:
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }
-           }
-
+           }           
            .environment(\.locale, Locale(identifier: "en"))
            .navigationSplitViewStyle(.balanced) // hide hide sidebar
            .detectFullScreen()
+           .accessibilityLabel("Klar")
        }
 }
 

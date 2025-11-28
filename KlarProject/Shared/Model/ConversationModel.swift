@@ -344,7 +344,7 @@ extension Conversation {
         Conversation(
             name: "Customer A",
             message: "AI: Urgent!",
-            time: "15.30",
+            time: "08.20",
             profileImage: "Photo Profile",
             unreadCount: 2,
             hasWhatsApp: true,
@@ -418,7 +418,7 @@ extension Conversation {
         Conversation(
             name: "Pak Daud",
             message: "Mesin rusak terkena air serta terendam kecap. Dan Customer complain mengenai suaranya yang berisik",
-            time: "16.45",
+            time: "08.20",
             profileImage: "Photo Profile",
             unreadCount: 0,
             hasWhatsApp: true,
@@ -427,7 +427,7 @@ extension Conversation {
             status: .resolved,
             label: [.maintenance],
             handledBy: User(name: "AI Assistant", profileImage: "ai-avatar", email: "ai@example.com"),
-            handledAt: "16.45",
+            handledAt: "08.20",
             handledDate: Date().addingTimeInterval(-3600 * 24),
             isEvaluated: false,
             evaluatedAt: nil,

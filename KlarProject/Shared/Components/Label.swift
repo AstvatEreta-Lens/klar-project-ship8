@@ -30,26 +30,27 @@ struct LabelView: View {
     let action: () -> Void
     
     var body: some View {
-        HStack(spacing: 4) {
+        HStack{
             Text(label.text)
-                .foregroundColor(Color.labelBorderColor)
-                .font(.caption)
+                .foregroundColor(Color(hex : "#4D4D4D"))
+                .font(.callout)
             
             Button(action: action) {
                 Image(systemName: "xmark")
-                    .foregroundColor(Color.labelBorderColor)
+                    .foregroundColor(Color(hex : "#4D4D4D"))
                     .font(.caption)
             }
             .buttonStyle(PlainButtonStyle())
         }
-        .padding(.horizontal, 6)
-        .frame(height: 18)
+        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .frame(height: 22)
         .background(
             RoundedRectangle(cornerRadius: 3)
-                .stroke(Color.labelBorderColor, lineWidth: 1)
+                .stroke(Color.gray, lineWidth: 1)
                 .background(
                     RoundedRectangle(cornerRadius: 3)
-                        .stroke(Color.labelBorderColor, lineWidth: 1)
+                        .stroke(Color(hex : "#EEEEE"), lineWidth: 1)
                         .fill(Color.white)
                 )
         )

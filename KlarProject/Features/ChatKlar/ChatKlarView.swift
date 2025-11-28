@@ -85,6 +85,7 @@ struct ChatKlarView: View {
         .environmentObject(viewModel)
         .environmentObject(evaluationViewModel)
         .toast(manager: viewModel.toastManager)
+        .accessibilityLabel("Main chat")
     }
 }
 

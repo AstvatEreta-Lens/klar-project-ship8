@@ -24,12 +24,12 @@ struct InternalNoteChatBubble: View {
                     bottomTrailingRadius: isCurrentUser ? 0 : 11,
                     topTrailingRadius: 11
                 )
-                .fill(isCurrentUser ? Color.icon : Color.borderColor)
+                .fill(isCurrentUser ? Color(hex : "#D5E5E9") : Color(hex : "#D5E5E9"))
                 
                 VStack(alignment: .leading, spacing: 3) {
                     // Author name
                     Text(note.author.name)
-                        .font(.caption)
+                        .font(.body)
                         .fontWeight(.bold)
                         .padding(.horizontal, 7)
                         .padding(.top, 8)
@@ -37,7 +37,7 @@ struct InternalNoteChatBubble: View {
                     
                     // Message bubble
                     Text(note.message)
-                        .font(.caption)
+                        .font(.callout)
                         .foregroundColor(Color.textRegular)
                         .padding(.horizontal, 7)
                         .padding(.bottom, 8)
@@ -86,6 +86,7 @@ struct InternalNoteChatBubble: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 8)
+        .accessibilityLabel("Chat bubble")
     }
 }
 

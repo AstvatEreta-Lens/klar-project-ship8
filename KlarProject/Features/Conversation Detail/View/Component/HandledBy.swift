@@ -21,21 +21,21 @@ struct HandledBySection: View { // bantu preview doang
             UserAvatarView(name : user.name)
             VStack(alignment: .leading){
                 Text(user.name)
-                    .foregroundColor(Color.textRegular)
-                    .font(.caption)
+                    .foregroundColor(Color.black)
+                    .font(.body.bold())
                 
                 HStack(spacing:1){
                     Text(handledDate.formattedShortDayDate())
-                    .font(.caption)
-                    .foregroundColor(Color.secondaryUsernameText)
+                    .font(.callout)
+                    .foregroundColor(Color(hex : "#4D4D4D"))
                     
-                    Text("·")
-                        .baselineOffset(2)
-                        .foregroundColor(Color.secondaryUsernameText)
+                    Text(" At ")
+                        .foregroundColor(Color(hex : "#4D4D4D"))
                     
                     Text(time)
-                    .font(.caption)
-                    .foregroundColor(Color.secondaryUsernameText)
+                        .font(.callout)
+                        .foregroundColor(Color(hex : "#4D4D4D"))
+                    
                 }
             }
         }

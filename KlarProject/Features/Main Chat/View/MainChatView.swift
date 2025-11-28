@@ -14,19 +14,19 @@ struct MainChatView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Top Section
-            HStack {
-               Text("")
-                Spacer()
-                SearchBar(text: .constant(""))
-                    .frame(width: 206, height: 27)
-            }
-            .padding(.leading, 22)
-            .padding(.trailing, 20)
-            .padding(.bottom)
-            
-           Divider()
-                .background(Color.borderColor)
-            
+//            HStack {
+//               Text("")
+//                Spacer()
+//                SearchBar(text: .constant(""))
+//                    .frame(width: 206, height: 27)
+//            }
+//            .padding(.leading, 22)
+//            .padding(.trailing, 20)
+//            .padding(.bottom)
+//            
+//           Divider()
+//                .background(Color.borderColor)
+//            
             // Main Chat Area
             if let conversation = viewModel.selectedConversation {
                 if shouldShowTakeOverButton(for: conversation) {
@@ -58,6 +58,7 @@ struct MainChatView: View {
                                     )
                                 }
                             }
+                            .accessibilityHidden(true)
                             .padding()
                         }
                         
@@ -66,8 +67,8 @@ struct MainChatView: View {
                         // Chat Input
                         ChatInputView(
                             onSend: handleSendMessage,
-                            onAttachment: handleAttachment,
-                            onAI: handleAI,
+//                            onAttachment: handleAttachment,
+//                            onAI: handleAI,
                         )
 //                        .ignoresSafeArea()
                     }
@@ -77,7 +78,7 @@ struct MainChatView: View {
                 VStack {
                     Spacer()
                     Text("Select a conversation to start")
-                        .font(.system(size: 16))
+                        .font(.body)
                         .foregroundColor(.secondary)
                     Spacer()
                 }
@@ -85,11 +86,13 @@ struct MainChatView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.backgroundPrimary)
+        
+        .accessibilityLabel("Main Chat")
     }
     
     private func shouldShowTakeOverButton(for conversation: Conversation) -> Bool {
         return conversation.handlerType == .ai &&
-               (conversation.status == .pending || conversation.status == .open)
+               (conversation.status == .pending || conversation.status == .resolved)
     }
     
     private func handleTakeOver() {

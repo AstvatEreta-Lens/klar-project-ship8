@@ -40,8 +40,8 @@ struct HumanConversationItemView: View {
                         .foregroundColor(Color.primaryUsernameText)
                     
                     Text(conversation.message)
-                        .font(.caption)
-                        .foregroundColor(Color.secondaryUsernameText)
+                        .font(.callout)
+                        .foregroundColor(Color(hex : "#666666"))
                         .lineLimit(1)
                 }
                 
@@ -50,8 +50,8 @@ struct HumanConversationItemView: View {
                 // Time and Unread Count
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(conversation.time)
-                        .font(.caption)
-                        .foregroundColor(Color.avatarCountColor)
+                        .font(.body)
+                        .foregroundColor(Color(hex : "#4D4D4D"))
                     
                     if conversation.unreadCount > 0 {
                         ZStack {
@@ -72,6 +72,7 @@ struct HumanConversationItemView: View {
             .background(isSelected ? Color.chatChosenColor : Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 7))
         }
+        .accessibilityLabel("Ai Chat Item")
     }
 }
 

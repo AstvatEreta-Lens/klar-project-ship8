@@ -56,7 +56,7 @@ struct KnowledgeFilesSection: View {
                         .padding()
                 } else {
                     VStack {
-                        Image("LogoFix")
+                        Image("Logo Placeholder No Convo")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 213, height: 48)

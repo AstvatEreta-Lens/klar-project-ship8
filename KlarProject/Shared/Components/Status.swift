@@ -29,7 +29,7 @@ enum statusType : Hashable{
         case .pending:
             return Color.redStatusColor
         case .open:
-            return Color.yellowStatusColor
+            return Color(hex : "#FFA600")
         case .resolved:
             return Color.greenStatusColor
         }
@@ -40,7 +40,7 @@ enum statusType : Hashable{
         case .pending:
             return Color.redStatusTextColor
         case .open:
-            return Color.yellowStatusTextColor
+            return Color.black
         case .resolved:
             return Color.greenStatusTextColor
         }
@@ -55,17 +55,18 @@ struct Status: View {
         ZStack {
             Rectangle()
                 .fill(type.color)
-                .frame(width: 62, height: 24)
+                .frame(width: 62, height: 22)
                 .cornerRadius(11)
             
             Text(type.text)
-                .foregroundColor(type.colorText)
-                .font(.caption)
+                .padding(.horizontal, 5)
+                .padding(.vertical, 4)
+                .foregroundColor(Color.black)
+                .font(.callout)
                 .fontWeight(.light)
-                .padding(.horizontal, 9)
-                .padding(.vertical, 5)
 
         }
+        .accessibilityHidden(true)
     }
 }
 

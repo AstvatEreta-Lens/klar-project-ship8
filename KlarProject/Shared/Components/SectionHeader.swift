@@ -16,18 +16,18 @@ struct SectionHeader: View {
         VStack(spacing: 0) {
             HStack {
                 Text(title)
-                    .font(.caption)
-                    .foregroundColor(Color.tertiaryText)
+                    .font(.callout)
+                    .foregroundColor(Color.white)
                     .padding(.leading, 14)
                 
                 ZStack{
                     Circle()
-                        .fill(Color.tertiaryText)
-                        .frame(width: 14, height: 12)
+                        .fill(Color.white)
+                        .frame(width: 14, height: 14)
                     if let count = count {
                         Text("\(count)")
                             .foregroundColor(Color.sectionHeader)
-                            .font(.caption)
+                            .font(.callout)
                             .fontWeight(.bold)
                     }
                 }
@@ -37,7 +37,7 @@ struct SectionHeader: View {
             .padding(.bottom, 15)
             
             .background(
-                Color.sectionHeader
+                Color.sectionHeaderColor
                     .clipShape(
                         UnevenRoundedRectangle(
                             topLeadingRadius: 12,

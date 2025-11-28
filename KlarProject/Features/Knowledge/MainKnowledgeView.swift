@@ -26,7 +26,7 @@ struct KnowledgePage: View {
 
                         VStack(alignment: .leading, spacing: 12) {
                             Text(title)
-                                .foregroundColor(Color.primaryText)
+                                .foregroundColor(Color.sectionHeader)
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
                                 .lineLimit(1)
@@ -76,9 +76,10 @@ struct KnowledgePage: View {
                                 .padding()
                         } else if selectedTab == 0 {
                             VStack {
-                                Image("LogoFix")
+                                Image("Logo Placeholder No Convo")
                                     .frame(width: 213, height: 48)
                                 Text("Select a file to see the content")
+                                    .font(.caption)
                                     .foregroundColor(Color.secondaryText)
                             }
                         } else if selectedTab == 1, let conversation = evaluationViewModel.selectedConversation {
@@ -98,11 +99,11 @@ struct KnowledgePage: View {
                             .padding()
                         } else if selectedTab == 1 {
                             VStack(spacing: 12) {
-                                Image("LogoFix")
-                                    .font(.system(size: 48))
+                                Image("Logo Placeholder No Convo")
                                     .foregroundColor(Color.secondaryText.opacity(0.6))
                                 
                                 Text("Select a conversation to view evaluation details")
+                                    .font(.caption)
                                     .foregroundColor(Color.secondaryText)
                             }
                         }

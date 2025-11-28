@@ -22,8 +22,8 @@ struct InternalNoteInputView: View {
             ZStack(alignment: .leading){
                 if text.isEmpty {
                     Text("Type your text...")
-                        .foregroundColor(.gray.opacity(0.5))
-                        .font(.caption)
+                        .foregroundColor(Color(hex: "#333333"))
+                        .font(.callout)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 11)
                 }
@@ -43,7 +43,6 @@ struct InternalNoteInputView: View {
                 RoundedRectangle(cornerRadius: 11)
                     .stroke(Color.sectionHeader, lineWidth: 1)
             )
-            
             // Send button
             if !text.isEmpty {
                 SendMessageButton(

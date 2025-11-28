@@ -17,27 +17,33 @@ struct SearchBar : View {
         HStack {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(Color.primaryTextColor)
-                .font(.system(size: 15))
+                .font(.caption)
                 .padding(.leading, 10)
-            
+                .accessibilityHidden(true)
+
             ZStack(alignment: .leading) {
                 if text.isEmpty {
                     Text(placeholder)
-                        .foregroundColor(Color.primaryText)
+                        .foregroundColor(Color(hex : "#4D4D4D"))
                         .font(.caption)
+                        .accessibilityHidden(true)
                 }
-                
+
                 // TextField
                 TextField("", text: $text)
                     .foregroundStyle(Color.black)
                     .font(.body)
                     .onSubmit(onSearch)
                     .textFieldStyle(PlainTextFieldStyle())
+                    .accessibilityLabel(placeholder)
+                    .accessibilityHint("Enter text to search")
             }
             .padding(.trailing, 10)
         }
         .padding(.top, 6.5)
         .padding(.bottom, 6.5)
+        
+        .background(Color(hex : "#F5F5F5"))
         .overlay(
             RoundedRectangle(cornerRadius: 5)
                 .stroke(Color.borderColor, lineWidth: 1)

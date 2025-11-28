@@ -56,6 +56,8 @@ struct InternalNotesView: View {
                                 .id(note.id)
                             }
                         }
+                        
+                        .accessibilityLabel("Internal Notes")
                         .padding(.top, 8)
                     }
                     .cornerRadius(11)
@@ -159,6 +161,9 @@ struct InternalNotesView: View {
                 maxHeight: maxHeight,
                 onEnter: {
                     if !messageText.isEmpty {
+                        Text("Type your text...")
+                            .foregroundColor(Color(hex: "#333333"))
+                            .font(.system(size: 16))
                         sendMessage()
                     }
                 }
@@ -194,8 +199,8 @@ struct InternalNotesView: View {
     private var placeholderView: some View {
         if messageText.isEmpty {
             Text(viewModel.isEditMode ? "Editing message" : "Type your text")
-                .foregroundColor(Color.secondaryUsernameText)
-                .font(.body)
+                .foregroundColor(Color(hex: "#333333"))
+                .font(.callout)
                 .padding(.leading, 12)
                 .allowsHitTesting(false) // tap gesture akan tembus ke MacOSTextEditor
         }
@@ -227,7 +232,8 @@ struct noInternalNotesView: View {
                 .font(.system(size: 64))
                 .foregroundColor(Color.border)
             Text("There are no internal notes yet")
-                .foregroundColor(Color.border)
+                .font(.callout)
+                .foregroundColor(Color.black)
             Spacer()
         }
         .padding(.vertical, 25)

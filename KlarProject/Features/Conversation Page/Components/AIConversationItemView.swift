@@ -39,8 +39,8 @@ struct AIConversationItemView: View {
                         .foregroundColor(Color.primaryUsernameText)
                     
                     Text(conversation.message)
-                        .font(.caption)
-                        .foregroundColor(Color.secondaryUsernameText)
+                        .font(.callout)
+                        .foregroundColor(Color(hex : "#666666"))
                         .lineLimit(1)
                 }
                 
@@ -49,8 +49,9 @@ struct AIConversationItemView: View {
                 // Time and Status Badge
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(conversation.time)
-                        .font(.caption)
-                        .foregroundColor(Color.avatarCountColor)
+                        .font(.body)
+                        .foregroundColor(Color(hex : "#4D4D4D"))
+                        .accessibilityLabel("Time")
 //                        .padding(.trailing, 13)
                     
                     // Pakai komponen Status yang sudah ada
@@ -65,6 +66,7 @@ struct AIConversationItemView: View {
             .background(isSelected ? Color.chatChosenColor : Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 7))
         }
+        .accessibilityLabel("Ai Chat Item")
     }
 }
 

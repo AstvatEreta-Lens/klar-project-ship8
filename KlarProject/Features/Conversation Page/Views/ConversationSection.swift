@@ -29,6 +29,7 @@ struct ConversationSection<Content: View>: View {
         VStack(spacing: 0) {
             // Section Header
             SectionHeader(title: title, count : count, viewModel: viewModel)
+//                .font(.title2)
                     
             // Content with frame
             content

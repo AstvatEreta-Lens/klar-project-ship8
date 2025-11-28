@@ -38,7 +38,7 @@ struct TotalCustomerView: View {
                         Text("from yesterday")
                             .foregroundColor(Color.textRegular)
                             .font(.caption)
-                            .fontWeight(.medium)
+                            .fontWeight(.light)
                     }
                     .padding(.bottom)
                     .foregroundColor(Color.green)

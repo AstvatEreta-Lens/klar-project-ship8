@@ -40,13 +40,13 @@ struct ChatDetailView: View {
                             
                             VStack(alignment : .leading) {
                                 Text(conversation.name)
-                                    .font(.body)
+                                    .font(.title3)
                                     .fontWeight(.bold)
                                     .foregroundStyle(Color.textRegular)
                                 
                                 Text(conversation.phoneNumber)
-                                    .font(.caption2)
-                                    .foregroundColor(Color.secondaryUsernameText)
+                                    .font(.body)
+                                    .foregroundColor(Color(hex : "#4D4D4D"))
                                     .padding(.bottom, 3)
                                 
                                 HStack {
@@ -57,8 +57,8 @@ struct ChatDetailView: View {
                                         .foregroundColor(.green)
                                     
                                     Text("WhatsApp")
-                                        .font(.caption)
-                                        .foregroundColor(Color.greySecondary)
+                                        .font(.callout)
+                                        .foregroundColor(Color(hex :"#545454"))
                                 }
                             }
                         }
@@ -70,8 +70,8 @@ struct ChatDetailView: View {
                         HStack(alignment: .top) {
                             VStack(alignment: .leading) {
                                 Text("Last Handled By")
-                                    .font(.caption)
-                                    .foregroundColor(Color.textRegular)
+                                    .font(.callout)
+                                    .foregroundColor(Color.black)
                                 
                                 HandledBySection(
                                     user: conversation.handledBy,
@@ -92,8 +92,8 @@ struct ChatDetailView: View {
                         HStack(alignment: .bottom) {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Label")
-                                    .font(.caption)
-                                    .foregroundColor(Color.textRegular)
+                                    .font(.callout)
+                                    .foregroundColor(Color.black)
                                 
                                 if !conversation.label.isEmpty {
                                     VStack(alignment: .leading, spacing: 8) {
@@ -132,8 +132,8 @@ struct ChatDetailView: View {
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Text("Internal Notes")
-                                    .font(.caption)
-                                    .foregroundColor(Color.textRegular)
+                                    .font(.callout)
+                                    .foregroundColor(Color.black)
                                     .padding(.leading, 13)
                                 
                                 Image(systemName: "info.circle.fill")
@@ -180,8 +180,8 @@ struct ChatDetailView: View {
                             
                             HStack {
                                 Text("AI Summary")
-                                    .font(.caption)
-                                    .foregroundColor(Color.textRegular)
+                                    .font(.callout)
+                                    .foregroundColor(Color.black)
                                     .padding(.leading, 13)
                                 
                                 Image(systemName: "info.circle.fill")

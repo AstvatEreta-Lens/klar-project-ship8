@@ -12,8 +12,8 @@ struct ChatInputView: View {
     @State private var textHeight: CGFloat = 36
     
     let onSend: (String) -> Void
-    let onAttachment: () -> Void
-    let onAI: () -> Void
+//    let onAttachment: () -> Void
+//    let onAI: () -> Void
     
     private let minHeight: CGFloat = 36
     private let maxHeight: CGFloat = 120
@@ -21,10 +21,10 @@ struct ChatInputView: View {
     var body: some View {
         HStack(alignment: .bottom, spacing: 12) {
             // Left buttons
-            HStack(spacing: 8) {
-                PaperclipButton(action: onAttachment)
-                RobotButton(action: onAI)
-            }
+//            HStack(spacing: 8) {
+//                PaperclipButton(action: onAttachment)
+//                RobotButton(action: onAI)
+//            }
             
             MacOSTextEditor(
                 text: $messageText,
@@ -43,8 +43,8 @@ struct ChatInputView: View {
                     
                     if messageText.isEmpty {
                         Text("Type your text")
-                            .foregroundColor(Color.secondaryUsernameText)
-                            .font(.body)
+                            .foregroundColor(Color(hex: "#333333"))
+                            .font(.callout)
                             .padding(.leading, 12)
                     }
                 }
@@ -77,8 +77,8 @@ struct ChatInputView: View {
         
         ChatInputView(
             onSend: {_ in },
-            onAttachment: {},
-            onAI: {}
+//            onAttachment: {},
+//            onAI: {}
         )
     }
     .frame(height: 400)

@@ -249,7 +249,7 @@ class ConversationListViewModel: ObservableObject {
                         unreadCount: 0,
                         hasWhatsApp: selected.hasWhatsApp,
                         phoneNumber: selected.phoneNumber,
-                        handlerType: selected.handlerType,
+                        handlerType: .ai,
                         status: .resolved,  // Update status
                         label: selected.label,
                         handledBy: selected.handledBy,

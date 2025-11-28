@@ -23,10 +23,10 @@ struct KnowledgeView: View {
                                 HStack{
                                     Image(systemName: "plus")
                                         .foregroundColor(Color.white)
-                                        .font(.body)
+                                        .font(.title2)
                                     Text("Add Files")
                                         .foregroundColor(Color.white)
-                                        .font(.body)
+                                        .font(.title2)
                                 }
                                 Spacer()
                             }
@@ -50,13 +50,13 @@ struct KnowledgeView: View {
                         Text("Uploaded Files")
                             .padding(.leading, 14)
                             .foregroundColor(Color.textRegular)
-                        
+
                         ZStack {
                             Circle()
                                 .fill(Color.sectionHeader)
                                 .frame(width: 16, height: 16)
-                            
-                            Text("\(viewModel.uploadedFiles)")
+
+                            Text("\(viewModel.filteredFiles.count)")
                                 .font(.caption)
                                 .foregroundColor(.white)
                         }
@@ -75,10 +75,10 @@ struct KnowledgeView: View {
     
     private func pdfScrollView(height: CGFloat) -> some View {
         let scrollHeight = max(982, (height - 300) / 2)
-        
+
         return ScrollView {
             LazyVStack(spacing: 6) {
-                ForEach(viewModel.files) { pdf in
+                ForEach(viewModel.filteredFiles) { pdf in
                     PDFCardView(
                         pdfDocument: pdf,
                         action: {
@@ -94,9 +94,9 @@ struct KnowledgeView: View {
                         }
                     }
                 }
-                
+
                 // Empty state jika tidak ada hasil
-                if viewModel.files.isEmpty {
+                if viewModel.filteredFiles.isEmpty {
                     emptyPDFState
                 }
             }

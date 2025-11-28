@@ -12,11 +12,11 @@ struct KlarProjectApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .frame(minHeight : 982, maxHeight : .infinity)
-                .frame(minWidth : 1500, maxWidth: .infinity)
                 .environment(\.locale, Locale(identifier: "id"))
+                .accessibilityLabel("Klar App")
                 .background(Color.white)
         }
+        .defaultSize(width: 1500, height: 982)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
     }

@@ -24,7 +24,7 @@ struct MacOSTextEditor: NSViewRepresentable {
         
         // Configure text view
         textView.delegate = context.coordinator
-        textView.font = .systemFont(ofSize: 15)
+        textView.font = .systemFont(ofSize: 17)
         textView.textColor = .black
         textView.backgroundColor = .clear
         textView.wantsLayer = true
@@ -81,13 +81,22 @@ struct MacOSTextEditor: NSViewRepresentable {
             parent.text = textView.string
         }
 
-        func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-            // Handle Enter key press (without Shift)
-            if commandSelector == #selector(NSResponder.insertNewline(_:)) {
-                parent.onEnter?()
-                return true
-            }
-            return false
-        }
+        func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector)-> Bool {
+             // Handle Enter key press
+             if commandSelector == #selector(NSResponder.insertNewline(_:)) {
+                 // Check if Shift key is pressed
+                 let isShiftPressed = NSEvent.modifierFlags.contains(.shift)
+
+                 if isShiftPressed {
+                     // Shift+Return: Insert new line (allow default behavior)
+                     return false
+                 } else {
+                     // Return alone: Send message
+                     parent.onEnter?()
+                     return true
+                 }
+             }
+             return false
+         }
     }
 }

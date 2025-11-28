@@ -103,6 +103,7 @@ struct SidebarView: View {
 
         .frame(minWidth: 214, maxWidth: 247)
         .background(Color.backgroundPrimary)
+        .accessibilityLabel("Sidebar Item")
     }
 }
 

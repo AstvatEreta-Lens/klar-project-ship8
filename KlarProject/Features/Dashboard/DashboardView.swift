@@ -21,16 +21,46 @@ struct DashboardView: View {
                     
                     Spacer()
                     
-                    Text("Picker")
+                    Menu("Today") {
+                        Button(action: {}, label: {
+                            Text("Today")
+                                .foregroundColor(Color.textRegular)
+                        })
+                        Button(action: {}, label: {
+                            Text("This Week")
+                                .foregroundColor(Color.textRegular)
+                        })
+                        Button(action: {}, label: {
+                            Text("This Month")
+                                .foregroundColor(Color.textRegular)
+                        })
+                        Button(action: {}, label: {
+                            Text("This Year")
+                                .foregroundColor(Color.textRegular)
+                        })
+                    }
+                    .foregroundStyle(Color.gray)
                 }
-                .padding(.top, 18)
+                .padding(.vertical, 18)
                 .padding(.horizontal)
                 
-                HStack{
-                    UnresolvedChatView()
-                    ChatHandledByAI()
-                    ChatHandledByHuman()
-                    TotalCustomerView()
+                Spacer()
+                    .frame(height : 58)
+                
+                VStack{
+                    HStack{
+                        UnresolvedChatView()
+                        ChatHandledByAI()
+                        ChatHandledByHuman()
+                        TotalCustomerView()
+                    }
+                    
+                    HStack{
+                        SecondRowView(datas: .FRT)
+                        SecondRowView(datas: .TTA)
+                        SecondRowView(datas: .TTR)
+                        SecondRowView(datas: .RR)
+                    }
                 }
                 .padding(.horizontal)
                 .padding(.top)
@@ -38,12 +68,14 @@ struct DashboardView: View {
                 .frame(height : 200)
                 
                 
-                HStack(alignment : .top){
+                HStack{
                     StatisticsView()
                         .chartXAxis(.visible)
-                        .frame(maxHeight : 408)
+                        .padding(.top, 40)
                     ConversationLabels(label : .warranty)
+                        .padding(.top, -55)
                 }
+                .frame(maxHeight : 408)
                 .padding(.horizontal)
                 .padding(.bottom)
                 
@@ -69,6 +101,6 @@ struct DashboardView: View {
 
 #Preview {
     DashboardView()
-        .frame(width : 1260, height : 600)
+        .frame(width : 1260, height : 982)
         .padding()
 }

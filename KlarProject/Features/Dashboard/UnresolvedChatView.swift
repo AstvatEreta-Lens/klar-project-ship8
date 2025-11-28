@@ -10,7 +10,7 @@ import SwiftUI
 struct UnresolvedChatView: View {
     @State private var resolvedChats: Int = 0
     let targetChats: Int = 8
-    let improvementPercent: Double = 3.0
+    let improvementPercent: Int = 3
     
     
     var body: some View {
@@ -18,26 +18,26 @@ struct UnresolvedChatView: View {
             VStack(alignment : .leading){
                     Text("Unresolved Chat")
                         .fontWeight(.light)
-                        .font(.headline)
-                        .foregroundColor(Color.textRegular)
+                        .font(.title3)
+                        .foregroundColor(Color.black)
                     
                     Text("\(resolvedChats)")
-                        .font(.system(size: 48, weight: .bold))
+                        .font(.system(size: 48, weight: .bold, design : .default))
+                        .dynamicTypeSize(.accessibility1 ... .accessibility5)
                         .foregroundColor(Color.textRegular)
                         .shadow(color: Color.black.opacity(0.15), radius: 4, y: 2)
                         .animation(.spring(response: 0.6, dampingFraction: 0.8), value: resolvedChats)
+                
                 Spacer()
-                    HStack(spacing: 2) {
-                        Image(systemName: improvementPercent >= 0 ? "arrow.up.right" : "arrow.down.right")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                        Text("\(String(format: "%.0f", improvementPercent))%")
-                            .font(.caption)
+                
+                    HStack{
+                        Text("+\(improvementPercent)")
+                            .font(.subheadline)
                             .fontWeight(.medium)
                         Text("from yesterday")
                             .foregroundColor(Color.textRegular)
-                            .font(.caption)
-                            .fontWeight(.medium)
+                            .font(.subheadline)
+                            .fontWeight(.regular)
                     }
                     .padding(.bottom)
                     .foregroundColor(Color.red)

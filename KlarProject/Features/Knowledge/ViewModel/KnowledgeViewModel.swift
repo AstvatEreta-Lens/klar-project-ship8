@@ -28,16 +28,27 @@ class KnowledgeViewModel: ObservableObject {
     @Published var selectedFiles: [URL] = []
     @Published var pdfToDelete: PDFDocument? = nil
     @Published var showDeleteAlert: Bool = false
-    
+
     // Temporary storage for completed uploads
     private var completedUploads: [URL] = []
-    
+
+    // Filtered files based on search text
+    var filteredFiles: [PDFDocument] {
+        if searchText.isEmpty {
+            return files
+        }
+
+        return files.filter { file in
+            file.title.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+
     init() {
         loadExistingFiles()
     }
-    
+
     func searchFile() {
-        // Implement search functionality
+        print("Searching for: \(searchText), Found \(filteredFiles.count) file(s)")
     }
     
     var uploadedFiles: Int {

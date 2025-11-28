@@ -42,7 +42,6 @@ struct AISummaryView: View {
             }
             .frame(width: 307, height: 177)
         }
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
     
     // MARK: - Empty State
@@ -50,7 +49,7 @@ struct AISummaryView: View {
         ZStack {
                 Rectangle()
                     .frame(width: 307, height: 177)
-                    .foregroundColor(Color.componentBackgroundColor)
+                    .foregroundColor(Color(hex : "#FEFEFE"))
                     .cornerRadius(11)
                     .overlay(
                         RoundedRectangle(cornerRadius: 11)
@@ -65,12 +64,12 @@ struct AISummaryView: View {
                         .padding(.bottom, 13)
                     
                     Text("No summary yet.")
-                        .font(.caption)
-                        .foregroundColor(Color.grayTextColor)
+                        .font(.callout)
+                        .foregroundColor(Color.black)
                     
                     Text("Tap button below to generate AI summary.")
-                        .font(.caption)
-                        .foregroundColor(Color.grayTextColor)
+                        .font(.callout)
+                        .foregroundColor(Color.black)
                     
                     Spacer()
                     
@@ -93,7 +92,6 @@ struct AISummaryView: View {
                 }
                 .frame(width: 307, height: 177)
             }
-            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
     
     // MARK: - Loading State
@@ -131,7 +129,6 @@ struct AISummaryView: View {
                 .frame(width: 307, height: 177)
                 .padding(.bottom)
             }
-            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
     
     

@@ -90,6 +90,10 @@ extension Color {
     // Unable to Evaluate Background
     static let unableToEvaluateBackgroundCard = Color("UnableToEvaluateColor")
     
+    static let colorBlackText = Color("PureBlack")
+    
+    static let sectionHeaderColor = Color("SectionHeaderColor")
+    
     
     // Grey Color
     static let greySecondary = Color(hex: "#545454")
