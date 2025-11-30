@@ -9,10 +9,11 @@ import SwiftUI
 
 struct SearchBar : View {
     @Binding var text : String
-    
+    @FocusState private var isFocused: Bool
+
     var placeholder: String = NSLocalizedString("Search...", comment: "")
     var onSearch: () -> Void = {}
-    
+
     var body: some View {
         HStack {
             Image(systemName: "magnifyingglass")
@@ -27,13 +28,18 @@ struct SearchBar : View {
                         .foregroundColor(Color(hex : "#4D4D4D"))
                         .font(.caption)
                         .accessibilityHidden(true)
+                        .allowsHitTesting(false)
                 }
 
                 // TextField
                 TextField("", text: $text)
                     .foregroundStyle(Color.black)
                     .font(.body)
+                    .focused($isFocused)
                     .onSubmit(onSearch)
+                    .onChange(of: text) { oldValue, newValue in
+                        onSearch()
+                    }
                     .textFieldStyle(PlainTextFieldStyle())
                     .accessibilityLabel(placeholder)
                     .accessibilityHint("Enter text to search")
@@ -42,12 +48,15 @@ struct SearchBar : View {
         }
         .padding(.top, 6.5)
         .padding(.bottom, 6.5)
-        
-        .background(Color(hex : "#F5F5F5"))
+//        .background(Color(hex : "#F5F5F5"))
         .overlay(
             RoundedRectangle(cornerRadius: 5)
                 .stroke(Color.borderColor, lineWidth: 1)
         )
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isFocused = true
+        }
     }
 }
 

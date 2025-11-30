@@ -9,12 +9,16 @@ import SwiftUI
 
 @main
 struct KlarProjectApp: App {
+    @StateObject private var languageManager = LanguageManager.shared
+
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.locale, Locale(identifier: "id"))
+                .environment(\.locale, languageManager.locale)
+                .environmentObject(languageManager)
                 .accessibilityLabel("Klar App")
                 .background(Color.white)
+                .id(languageManager.locale.identifier) // Force view refresh on language change
         }
         .defaultSize(width: 1500, height: 982)
         .windowResizability(.contentSize)

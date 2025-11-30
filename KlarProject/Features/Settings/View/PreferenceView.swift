@@ -8,59 +8,64 @@
 import SwiftUI
 
 struct PreferenceView: View {
+    @StateObject private var languageManager = LanguageManager.shared
     @State private var selectedTheme : AppTheme = .system
-    @State private var selectedLanguage : Language = .en
-    
+
     var body: some View {
         VStack(alignment : .leading, spacing : 16){
-            Text("Preference")
+            Text(NSLocalizedString("Preference", comment: ""))
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundColor(Color.sectionHeader)
-            
-            
+
+
             VStack(alignment : .leading, spacing : 20){
                 HStack{
-                    Text("Theme")
-                        .foregroundColor(Color.textRegular)
+                    Text(NSLocalizedString("Theme", comment: ""))
+                        .foregroundColor(Color.primaryTextColor)
                         .font(.body)
                         .fontWeight(.bold)
-                    
+
                     Spacer()
                             Picker("", selection: $selectedTheme){
                                 ForEach(AppTheme.allCases){
                                     theme in
                                     Text(theme.rawValue)
+                                        .foregroundColor(Color.textRegular)
                                         .tag(theme)
                                 }
                             }
+                            .pickerStyle(MenuPickerStyle())
+                            .tint(Color.sectionHeader)
                         }
-                
+
                 HStack{
-                    Text("Language")
+                    Text(NSLocalizedString("Language", comment: ""))
                         .foregroundColor(Color.textRegular)
                         .font(.body)
                         .fontWeight(.bold)
-                    
+
                     Spacer()
-                    
-                        Picker("", selection: $selectedLanguage){
+
+                        Picker("", selection: $languageManager.currentLanguage){
                             ForEach(Language.allCases){
-                                theme in
-                                Text(theme.rawValue)
-                                    .tag(theme)
+                                language in
+                                Text(language.displayName)
+                                    .foregroundColor(Color.textRegular)
+                                    .tag(language)
                             }
                         }
                         .pickerStyle(MenuPickerStyle())
-                    
+                        .tint(Color.sectionHeader)
+
                 }
             }
             .padding(20)
-            .background(Color.white)
+            .background(Color.bakcgroundPrimary)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.sectionHeader, lineWidth: 1)
+                    .stroke(Color.borderColor, lineWidth: 1)
             )
         }
         .padding(.bottom, 10)
@@ -68,17 +73,11 @@ struct PreferenceView: View {
 }
 
 
-enum Language : String, CaseIterable, Identifiable {
-    case en = "English"
-    case id = "Bahasa Indonesia"
-    var id: String { self.rawValue }
-}
-
 enum AppTheme : String, CaseIterable, Identifiable {
     case light = "Light"
     case dark = "Dark"
     case system = "System Default"
-    
+
     var id: String{self.rawValue}
 }
 

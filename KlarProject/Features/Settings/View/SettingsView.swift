@@ -63,9 +63,10 @@ struct SettingsView: View {
                     
                     PlatformConfigView(viewModel : SettingsViewModel(), tutorialAction: {})
                         .padding(.horizontal, contentPadding)
-//                    PreferenceView()
-//                        .padding(.horizontal, contentPadding)
-                    
+
+                    PreferenceView()
+                        .padding(.horizontal, contentPadding)
+
                 }
 
             }

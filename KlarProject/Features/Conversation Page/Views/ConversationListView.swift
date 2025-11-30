@@ -186,7 +186,8 @@ struct ConversationListView: View {
                 ForEach(filteredHumanConversations) { conversation in
                     HumanConversationItemView(
                         conversation: conversation,
-                        isSelected: viewModel.selectedConversation?.id == conversation.id
+                        isSelected: viewModel.selectedConversation?.id == conversation.id,
+                        viewModel: viewModel
                     )
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -217,7 +218,8 @@ struct ConversationListView: View {
                 ForEach(filteredAiConversations) { conversation in
                     AIConversationItemView(
                         conversation: conversation,
-                        isSelected: viewModel.selectedConversation?.id == conversation.id
+                        isSelected: viewModel.selectedConversation?.id == conversation.id,
+                        viewModel: viewModel
                     )
                     .contentShape(Rectangle())
                     .onTapGesture {

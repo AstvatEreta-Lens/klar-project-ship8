@@ -10,7 +10,8 @@ import SwiftUI
 struct HumanConversationItemView: View {
     let conversation: Conversation
     var isSelected: Bool = false
-    
+    @ObservedObject var viewModel: ConversationListViewModel
+
     var body: some View {
         HStack(spacing: 0) {
             HStack(spacing: 12) {
@@ -20,8 +21,8 @@ struct HumanConversationItemView: View {
                         .scaledToFill()
                         .frame(width: 50, height: 50)
                         .clipShape(Circle())
-                    
-                    
+
+
                         ZStack {
                             Image("whatsapp")
                                 .resizable()
@@ -31,18 +32,21 @@ struct HumanConversationItemView: View {
                         }
                         .offset(x: 2, y: 2)
                 }
-                
+
                 // Name and Message
                 VStack(alignment: .leading, spacing: 5) {
                     Text(conversation.name)
                         .fontWeight(.bold)
                         .font(.body)
                         .foregroundColor(Color.primaryUsernameText)
-                    
-                    Text(conversation.message)
-                        .font(.callout)
-                        .foregroundColor(Color(hex : "#666666"))
-                        .lineLimit(1)
+
+                    HighlightedText(
+                        text: viewModel.getPreviewMessage(for: conversation),
+                        searchText: viewModel.searchText,
+                        highlightColor: Color.yellow.opacity(0.5)
+                    )
+                    .font(.callout)
+                    .lineLimit(1)
                 }
                 
                 Spacer()
@@ -78,9 +82,9 @@ struct HumanConversationItemView: View {
 
 #Preview {
     VStack(spacing: 1) {
-        HumanConversationItemView(conversation: Conversation.humanDummyData[0], isSelected: false)
-        HumanConversationItemView(conversation: Conversation.humanDummyData[1], isSelected: true)
-        HumanConversationItemView(conversation: Conversation.humanDummyData[2], isSelected: false)
+        HumanConversationItemView(conversation: Conversation.humanDummyData[0], isSelected: false, viewModel: ConversationListViewModel.shared)
+        HumanConversationItemView(conversation: Conversation.humanDummyData[1], isSelected: true, viewModel: ConversationListViewModel.shared)
+        HumanConversationItemView(conversation: Conversation.humanDummyData[2], isSelected: false, viewModel: ConversationListViewModel.shared)
     }
     .padding(10)
 }

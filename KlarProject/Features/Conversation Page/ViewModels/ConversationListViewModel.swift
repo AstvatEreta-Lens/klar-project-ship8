@@ -17,8 +17,14 @@ class ConversationListViewModel: ObservableObject {
     @Published var humanConversations: [Conversation] = []
     @Published var aiConversations: [Conversation] = []
     @Published var searchText: String = ""
-    @Published var selectedFilter: String = "All" // Added for filter buttons
+    @Published var selectedFilter: String = "All"
     @Published var toastManager = ToastManager()
+    @Published var conversationsMatchingSearch: Set<UUID> = []
+    @Published var isMainChatSearchVisible: Bool = true
+    @Published var mainChatSearchText: String = ""
+    @Published var matchingMessagePreviews: [UUID: String] = [:] // Stores most recent matching message per conversation
+
+    private let messageService = MockMessageService.shared
 
     // Current logged in user
     var currentUser: User = User(
@@ -30,36 +36,48 @@ class ConversationListViewModel: ObservableObject {
     // Filtered human conversations (by search text)
     var filterHumanConvo: [Conversation] {
         var filtered = humanConversations
-        
+
         // Apply search filter
         if !searchText.isEmpty {
             filtered = filtered.filter { conversation in
-                conversation.name.localizedCaseInsensitiveContains(searchText) ||
-                conversation.message.localizedCaseInsensitiveContains(searchText)
+                // Search in conversation metadata
+                let matchesMetadata = conversation.name.localizedCaseInsensitiveContains(searchText) ||
+                    conversation.message.localizedCaseInsensitiveContains(searchText)
+
+                // Also check if conversation ID is in the set of conversations with matching messages
+                let matchesMessages = conversationsMatchingSearch.contains(conversation.id)
+
+                return matchesMetadata || matchesMessages
             }
         }
-        
+
         // Apply button filter (All, Unread, Unresolved)
         filtered = applyButtonFilter(to: filtered)
-        
+
         return filtered
     }
-    
+
     // Filtered AI conversations (by search text and sorted by priority)
     var filterAiConvo: [Conversation] {
         var filtered = aiConversations
-        
+
         // Apply search filter
         if !searchText.isEmpty {
             filtered = filtered.filter { conversation in
-                conversation.name.localizedCaseInsensitiveContains(searchText) ||
-                conversation.message.localizedCaseInsensitiveContains(searchText)
+                // Search in conversation metadata
+                let matchesMetadata = conversation.name.localizedCaseInsensitiveContains(searchText) ||
+                    conversation.message.localizedCaseInsensitiveContains(searchText)
+
+                // Also check if conversation ID is in the set of conversations with matching messages
+                let matchesMessages = conversationsMatchingSearch.contains(conversation.id)
+
+                return matchesMetadata || matchesMessages
             }
         }
-        
+
         // Apply button filter
         filtered = applyButtonFilter(to: filtered)
-        
+
         // Sort by priority
         return filtered.sorted { $0.sortPriority < $1.sortPriority }
     }
@@ -107,16 +125,57 @@ class ConversationListViewModel: ObservableObject {
         selectedFilter = filter
     }
     
-    // Method version of searchConversations
-    func searchConversations() -> [Conversation] {
-        let allConversations = humanConversations + aiConversations
-        if searchText.isEmpty {
-            return allConversations
+    // Method version of searchConversations - now searches through all messages
+    func searchConversations() {
+        guard !searchText.isEmpty else {
+            conversationsMatchingSearch.removeAll()
+            matchingMessagePreviews.removeAll()
+            return
         }
-        return allConversations.filter { conversation in
-            conversation.name.localizedCaseInsensitiveContains(searchText) ||
-            conversation.message.localizedCaseInsensitiveContains(searchText)
+
+        // Search through messages asynchronously
+        Task {
+            var matchingConversationIds: Set<UUID> = []
+            var messagePreviews: [UUID: String] = [:]
+            let allConversations = humanConversations + aiConversations
+
+            for conversation in allConversations {
+                do {
+                    let messages = try await messageService.fetchMessages(conversationId: conversation.id)
+
+                    // Find all matching messages
+                    let matchingMessages = messages.filter { message in
+                        message.content.localizedCaseInsensitiveContains(searchText)
+                    }
+
+                    if !matchingMessages.isEmpty {
+                        matchingConversationIds.insert(conversation.id)
+
+                        // Get the most recent matching message (messages are sorted by timestamp)
+                        if let mostRecentMatch = matchingMessages.sorted(by: { $0.timestamp > $1.timestamp }).first {
+                            messagePreviews[conversation.id] = mostRecentMatch.content
+                        }
+                    }
+                } catch {
+                    print("Error searching messages for conversation \(conversation.name): \(error)")
+                }
+            }
+
+            // Update the published properties on main thread
+            await MainActor.run {
+                conversationsMatchingSearch = matchingConversationIds
+                matchingMessagePreviews = messagePreviews
+                print("Found \(matchingConversationIds.count) conversations with messages matching '\(searchText)'")
+            }
         }
+    }
+
+    // Get preview message for a conversation (matching message when searching, otherwise last message)
+    func getPreviewMessage(for conversation: Conversation) -> String {
+        if !searchText.isEmpty, let matchingPreview = matchingMessagePreviews[conversation.id] {
+            return matchingPreview
+        }
+        return conversation.message
     }
     
     // Helper to apply button filter

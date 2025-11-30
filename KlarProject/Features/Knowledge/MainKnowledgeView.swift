@@ -14,7 +14,7 @@ struct KnowledgePage: View {
     @StateObject private var viewModel = KnowledgeViewModel()
     @ObservedObject private var evaluationViewModel = EvaluationViewModel.shared
     @State private var showAddFilesView: Bool = false
-    
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         GeometryReader { geometry in
@@ -76,8 +76,13 @@ struct KnowledgePage: View {
                                 .padding()
                         } else if selectedTab == 0 {
                             VStack {
-                                Image("Logo Placeholder No Convo")
-                                    .frame(width: 213, height: 48)
+                                if colorScheme == .dark {
+                                    Image("Logo Placeholder No Convo")
+                                        .frame(width: 213, height: 48)
+                                }
+                                else {
+                                    Image("Pak Lu Hoot")
+                                }
                                 Text("Select a file to see the content")
                                     .font(.caption)
                                     .foregroundColor(Color.secondaryText)

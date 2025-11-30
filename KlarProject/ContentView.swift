@@ -43,7 +43,7 @@ struct ContentView: View {
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }
            }           
-           .environment(\.locale, Locale(identifier: "en"))
+           .environment(\.locale, Locale(identifier: "id-ID"))
            .navigationSplitViewStyle(.balanced) // hide hide sidebar
            .detectFullScreen()
            .accessibilityLabel("Klar")

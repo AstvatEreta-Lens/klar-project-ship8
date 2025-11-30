@@ -10,7 +10,8 @@ import SwiftUI
 struct AIConversationItemView: View {
     let conversation: Conversation
     var isSelected: Bool = false
-    
+    @ObservedObject var viewModel: ConversationListViewModel
+
     var body: some View {
         HStack(spacing: 0) {
             HStack(spacing : 12){
@@ -20,7 +21,7 @@ struct AIConversationItemView: View {
                         .scaledToFill()
                         .frame(width: 50, height: 50)
                         .clipShape(Circle())
-                    
+
                         ZStack {
                             Image("whatsapp")
                                 .resizable()
@@ -30,18 +31,21 @@ struct AIConversationItemView: View {
                         }
                         .offset(x: 2, y: 2)
                 }
-                
+
                 // Phone Number and Message
                 VStack(alignment: .leading, spacing: 5) {
                     Text(conversation.name)
                         .fontWeight(.bold)
                         .font(.body)
                         .foregroundColor(Color.primaryUsernameText)
-                    
-                    Text(conversation.message)
-                        .font(.callout)
-                        .foregroundColor(Color(hex : "#666666"))
-                        .lineLimit(1)
+
+                    HighlightedText(
+                        text: viewModel.getPreviewMessage(for: conversation),
+                        searchText: viewModel.searchText,
+                        highlightColor: Color.yellow.opacity(0.5)
+                    )
+                    .font(.callout)
+                    .lineLimit(1)
                 }
                 
                 Spacer()
@@ -72,9 +76,9 @@ struct AIConversationItemView: View {
 
 #Preview {
     VStack(spacing: 1) {
-        AIConversationItemView(conversation: Conversation.aiDummyData[1], isSelected: false)
-        AIConversationItemView(conversation: Conversation.aiDummyData[1], isSelected: true)
-        AIConversationItemView(conversation: Conversation.aiDummyData[2], isSelected: false)
+        AIConversationItemView(conversation: Conversation.aiDummyData[1], isSelected: false, viewModel: ConversationListViewModel.shared)
+        AIConversationItemView(conversation: Conversation.aiDummyData[1], isSelected: true, viewModel: ConversationListViewModel.shared)
+        AIConversationItemView(conversation: Conversation.aiDummyData[2], isSelected: false, viewModel: ConversationListViewModel.shared)
     }
     .padding(10)
 }

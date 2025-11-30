@@ -192,7 +192,7 @@ struct AddContactView: View {
             .disabled(!isFormValid)
         }
         .padding(.top)
-        .frame(minWidth : 700, minHeight : 409)
+        .frame(maxWidth : 700, maxHeight : 409)
         .background(Color.white)
         .cornerRadius(11)
         .overlay(

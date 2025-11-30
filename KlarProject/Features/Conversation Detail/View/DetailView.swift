@@ -14,6 +14,7 @@ struct ChatDetailView: View {
     @State private var isHovered1 = false
     @State private var isHovered2 = false
     @State private var isVisible = false
+    @State private var searchButtonIsClicked = false
     
     
     init(conversation: Conversation, onConversationUpdated: ((Conversation) -> Void)? = nil) {
@@ -30,39 +31,58 @@ struct ChatDetailView: View {
                     if let conversation = detailViewModel.conversation {
                         
                         // Header - Customer Name & WhatsApp
-                        HStack(alignment : .center){
+                        HStack(alignment : .top, spacing: 12){
                             Image(conversation.profileImage)
                                 .resizable()
                                 .frame(width: 59, height: 59)
                                 .clipShape(Circle())
                                 .padding(.top, 14)
-                                .padding(.bottom)
-                            
-                            VStack(alignment : .leading) {
-                                Text(conversation.name)
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                    .foregroundStyle(Color.textRegular)
-                                
+
+                            VStack(alignment : .leading, spacing: 4) {
+                                HStack{
+                                    Text(conversation.name)
+                                        .font(.title3)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(Color.textRegular)
+
+                                    Spacer()
+                                }
+
                                 Text(conversation.phoneNumber)
                                     .font(.body)
                                     .foregroundColor(Color(hex : "#4D4D4D"))
-                                    .padding(.bottom, 3)
-                                
+
                                 HStack {
                                     Image("whatsapp")
                                         .resizable()
                                         .frame(width: 14, height: 14)
                                         .clipShape(Circle())
                                         .foregroundColor(.green)
-                                    
+
                                     Text("WhatsApp")
                                         .font(.callout)
                                         .foregroundColor(Color(hex :"#545454"))
                                 }
                             }
+                            .padding(.top, 14)
+
+                            Spacer()
+
+                            Button(action: {
+                                conversationListViewModel.isMainChatSearchVisible = true
+                            }){
+                                Image(systemName: "magnifyingglass")
+                                    .foregroundColor(Color.sectionHeaderColor)
+                                    .font(.title2)
+                                    .frame(width: 44, height: 44)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.top, 14)
+                            .zIndex(10)
                         }
                         .padding(.horizontal, 13)
+                        .padding(.bottom, 12)
                         
                         CustomDivider()
                         
@@ -281,8 +301,6 @@ struct ChatDetailView: View {
                 }
             }
         }
-        // SwiftUI view modifier that lets you run code in response to changes in a value.
-        // keep the detail panel sync with the currently selected conversation
         .onChange(of: conversationListViewModel.selectedConversation?.id) { oldID, newID in
             if let _ = newID, let updated = conversationListViewModel.selectedConversation {
                 detailViewModel.updateConversation(updated)

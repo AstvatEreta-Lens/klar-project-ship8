@@ -39,10 +39,19 @@ struct PDFCardView: View {
                     }
                 }){
                     Image(systemName: "ellipsis")
+                        .font(.title3)
                         .rotationEffect(Angle(degrees: 90))
+                        .padding(10)
                         .foregroundColor(Color.black)
+                        .contentShape(Rectangle())
                 }
-                .buttonStyle(PlainButtonStyle())
+                .accessibilityLabel("More options")
+                .buttonStyle(.plain)
+                .background {
+                    Circle()
+                        .fill(Color.gray.opacity(0.15))
+                }
+                .clipShape(Circle())
                 .overlay{
                     if showActionButtons {
                         DeleteAndEditButton(
