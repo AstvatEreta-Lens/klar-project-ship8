@@ -69,7 +69,7 @@ struct StatisticsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.top)
-        .background(Color.white)
+        .background(Color.dashboardCardColor)
         .cornerRadius(18)
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
     }

@@ -26,6 +26,7 @@ struct ContentView: View {
                case .knowledge:
                    KnowledgePage()
                        .ignoresSafeArea(edges : .top)
+//                       .padding()
                        .fullScreenSafePadding()
                case .settings:
                    SettingsView(editAction: {}, saveAction: {})
@@ -43,8 +44,9 @@ struct ContentView: View {
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }
            }           
-           .environment(\.locale, Locale(identifier: "id-ID"))
+           .environment(\.locale, Locale(identifier: "en-US"))
            .navigationSplitViewStyle(.balanced) // hide hide sidebar
+           .toolbar(removing : .sidebarToggle)
            .detectFullScreen()
            .accessibilityLabel("Klar")
        }

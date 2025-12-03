@@ -59,7 +59,7 @@ struct PlatformConfigView: View {
                     .padding(.bottom)
                     }
 //                    .padding(20)
-                    .background(Color.white)
+                .background(Color.backgroundPrimary)
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)

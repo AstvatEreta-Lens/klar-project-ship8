@@ -17,7 +17,7 @@ struct KlarProjectApp: App {
                 .environment(\.locale, languageManager.locale)
                 .environmentObject(languageManager)
                 .accessibilityLabel("Klar App")
-                .background(Color.white)
+                .background(Color.backgroundPrimary.opacity(0.5))
                 .id(languageManager.locale.identifier) // Force view refresh on language change
         }
         .defaultSize(width: 1500, height: 982)

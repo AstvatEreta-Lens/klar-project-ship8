@@ -37,10 +37,10 @@ struct CustomSegmentPicker1: View {
                 }
             }
         }
-        .background(Color(hex: "F5F5F5"))
+        .background(Color.backgroundPrimary)
         .clipShape(RoundedRectangle(cornerRadius: 11))
         .padding(4)
-        .background(Color(hex: "E6E6E6"))
+        .background(Color.backgroundPrimary)
         .clipShape(RoundedRectangle(cornerRadius: 11))
         .padding(.bottom)
     }

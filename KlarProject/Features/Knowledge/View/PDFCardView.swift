@@ -78,7 +78,7 @@ struct PDFCardView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
-            .background(isSelected ? Color.chatChosenColor : Color.white)
+            .background(isSelected ? Color.gray.opacity(0.2) : Color.backgroundPrimary)
             .clipShape(RoundedRectangle(cornerRadius: 5))
         }
     }

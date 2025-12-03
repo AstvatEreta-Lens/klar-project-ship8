@@ -19,7 +19,7 @@ struct UnresolvedChatView: View {
                     Text("Unresolved Chat")
                         .fontWeight(.light)
                         .font(.title3)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.textRegular)
                     
                     Text("\(resolvedChats)")
                         .font(.system(size: 48, weight: .bold, design : .default))
@@ -54,7 +54,7 @@ struct UnresolvedChatView: View {
                 }
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
+        .background(Color.dashboardCardColor)
         .cornerRadius(18)
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
 //        .padding()

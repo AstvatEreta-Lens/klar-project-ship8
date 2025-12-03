@@ -15,7 +15,7 @@ struct SearchBar : View {
     var onSearch: () -> Void = {}
 
     var body: some View {
-        HStack {
+        HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundColor(Color.primaryTextColor)
                 .font(.caption)

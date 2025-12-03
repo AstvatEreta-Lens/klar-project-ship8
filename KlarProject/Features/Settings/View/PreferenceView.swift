@@ -65,7 +65,7 @@ struct PreferenceView: View {
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.borderColor, lineWidth: 1)
+                    .stroke(Color.sectionHeaderColor, lineWidth: 1)
             )
         }
         .padding(.bottom, 10)

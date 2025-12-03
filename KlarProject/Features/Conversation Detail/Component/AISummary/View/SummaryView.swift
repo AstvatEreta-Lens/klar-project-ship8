@@ -21,7 +21,7 @@ struct AISummaryView: View {
             // Background
             Rectangle()
                 .frame(width: 307, height: 177)
-                .foregroundColor(Color.componentBackgroundColor)
+                .foregroundColor(Color.backgroundTertiary)
                 .cornerRadius(11)
                 .overlay(
                     RoundedRectangle(cornerRadius: 11)
@@ -49,14 +49,14 @@ struct AISummaryView: View {
         ZStack {
                 Rectangle()
                     .frame(width: 307, height: 177)
-                    .foregroundColor(Color(hex : "#FEFEFE"))
+                    .foregroundColor(Color.backgroundTertiary)
                     .cornerRadius(11)
                     .overlay(
                         RoundedRectangle(cornerRadius: 11)
                             .stroke(Color.avatarCount, lineWidth: 1)
                     )
                 
-                VStack{
+            VStack(alignment: .center){
                     Image(systemName: "hand.raised")
                         .font(.system(size: 30))
                         .foregroundColor(Color.sectionHeader)
@@ -65,11 +65,11 @@ struct AISummaryView: View {
                     
                     Text("No summary yet.")
                         .font(.callout)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.textRegular)
                     
                     Text("Tap button below to generate AI summary.")
                         .font(.callout)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.textRegular)
                     
                     Spacer()
                     
@@ -79,7 +79,7 @@ struct AISummaryView: View {
                         }
                     }) {
                         Text("Generate AI Summary")
-                            .foregroundColor(Color.sectionHeader)
+                            .foregroundColor(Color.secondaryTextColor)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 11)
                                     .stroke(.sectionHeader, lineWidth: 1)

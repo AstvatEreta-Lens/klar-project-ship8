@@ -25,8 +25,8 @@ struct MacOSTextEditor: NSViewRepresentable {
         // Configure text view
         textView.delegate = context.coordinator
         textView.font = .systemFont(ofSize: 17)
-        textView.textColor = .black
-        textView.backgroundColor = .clear
+        textView.textColor = NSColor.textRegular
+        textView.backgroundColor = NSColor.textEditor
         textView.wantsLayer = true
         textView.layer?.cornerRadius = 8
         textView.isRichText = false

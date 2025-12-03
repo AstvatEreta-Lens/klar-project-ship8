@@ -21,10 +21,10 @@ struct HighlightedText: View {
     var body: some View {
         if searchText.isEmpty {
             Text(text)
-                .foregroundColor(Color(hex: "#3E3E3E"))
+                .foregroundColor(Color.textRegular)
         } else {
             Text(attributedString)
-                .foregroundColor(Color(hex: "#3E3E3E"))
+                .foregroundColor(Color.textRegular)
         }
     }
 

@@ -232,7 +232,7 @@ struct MessageBubble: View {
                 .padding(.vertical, 10)
                 .background(isFromUser ? Color(hex: "#C0E3FF") : Color(hex: "#F5F5F5"))
                 .cornerRadius(12)
-                .frame(maxWidth: 400, alignment: isFromUser ? .trailing : .leading)
+                .frame(maxWidth: 200, alignment: isFromUser ? .trailing : .leading)
 
                 // Timestamp
                 Text(timestamp)

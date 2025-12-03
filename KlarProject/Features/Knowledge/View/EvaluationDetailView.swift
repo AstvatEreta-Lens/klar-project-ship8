@@ -105,7 +105,7 @@ struct EvaluationDetailView: View {
                 .padding()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.white)
+            .background(Color.backgroundPrimary)
             
             // Custom Delete Alert Overlay
             if showingRemoveConfirmation {

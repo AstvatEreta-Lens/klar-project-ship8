@@ -61,7 +61,7 @@ struct InternalNotesView: View {
                         .padding(.top, 8)
                     }
                     .cornerRadius(11)
-                    .background(Color.labelTextColor)
+                    .background(Color.backgroundTertiary)
                     .onAppear {
                         scrollProxy = proxy
                         scrollToBottom()
@@ -82,7 +82,7 @@ struct InternalNotesView: View {
             inputView
         }
         .frame(minWidth: 307, maxWidth: .infinity, minHeight: 252, maxHeight: .infinity, alignment: .top)
-        .background(Color.labelTextColor)
+        .background(Color.backgroundTertiary)
         .overlay(
             RoundedRectangle(cornerRadius: 11)
                 .stroke(Color.avatarCount, lineWidth: 1)
@@ -162,15 +162,15 @@ struct InternalNotesView: View {
                 onEnter: {
                     if !messageText.isEmpty {
                         Text("Type your text...")
-                            .foregroundColor(Color(hex: "#333333"))
-                            .font(.system(size: 16))
+                            .foregroundColor(Color.textRegular)
+                            .font(.callout)
                         sendMessage()
                     }
                 }
             )
-            .foregroundColor(Color.black)
+            .foregroundColor(Color.textRegular)
             .frame(height: textHeight)
-            .background(Color.white)
+            .background(Color.backgroundTertiary.opacity(0.9))
             .cornerRadius(11)
             .overlay(textEditorOverlay) // meski klik diatas "type your text" tetap bisa di klik untuk input
             .focused($isInputFocused) // dengan is focused, keyboard input akan terfokus disini
@@ -199,7 +199,7 @@ struct InternalNotesView: View {
     private var placeholderView: some View {
         if messageText.isEmpty {
             Text(viewModel.isEditMode ? "Editing message" : "Type your text")
-                .foregroundColor(Color(hex: "#333333"))
+                .foregroundColor(Color.textRegular)
                 .font(.callout)
                 .padding(.leading, 12)
                 .allowsHitTesting(false) // tap gesture akan tembus ke MacOSTextEditor
@@ -230,10 +230,10 @@ struct noInternalNotesView: View {
             Spacer()
             Image(systemName: "checkmark.circle")
                 .font(.system(size: 64))
-                .foregroundColor(Color.border)
+                .foregroundColor(Color.secondaryText.opacity(0.9))
             Text("There are no internal notes yet")
                 .font(.callout)
-                .foregroundColor(Color.black)
+                .foregroundColor(Color.secondaryText)
             Spacer()
         }
         .padding(.vertical, 25)

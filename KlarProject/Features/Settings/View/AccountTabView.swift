@@ -42,7 +42,7 @@ struct AccountTabView: View {
                     fieldRow(title: "Phone Number", text: binding(for: \.phoneNumber))
                 }
                 .padding(20)
-                .background(Color.white)
+                .background(Color.backgroundPrimary)
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)

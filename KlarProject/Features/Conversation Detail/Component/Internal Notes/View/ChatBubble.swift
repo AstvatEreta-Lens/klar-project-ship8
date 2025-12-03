@@ -24,7 +24,7 @@ struct InternalNoteChatBubble: View {
                     bottomTrailingRadius: isCurrentUser ? 0 : 11,
                     topTrailingRadius: 11
                 )
-                .fill(isCurrentUser ? Color(hex : "#D5E5E9") : Color(hex : "#D5E5E9"))
+                .fill(isCurrentUser ? Color.secondaryText : Color.secondaryText.opacity(0.5))
                 
                 VStack(alignment: .leading, spacing: 3) {
                     // Author name

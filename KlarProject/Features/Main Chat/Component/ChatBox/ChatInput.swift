@@ -34,7 +34,7 @@ struct ChatInputView: View {
                 onEnter: sendMessage
             )
             .frame(height: textHeight)
-            .background(Color.white)
+            .background(Color.avatarCount)
             .cornerRadius(11)
             .overlay(
                 ZStack(alignment: .leading){
@@ -43,7 +43,7 @@ struct ChatInputView: View {
                     
                     if messageText.isEmpty {
                         Text("Type your text")
-                            .foregroundColor(Color(hex: "#333333"))
+                            .foregroundColor(Color.textRegular.opacity(0.5))
                             .font(.callout)
                             .padding(.leading, 12)
                     }

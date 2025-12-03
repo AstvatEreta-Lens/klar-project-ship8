@@ -25,7 +25,7 @@ struct ConversationLabels: View {
             ForEach(LabelType.allCases, id: \.self) { labelType in
                 HStack{
                     Text(labelType.text)
-                        .foregroundColor(Color.labelBorderColor)
+                        .foregroundColor(Color.textRegular)
                         .font(.caption)
                         .fontWeight(.semibold)
                         .padding(.horizontal, 12)
@@ -50,10 +50,9 @@ struct ConversationLabels: View {
         }
         .onAppear(perform: generateNumber)
         .padding()
-        .background(Color.white)
-        .background(Color.white)
+        .background(Color.dashboardCardColor)
         .cornerRadius(11)
-        .frame(width : 303, height : 273)
+        .frame(maxWidth : .infinity, maxHeight : .infinity)
 //        .overlay(
 //            RoundedRectangle(cornerRadius: 11)
 //                .stroke(Color.sectionHeader.opacity(0.5), lineWidth: 1.2)

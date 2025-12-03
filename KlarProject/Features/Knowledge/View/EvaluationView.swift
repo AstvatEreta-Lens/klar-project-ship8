@@ -46,7 +46,7 @@ struct EvaluationView: View {
                 SearchBar(
                     text: $evaluationViewModel.searchText,
                     onSearch: {
-                        $evaluationViewModel.searchText
+                        // Search is performed automatically via binding
                     }
                 )
             }

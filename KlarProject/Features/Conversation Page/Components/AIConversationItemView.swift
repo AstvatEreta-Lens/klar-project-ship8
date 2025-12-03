@@ -37,7 +37,7 @@ struct AIConversationItemView: View {
                     Text(conversation.name)
                         .fontWeight(.bold)
                         .font(.body)
-                        .foregroundColor(Color.primaryUsernameText)
+                        .foregroundColor(Color.textRegular)
 
                     HighlightedText(
                         text: viewModel.getPreviewMessage(for: conversation),
@@ -54,7 +54,7 @@ struct AIConversationItemView: View {
                 VStack(alignment: .trailing, spacing: 4) {
                     Text(conversation.time)
                         .font(.body)
-                        .foregroundColor(Color(hex : "#4D4D4D"))
+                        .foregroundColor(Color.textRegular)
                         .accessibilityLabel("Time")
 //                        .padding(.trailing, 13)
                     
@@ -67,7 +67,7 @@ struct AIConversationItemView: View {
             .frame(width: 271, height: 40, alignment: .leading)
             .padding(.vertical, 12)
             .padding(.horizontal, 12)
-            .background(isSelected ? Color.chatChosenColor : Color.white)
+            .background(isSelected ? Color.gray.opacity(0.2) : Color.chatCardColor)
             .clipShape(RoundedRectangle(cornerRadius: 7))
         }
         .accessibilityLabel("Ai Chat Item")

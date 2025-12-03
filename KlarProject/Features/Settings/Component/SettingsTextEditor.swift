@@ -31,7 +31,7 @@ struct EditableTextBox: View {
                 .background(Color.clear)
         }
         .frame(height: minHeight)
-        .background(Color.white)
+        .background(Color.backgroundPrimary)
         .cornerRadius(11)
         .overlay(
             RoundedRectangle(cornerRadius: 11)

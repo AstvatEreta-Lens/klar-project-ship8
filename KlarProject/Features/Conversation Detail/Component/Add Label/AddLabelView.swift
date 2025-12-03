@@ -85,7 +85,7 @@ struct AddLabelView: View {
         }
         .padding(.horizontal, 20)
         .frame(width: 280)  // Adjust width sesuai kebutuhan
-        .background(Color.white)
+        .background(Color.backgroundPrimary)
         .cornerRadius(5)
         .overlay(
             RoundedRectangle(cornerRadius: 5)

@@ -71,7 +71,7 @@ struct SettingsView: View {
 
             }
             .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .top)
-            .background(.white)
+            .background(Color.backgroundPrimary)
             .overlay(
                 RoundedRectangle(cornerRadius: 11)
                     .stroke(Color.sectionHeader, lineWidth: 1)

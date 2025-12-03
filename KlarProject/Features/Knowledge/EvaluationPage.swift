@@ -23,7 +23,7 @@ struct EvaluationPage: View {
                     .background(Color.borderColor)
                 
                 ZStack {
-                    Color.white
+                    Color.backgroundPrimary
                         .edgesIgnoringSafeArea(.all)
                     
                     if let conversation = evaluationViewModel.selectedConversation {

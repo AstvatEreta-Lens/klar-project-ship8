@@ -91,7 +91,7 @@ struct ChatDetailView: View {
                             VStack(alignment: .leading) {
                                 Text("Last Handled By")
                                     .font(.callout)
-                                    .foregroundColor(Color.black)
+                                    .foregroundColor(Color.textRegular)
                                 
                                 HandledBySection(
                                     user: conversation.handledBy,
@@ -113,7 +113,7 @@ struct ChatDetailView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("Label")
                                     .font(.callout)
-                                    .foregroundColor(Color.black)
+                                    .foregroundColor(Color.textRegular)
                                 
                                 if !conversation.label.isEmpty {
                                     VStack(alignment: .leading, spacing: 8) {
@@ -131,7 +131,7 @@ struct ChatDetailView: View {
                                 } else {
                                     Text("No labels added")
                                         .font(.caption)
-                                        .foregroundColor(Color.primaryUsernameText)
+                                        .foregroundColor(Color.textRegular)
                                 }
                             }
                             .padding(.leading, 20)
@@ -153,7 +153,7 @@ struct ChatDetailView: View {
                             HStack {
                                 Text("Internal Notes")
                                     .font(.callout)
-                                    .foregroundColor(Color.black)
+                                    .foregroundColor(Color.textRegular)
                                     .padding(.leading, 13)
                                 
                                 Image(systemName: "info.circle.fill")
@@ -201,7 +201,7 @@ struct ChatDetailView: View {
                             HStack {
                                 Text("AI Summary")
                                     .font(.callout)
-                                    .foregroundColor(Color.black)
+                                    .foregroundColor(Color.textRegular)
                                     .padding(.leading, 13)
                                 
                                 Image(systemName: "info.circle.fill")
@@ -262,7 +262,7 @@ struct ChatDetailView: View {
                 }
             }
             .frame(minWidth: 334, maxHeight: .infinity, alignment: .top)
-            .background(Color.white)
+            .background(Color.backgroundPrimary)
             .toast(manager: detailViewModel.toastManager)
             
             if detailViewModel.showingAddLabel {

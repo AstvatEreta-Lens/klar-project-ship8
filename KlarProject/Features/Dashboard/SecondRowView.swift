@@ -63,7 +63,7 @@ struct SecondRowView: View {
                 Text(datas.headerText)
                         .fontWeight(.light)
                         .font(.headline)
-                        .foregroundColor(Color(hex: "#1A1A1A"))
+                        .foregroundColor(Color.textRegular)
                     
                 Text(datas.timeText)
                         .font(.system(size: 48, weight: .bold, design : .default))
@@ -92,7 +92,7 @@ struct SecondRowView: View {
                 Spacer()
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
+        .background(Color.dashboardCardColor)
         .cornerRadius(18)
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
 //        .padding()

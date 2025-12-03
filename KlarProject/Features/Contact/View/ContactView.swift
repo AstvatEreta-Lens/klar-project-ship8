@@ -17,7 +17,7 @@ struct ContactTableView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack(alignment : .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
                 headerRow(width: geometry.size.width)
 
                 ScrollView {
@@ -48,7 +48,7 @@ struct ContactTableView: View {
             .padding(.horizontal, 2)
             .background(
                 RoundedRectangle(cornerRadius: 25)
-                    .fill(Color.white)
+                    .fill(Color.backgroundPrimary)
 //                    .stroke(Color.gray.opacity(0.2), lineWidth: 0.2)
                     .shadow(color : .black.opacity(0.2), radius: 12, x: 6, y: 6)
             )
@@ -57,23 +57,47 @@ struct ContactTableView: View {
 
     func headerRow(width: CGFloat) -> some View {
         HStack(spacing: 0) {
-            headerText("No.")
-                .frame(width: width * 0.05, alignment: .center) // 5%
+            HStack {
+                Spacer()
+                headerText("No.")
+                Spacer()
+            }
+            .frame(width: width * 0.05) // 5%
 
-            headerText("Name")
-                .frame(width: width * 0.15, alignment: .center) // 15%
+            HStack {
+                Spacer()
+                headerText("Name")
+                Spacer()
+            }
+            .frame(width: width * 0.15) // 15%
 
-            headerText("Phone Number")
-                .frame(width: width * 0.18, alignment: .center) // 18%
+            HStack {
+                Spacer()
+                headerText("Phone Number")
+                Spacer()
+            }
+            .frame(width: width * 0.18) // 18%
 
-            headerText("Channel")
-                .frame(width: width * 0.15, alignment: .center) // 15%
+            HStack {
+                Spacer()
+                headerText("Channel")
+                Spacer()
+            }
+            .frame(width: width * 0.15) // 15%
 
-            headerText("Address")
-                .frame(width: width * 0.32, alignment: .center) // 32%
+            HStack {
+                Spacer()
+                headerText("Address")
+                Spacer()
+            }
+            .frame(width: width * 0.32) // 32%
 
-            headerText("Tags")
-                .frame(width: width * 0.15, alignment: .center) // 15%
+            HStack {
+                Spacer()
+                headerText("Tags")
+                Spacer()
+            }
+            .frame(width: width * 0.15) // 15%
         }
         .padding(.vertical, 11)
         .background(
@@ -97,44 +121,72 @@ struct ContactRow: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            Text("\(number)")
-                .foregroundColor(Color.textRegular)
-                .frame(width: totalWidth * 0.05, alignment: .center) // 5%
-
-            Text(contact.name)
-                .foregroundColor(Color.textRegular)
-                .frame(width: totalWidth * 0.15, alignment: .center) // 15%
-                .lineLimit(2)
-                .minimumScaleFactor(0.75)
-
-            Text(contact.channel)
-                .foregroundColor(Color.textRegular)
-                .frame(width: totalWidth * 0.18, alignment: .center) // 18%
-                .lineLimit(2)
-                .minimumScaleFactor(0.75)
-
-            HStack(spacing: 6) {
-                Image(systemName: "message.circle.fill")
-                    .foregroundColor(.green)
-                Text("WhatsApp")
+            HStack {
+                Spacer()
+                Text("\(number)")
                     .foregroundColor(Color.textRegular)
+                Spacer()
             }
-            .frame(width: totalWidth * 0.15, alignment: .center) // 15%
+            .frame(width: totalWidth * 0.05) // 5%
 
-            Text(contact.address)
-                .frame(width: totalWidth * 0.32, alignment: .center) // 32%
-                .foregroundColor(Color.textRegular)
-                .lineLimit(2)
-                .minimumScaleFactor(0.75)
+            HStack {
+                Spacer()
+                Text(contact.name)
+                    .foregroundColor(Color.textRegular)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
+                    .multilineTextAlignment(.center)
+                Spacer()
+            }
+            .frame(width: totalWidth * 0.15) // 15%
 
-            Text(tagsText)
-                .foregroundColor(Color.textRegular)
-                .frame(width: totalWidth * 0.15, alignment: .center) // 15%
-                .lineLimit(2)
-                .minimumScaleFactor(0.75)
+            HStack {
+                Spacer()
+                Text(contact.channel)
+                    .foregroundColor(Color.textRegular)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
+                    .multilineTextAlignment(.center)
+                Spacer()
+            }
+            .frame(width: totalWidth * 0.18) // 18%
+
+            HStack {
+                Spacer()
+                HStack(spacing: 6) {
+                    Image(systemName: "message.circle.fill")
+                        .foregroundColor(.green)
+                    Text("WhatsApp")
+                        .foregroundColor(Color.textRegular)
+                }
+                Spacer()
+            }
+            .frame(width: totalWidth * 0.15) // 15%
+
+            HStack {
+                Spacer()
+                Text(contact.address)
+                    .foregroundColor(Color.textRegular)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
+                    .multilineTextAlignment(.center)
+                Spacer()
+            }
+            .frame(width: totalWidth * 0.32) // 32%
+
+            HStack {
+                Spacer()
+                Text(tagsText)
+                    .foregroundColor(Color.textRegular)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
+                    .multilineTextAlignment(.center)
+                Spacer()
+            }
+            .frame(width: totalWidth * 0.15) // 15%
         }
         .padding(.vertical, 8)
-        .background(isSelected ? Color(hex : "F5F5F5") : Color.white)
+        .background(isSelected ? Color.gray.opacity(0.5) : Color.backgroundPrimary)
         .overlay(
             Rectangle()
                 .stroke(isSelected ? Color(hex : "F5F5F5"): Color.clear, lineWidth: 1)

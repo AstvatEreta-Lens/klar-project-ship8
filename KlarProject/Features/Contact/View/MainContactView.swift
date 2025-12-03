@@ -12,18 +12,19 @@ struct MainContactView: View {
     @State private var showAddContact: Bool = false
 
     var body: some View {
-        ZStack {
-            VStack(alignment : .leading){
+        ZStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 0) {
                 Text("Contact")
                     .font(.largeTitle)
                     .foregroundColor(Color.sectionHeader)
                     .fontWeight(.bold)
+                    .padding(.bottom, 8)
 
-                HStack{
+                HStack(spacing: 12) {
                     Button(action: {
                         showAddContact = true
                     }){
-                        HStack{
+                        HStack(spacing: 8) {
                             Image(systemName: "plus")
                                 .font(.title2)
                                 .foregroundColor(Color.white)
@@ -31,7 +32,7 @@ struct MainContactView: View {
                                 .font(.title2)
                                 .foregroundColor(Color.white)
                         }
-                        .frame(minWidth : 231, maxWidth: .infinity, minHeight : 36, maxHeight: .infinity, alignment: .center)
+                        .frame(minWidth: 231, maxWidth: .infinity, minHeight: 36, maxHeight: .infinity)
                         .background(
                             RoundedRectangle(cornerRadius: 11)
                                 .foregroundColor(Color.sectionHeader)

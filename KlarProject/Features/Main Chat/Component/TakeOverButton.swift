@@ -20,7 +20,7 @@ struct TakeOverButton : View{
                     .frame(minWidth : 599, maxWidth: .infinity, minHeight : 36, maxHeight: .infinity, alignment: .center)
                     .background(
                         RoundedRectangle(cornerRadius: 11)
-                            .foregroundColor(Color.sectionHeader)
+                            .foregroundColor(Color(hex : "#3590A2"))
                             
                     )
             }

@@ -37,7 +37,7 @@ extension Color {
     
     // Secondary Text Color
     static let secondaryTextColor = Color("SecondaryTextColor")
-    
+
     // Tertiary Text Color
     static let tertiaryTextColor = Color("TertiaryTextColor")
     
@@ -47,7 +47,7 @@ extension Color {
     
     // Red Status Color
     static let redStatusColor = Color("RedStatus")
-    
+
     // Yellow Status Color
     static let yellowStatusColor = Color("YellowStatus")
     
@@ -61,7 +61,7 @@ extension Color {
     
     // Background Primary
     static let bakcgroundPrimary = Color("BackgroundPrimary")
-    
+
     // Label border Color
     static let labelBorderColor = Color("LabelBorderColor")
     
@@ -73,7 +73,7 @@ extension Color {
     
     // Avatar Count Color
     static let avatarCountColor = Color("AvatarCountColor")
-    
+
     // Chat Box Button Color
     static let chatboxButtonColor = Color("ChatTextboxButton")
     
@@ -81,7 +81,7 @@ extension Color {
     static let bubbleChatColor = Color("BubbleChatColor")
     
     static let textRegularColor = Color("TextRegular")
-    
+
     static let chatInputBackgroundColor = Color("ChatInputBackground")
     
     // Evaluated Background
@@ -93,6 +93,12 @@ extension Color {
     static let colorBlackText = Color("PureBlack")
     
     static let sectionHeaderColor = Color("SectionHeaderColor")
+
+    static let chatCardColor = Color("ChatCardColor")
+    
+    static let textEditorColor = Color("TextEditorColor")
+    
+    static let dashboardCardColor = Color("DashboardCardColor")
     
     
     // Grey Color

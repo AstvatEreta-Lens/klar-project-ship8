@@ -27,7 +27,7 @@ struct SecurityTabView: View {
                     fieldRow(title: NSLocalizedString("PIN", comment : ""), text: binding(for: \.PIN))
                     }
                     .padding(20)
-                    .background(Color.white)
+                    .background(Color.backgroundPrimary)
                     .cornerRadius(12)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)

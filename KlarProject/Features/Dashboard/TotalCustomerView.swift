@@ -20,7 +20,7 @@ struct TotalCustomerView: View {
                     Text("Total Customer")
                         .font(.headline)
                         .fontWeight(.light)
-                        .foregroundColor(Color(hex: "#1A1A1A"))
+                        .foregroundColor(Color.textRegular)
                     
                     Text("\(resolvedChats)")
                         .font(.system(size: 48, weight: .bold))
@@ -55,7 +55,7 @@ struct TotalCustomerView: View {
                 }
             }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
+        .background(Color.dashboardCardColor)
         .cornerRadius(11)
         .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 6)
 //        .padding()

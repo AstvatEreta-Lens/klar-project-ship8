@@ -54,7 +54,7 @@ struct DashboardView: View {
                         ChatHandledByHuman()
                         TotalCustomerView()
                     }
-                    
+                    .padding(.top, 24)
                     HStack{
                         SecondRowView(datas: .FRT)
                         SecondRowView(datas: .TTA)
@@ -62,8 +62,8 @@ struct DashboardView: View {
                         SecondRowView(datas: .RR)
                     }
                 }
-                .padding(.horizontal)
-                .padding(.top)
+                .padding(.horizontal, 16)
+//                .padding(.top)
                 .foregroundColor(.red)
                 .frame(height : 200)
                 
@@ -71,29 +71,31 @@ struct DashboardView: View {
                 HStack{
                     StatisticsView()
                         .chartXAxis(.visible)
-                        .padding(.top, 40)
+                        .padding(.top, 50)
                     ConversationLabels(label : .warranty)
-                        .padding(.top, -55)
+                        .padding(.top, 50)
+                        .frame(maxWidth : 408)
                 }
-                .frame(maxHeight : 408)
+                .frame(maxHeight : .infinity)
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 113)
                 
                 Spacer()
                 
             }
             .padding()
             .background(
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color.white,
-                        Color(hex: "#E7F4F5")
-                    ]),
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+//                LinearGradient(
+//                    gradient: Gradient(colors: [
+//                        Color.white,
+//                        Color(hex: "#E7F4F5")
+//                    ]),
+//                    startPoint: .topLeading,
+//                    endPoint: .bottomTrailing
+//                )
+                Color.backgroundPrimary
             )
-            .frame(maxWidth: .infinity,maxHeight: .infinity, alignment: .top)
+            .frame(maxWidth: .infinity,maxHeight: .infinity)
 //            .padding()
         }
     }

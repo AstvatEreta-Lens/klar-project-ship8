@@ -43,7 +43,7 @@ struct DeletePDFAlert: View {
                 }
                 .padding(.vertical, 12)
                 .padding(.horizontal, 12)
-                .background(Color.white)
+                .background(Color.backgroundPrimary)
                 .overlay(
                     RoundedRectangle(cornerRadius: 11)
                         .stroke(Color.sectionHeader, lineWidth: 1)
@@ -100,7 +100,7 @@ struct DeletePDFAlert: View {
             .padding(.bottom, 24)
         }
         .frame(width: 341, height: 372)
-        .background(Color.white)
+        .background(Color.backgroundPrimary)
         .cornerRadius(11)
         .overlay(
             RoundedRectangle(cornerRadius: 11)

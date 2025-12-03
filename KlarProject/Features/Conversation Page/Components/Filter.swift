@@ -19,7 +19,7 @@ struct FilterView: View {
             HStack {
                 Text("Filter Applied")
                     .font(.caption)
-                    .foregroundColor(Color.primaryTextColor)
+                    .foregroundColor(Color.textRegular)
             }
             .padding(.top, 26)
             
@@ -56,7 +56,7 @@ struct FilterView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Status")
                     .font(.caption)
-                    .foregroundColor(Color.primaryTextColor)
+                    .foregroundColor(Color.textRegular)
                 
                 HStack(spacing: 12) {
                     ForEach(statusType.allCases, id: \.text) { status in
@@ -75,7 +75,7 @@ struct FilterView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Label")
                     .font(.caption)
-                    .foregroundColor(Color.primaryTextColor)
+                    .foregroundColor(Color.textRegular)
                 
                 VStack(spacing: 11) {
                     // Row 1: Service, Warranty, Payment
@@ -140,7 +140,7 @@ struct FilterView: View {
         }
         .padding(.horizontal, 20)
         .frame(minWidth: 307, maxWidth: .infinity, maxHeight: 400, alignment: .top)
-        .background(Color.white)
+        .background(Color.backgroundPrimary)
     }
 }
 
@@ -254,7 +254,7 @@ struct LabelFilterButton: View {
     var body: some View {
         Button(action: action) {
             Text(label.text)
-                .foregroundColor(Color.labelBorderColor)
+                .foregroundColor(Color.textRegular)
                 .font(.caption)
                 .fontWeight(isSelected ? .semibold : .regular)
                 .padding(.horizontal, 12)
@@ -284,7 +284,7 @@ struct ApplyFilterButton: View {
                 Text("Apply Filter")
                     .font(.body)
                     .fontWeight(.semibold)
-                    .foregroundColor(isEnabled ? Color.white : Color.white)
+                    .foregroundColor(isEnabled ? Color.textRegular.opacity(0.5): Color.textRegular)
             }
         }
         .disabled(!isEnabled)
