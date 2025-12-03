@@ -10,22 +10,45 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var sidebarVM = SidebarViewModel()
        var body: some View {
-           NavigationSplitView {
+           NavigationSplitView(columnVisibility : .constant(.all)) {
                SidebarView(viewModel: sidebarVM)
+                   .accessibilityLabel("Sidebar")
            } detail: {
                switch sidebarVM.selectedItem?.destination {
                case .dashboard:
                    DashboardView()
-               case .chat:
+                       .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
+               case .conversation:
                    ChatKlarView()
-               case .ticketing:
-                   TicketingView()
+                       .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
+               case .knowledge:
+                   KnowledgePage()
+                       .ignoresSafeArea(edges : .top)
+//                       .padding()
+                       .fullScreenSafePadding()
                case .settings:
-                   SettingsView()
+                   SettingsView(editAction: {}, saveAction: {})
+                       .padding()
+                       .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
+               case .contact:
+                   MainContactView()
+                       .padding(.top)
+                       .padding(.horizontal)
+                       .padding(.bottom, 10)
+                       .ignoresSafeArea(edges : .top)
+                       .fullScreenSafePadding()
                default:
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }
-           }
+           }           
+           .environment(\.locale, Locale(identifier: "en-US"))
+           .navigationSplitViewStyle(.balanced) // hide hide sidebar
+           .toolbar(removing : .sidebarToggle)
+           .detectFullScreen()
+           .accessibilityLabel("Klar")
        }
 }
 
