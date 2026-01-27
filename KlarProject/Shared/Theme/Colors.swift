@@ -32,6 +32,64 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
+    // Primary Text Color
+    static let primaryTextColor = Color("PrimaryTextColor")
+    
+    // Secondary Text Color
+    static let secondaryTextColor = Color("SecondaryTextColor")
+    
+    // Tertiary Text Color
+    static let tertiaryTextColor = Color("TertiaryTextColor")
+    
+    // Border Color
+    static let borderColor = Color("BorderColor")
+    
+    
+    // Red Status Color
+    static let redStatusColor = Color("RedStatus")
+    
+    // Yellow Status Color
+    static let yellowStatusColor = Color("YellowStatus")
+    
+    // Resolved Status Color
+    static let greenStatusColor = Color("GreenStatus")
+    
+    // Status Text Color
+    static let greenStatusTextColor = Color("GreenStatusTextColor")
+    static let yellowStatusTextColor = Color("YellowStatusTextColor")
+    static let redStatusTextColor = Color("RedStatusTextColor")
+    
+    // Background Primary
+    static let bakcgroundPrimary = Color("BackgroundPrimary")
+    
+    // Label border Color
+    static let labelBorderColor = Color("LabelBorderColor")
+    
+    // Label Text Color
+    static let labelTextColor = Color("LabelTextColor")
+    
+    // Avatar Background Color
+    static let avatarBackgroundColor = Color("AvatarColor")
+    
+    // Avatar Count Color
+    static let avatarCountColor = Color("AvatarCountColor")
+    
+    // Chat Box Button Color
+    static let chatboxButtonColor = Color("ChatTextboxButton")
+    
+    // Bubble Chat Color
+    static let bubbleChatColor = Color("BubbleChatColor")
+    
+    static let textRegularColor = Color("TextRegular")
+    
+    static let chatInputBackgroundColor = Color("ChatInputBackground")
+    
+    // Evaluated Background
+    static let evaluatedBackgroundCard = Color("BackgroundTertiary")
+    
+    
+    
+    
     // Grey Color
     static let greySecondary = Color(hex: "#545454")
     
@@ -44,20 +102,34 @@ extension Color {
     // Grey Text Color
     static let grayTextColor = Color(hex:"#8E8E8E")
     
-    // Red Status Color
-    static let redStatusColor = Color(hex:"EB0000")
     
-    // Yellow Status Color
-    static let yellowStatusColor = Color(hex:"FFA600")
     
-    // Resolved Status Color
-    static let greenStatusColor = Color(hex:"16A600")
     
-    // Choiced Color
+    
+    
+    
+    
+    
+    // Choosen Color
     static let chosenColor = Color(hex:"#C0E3FF")
     
     // Chat Chosen Color
     static let chatChosenColor = Color(hex:"#EDEDED")
+    
+    // Black Label
+    static let blackLabel = Color(hex:"#000000")
+    
+    // Bold gray text
+    static let boldGrayText = Color(hex:"#505050")
+    
+    // Blue Text Color
+    static let blueTextColor = Color(hex: "#0091FF")
+    
+    // Detail Component Color
+    static let componentBackgroundColor = Color(hex :"#F5F5F5")
+    
+    // Component Component Color
+    static let componentComponentColor = Color(hex: "#B9B9B9")
 
 }
 

@@ -16,12 +16,13 @@ struct ContentView: View {
                switch sidebarVM.selectedItem?.destination {
                case .dashboard:
                    DashboardView()
-               case .chat:
+               case .conversation:
                    ChatKlarView()
-               case .ticketing:
-                   TicketingView()
+               case .knowledge:
+                   KnowledgePage()
                case .settings:
-                   SettingsView()
+                   SettingsView(editAction: {}, saveAction: {})
+                       .padding()
                default:
                    Text("Select a menu from sidebar").foregroundColor(.secondary)
                }
